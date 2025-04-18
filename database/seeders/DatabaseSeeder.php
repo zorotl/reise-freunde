@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\PinboardEntry;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,8 +18,21 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Martin',
+            'email' => 'info@stws.ch',
+            'password' => Hash::make('test1234'),
         ]);
+        User::factory()->create([
+            'name' => 'Zorotl',
+            'email' => 'zorotl@stws.ch',
+            'password' => Hash::make('test1234'),
+        ]);
+        User::factory()->create([
+            'name' => 'Barbara',
+            'email' => 'barbara@stws.ch',
+            'password' => Hash::make('test1234'),
+        ]);
+
+        PinboardEntry::factory(10)->create();
     }
 }
