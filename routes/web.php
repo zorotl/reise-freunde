@@ -1,3 +1,39 @@
+<!-- 
+ToDo for the whole project:
+
+Fix the following issues:
+    - [ ] Fix the pinboard ==> Post
+    - [ ] Fix sidebar to header
+
+Backend:
+    - [ ] Add birthday to the user model
+    - [ ] Add nationality to the user model
+    - [ ] Add a username to the user model
+    - [ ] Add a profile picture to the user model
+    - [ ] Add about_me to the user model
+    - [ ] Add is_admin to the user model
+    
+    - [ ] Add From, To, Area and Country to the post-migration, model and controller
+    - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?
+    - [ ] Add a search bar to the pinboard
+    - [ ] Add a filter to the pinboard
+
+    - [ ] Add a mail system
+    - [ ] Add a notification system
+    - [ ] Add a follow system
+
+    - [ ] Add a Travel-Styles table und system
+    - [ ] Add a Travel-Styles pivot table
+    - [ ] OPTIONAL: Add a Sports&Fun table und system
+    - [ ] OPTIONAL: Add a Sports&Fun pivot-table
+    
+
+Frontend:
+    - [ ] Add a Homepage
+    - [ ] Add the Pinboard to the homepage
+
+-->
+
 <?php
 
 use App\Livewire\Pinboard\EditPinboard;
@@ -34,3 +70,4 @@ Route::get('/pinboard/edit/{id}', EditPinboard::class)->name('pinboard.edit');
 Route::get('/pinboard', function () {
     return redirect()->route('pinboard.show');
 })->name('pinboard');
+
