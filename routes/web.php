@@ -5,7 +5,8 @@
 //     Fix the following issues:
 //         - [ ] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
-//         - [ ] Fix double forms on the create and edit post pages
+//         - [x] Fix double forms on the create and edit post pages
+//         - [x] Fix double views for all vs my post pages
 
 //     Backend:
 //         - [ ] Use is_admin 
