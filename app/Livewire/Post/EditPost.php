@@ -40,6 +40,9 @@ class EditPost extends Component
 
     public function render()
     {
-        return view('livewire.post.edit-post');
+        return view('livewire.post.form-post', [
+            'action' => 'update',
+            'buttonText' => 'Update Post',
+        ]);
     }
 }

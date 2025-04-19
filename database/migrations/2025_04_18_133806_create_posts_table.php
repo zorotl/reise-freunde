@@ -17,6 +17,10 @@ return new class extends Migration {
             $table->text('content');
             $table->timestamp('expiry_date'); // New expiry date field
             $table->boolean('is_active')->default(true); // New active status, defaults to true
+            $table->timestamp('from_date');
+            $table->timestamp('to_date');
+            $table->string('country')->nullable();
+            $table->string('city')->nullable();
             $table->timestamps();
             $table->softDeletes(); // Enable soft deletes
         });

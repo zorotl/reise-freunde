@@ -32,6 +32,9 @@ class CreatePost extends Component
     }
     public function render()
     {
-        return view('livewire.post.create-post');
+        return view('livewire.post.form-post', [
+            'action' => 'save',
+            'buttonText' => 'Create Post',
+        ]);
     }
 }

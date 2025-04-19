@@ -1,10 +1,13 @@
-<div>
+{{-- <div>
     <section class="w-full">
         <div class="flex items-start max-md:flex-col">
             <div class="flex-1 self-stretch max-md:pt-6">
                 <div class="mt-5 w-full max-w-lg">
-                    <form wire:submit="save" class="my-6 w-full space-y-6">
-
+                    <form wire:submit="{{$action}}" class="my-6 w-full space-y-6">
+                        @csrf
+                        @if ($action === 'update')
+                        @method('PUT')
+                        @endif
                         <flux:input wire:model="title" :label="__('Title')" type="text" autofocus
                             autocomplete="title" />
 
@@ -16,7 +19,7 @@
 
                         <div class="flex items-center gap-4">
                             <div class="flex items-center justify-end">
-                                <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}
+                                <flux:button variant="primary" type="submit" class="w-full">{{ __('{{$buttonText}}') }}
                                 </flux:button>
                             </div>
                             <a href="{{ route('post.show') }}" class="text-gray-500 hover:underline">
@@ -28,4 +31,4 @@
             </div>
         </div>
     </section>
-</div>
+</div> --}}

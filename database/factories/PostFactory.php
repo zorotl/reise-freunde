@@ -26,6 +26,10 @@ class PostFactory extends Factory
             "content" => $this->faker->paragraph(),
             "expiry_date" => $this->faker->dateTimeBetween('-1 year', '+1 year'),
             "is_active" => $this->faker->boolean(75), // 75% chance to be true
+            "from_date" => $this->faker->dateTimeBetween('now', '+1 year'),
+            "to_date" => $this->faker->dateTimeBetween('now', '+2 year'),
+            "country" => $this->faker->optional(80)->country(),
+            "city" => $this->faker->optional(60)->city(),
         ];
     }
 }

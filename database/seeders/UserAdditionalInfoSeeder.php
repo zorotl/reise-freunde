@@ -24,5 +24,10 @@ class UserAdditionalInfoSeeder extends Seeder
                 'about_me' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
             ]);
         }
+
+        // Seed User Additional Info for all users except ID 1
+        User::whereNotIn('id', [1])->get()->each(function (User $user) {
+            \Database\Factories\UserAdditionalInfoFactory::new()->create(['user_id' => $user->id]);
+        });
     }
 }

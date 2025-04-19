@@ -3,7 +3,9 @@
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [ ] ...
+//         - [ ] Fix redirect after editing a post from the my posts page
+//         - [ ] Fix SiteTitle on all pages
+//         - [ ] Fix double forms on the create and edit post pages
 
 //     Backend:
 //         - [ ] Use is_admin 
@@ -17,7 +19,7 @@
 //         - [ ] Use a profile picture 
 //         - [ ] Use about_me 
 
-//         - [ ] Add From, To, Area and Country to the post-migration, model and controller
+//         - [x] Add From, To, Area and Country to the post-migration, model and controller
 //         - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?
 //         - [ ] Add a search bar to the post
 //         - [ ] Add a filter to the post
