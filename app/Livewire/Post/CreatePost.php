@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Livewire\Pinboard;
+namespace App\Livewire\Post;
 
 use Livewire\Component;
-use App\Models\PinboardEntry;
+use App\Models\Post;
 
-class CreatePinboard extends Component
+class CreatePost extends Component
 {
     public $title;
     public $content;
@@ -20,7 +20,7 @@ class CreatePinboard extends Component
             'expiryDate' => 'required|date|after:today',
         ]);
 
-        PinboardEntry::create([
+        Post::create([
             'user_id' => auth()->id(),
             'title' => $this->title,
             'content' => $this->content,
@@ -28,10 +28,10 @@ class CreatePinboard extends Component
         ]);
 
         session()->flash('success', 'New post successfully created.');
-        $this->redirect('/pinboard/show', navigate: true);
+        $this->redirect('/post/show', navigate: true);
     }
     public function render()
     {
-        return view('livewire.pinboard.create-pinboard');
+        return view('livewire.post.create-post');
     }
 }

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Livewire\Pinboard;
+namespace App\Livewire\Post;
 
 use Livewire\Component;
-use App\Models\PinboardEntry;
+use App\Models\Post;
 
-class EditPinboard extends Component
+class EditPost extends Component
 {
-    public PinboardEntry $entry;
+    public Post $entry;
     public $title;
     public $content;
     public $expiryDate;
 
-    public function mount(PinboardEntry $id)
+    public function mount(Post $id)
     {
         $this->entry = $id;
         $this->title = $this->entry->title;
@@ -35,11 +35,11 @@ class EditPinboard extends Component
         ]);
 
         session()->flash('success', 'Post successfully updated.');
-        $this->redirect('/pinboard/show', navigate: true);
+        $this->redirect('/post/show', navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.pinboard.edit-pinboard');
+        return view('livewire.post.edit-post');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\Pinboard;
+namespace App\Livewire\Post;
 
 use Livewire\Component;
-use App\Models\PinboardEntry;
+use App\Models\Post;
 use Illuminate\Support\Carbon;
 
-class ShowPinboard extends Component
+class MyPosts extends Component
 {
     public $newTitle;
     public $newEntry;
@@ -18,13 +18,13 @@ class ShowPinboard extends Component
         $this->loadEntries();
     }
 
-    public function toggleActive(PinboardEntry $entry)
+    public function toggleActive(Post $entry)
     {
         $entry->update(['is_active' => !$entry->is_active]);
         $this->loadEntries();
     }
 
-    public function deleteEntry(PinboardEntry $entry)
+    public function deleteEntry(Post $entry)
     {
         $entry->delete(); // Soft delete
         $this->loadEntries();
@@ -32,17 +32,13 @@ class ShowPinboard extends Component
 
     private function loadEntries()
     {
-        $this->entries = PinboardEntry::query()
-            ->where('is_active', true)
-            ->where(function ($query) {
-                $query->whereNull('expiry_date')
-                    ->orWhere('expiry_date', '>', Carbon::now());
-            })
+        $this->entries = Post::query()
+            ->where('user_id', auth()->id())
             ->latest()
             ->get();
     }
     public function render()
     {
-        return view('livewire.pinboard.show-pinboard');
+        return view('livewire.post.my-posts');
     }
 }

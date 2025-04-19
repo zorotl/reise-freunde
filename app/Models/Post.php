@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PinboardEntry extends Model
+class Post extends Model
 {
-    /** @use HasFactory<\Database\Factories\PinboardEntryFactory> */
+    /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [

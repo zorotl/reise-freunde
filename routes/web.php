@@ -1,47 +1,46 @@
-<!-- 
-ToDo for the whole project:
-
-Fix the following issues:
-    - [ ] Fix the pinboard ==> Post
-    - [ ] Fix sidebar to header
-
-Backend:
-    - [ ] Add birthday to the user model
-    - [ ] Add nationality to the user model
-    - [ ] Add a username to the user model
-    - [ ] Add a profile picture to the user model
-    - [ ] Add about_me to the user model
-    - [ ] Add is_admin to the user model
-    
-    - [ ] Add From, To, Area and Country to the post-migration, model and controller
-    - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?
-    - [ ] Add a search bar to the pinboard
-    - [ ] Add a filter to the pinboard
-
-    - [ ] Add a mail system
-    - [ ] Add a notification system
-    - [ ] Add a follow system
-
-    - [ ] Add a Travel-Styles table und system
-    - [ ] Add a Travel-Styles pivot table
-    - [ ] OPTIONAL: Add a Sports&Fun table und system
-    - [ ] OPTIONAL: Add a Sports&Fun pivot-table
-    
-
-Frontend:
-    - [ ] Add a Homepage
-    - [ ] Add the Pinboard to the homepage
-
--->
-
 <?php
 
-use App\Livewire\Pinboard\EditPinboard;
-use App\Livewire\Pinboard\MyPinboard;
+// ToDo for the whole project:
+
+//     Fix the following issues:
+//         - [ ] Fix the post ==> Post
+//         - [x] Fix sidebar to header
+
+//     Backend:
+//         - [ ] Add birthday to the user model
+//         - [ ] Add nationality to the user model
+//         - [ ] Add a username to the user model
+//         - [ ] Add a profile picture to the user model
+//         - [ ] Add about_me to the user model
+//         - [ ] Add is_admin to the user model
+
+//         - [ ] Add From, To, Area and Country to the post-migration, model and controller
+//         - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?
+//         - [ ] Add a search bar to the post
+//         - [ ] Add a filter to the post
+
+//         - [ ] Add a mail system
+//         - [ ] Add a notification system
+//         - [ ] Add a follow system
+
+//         - [ ] Add a Travel-Styles table und system
+//         - [ ] Add a Travel-Styles pivot table
+//         - [ ] OPTIONAL: Add a Sports&Fun table und system
+//         - [ ] OPTIONAL: Add a Sports&Fun pivot-table
+
+
+//     Frontend:
+//         - [ ] Add a Homepage
+//         - [ ] Add the Posts-Overview to the homepage
+
+
+use App\Livewire\Post\CreatePost;
+use App\Livewire\Post\EditPost;
+use App\Livewire\Post\MyPosts;
+use App\Livewire\Post\ShowPosts;
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Pinboard\ShowPinboard;
-use App\Livewire\Pinboard\CreatePinboard;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,12 +61,12 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__ . '/auth.php';
 
 
-// Pinboard routes
-Route::get('/pinboard/show', ShowPinboard::class)->name('pinboard.show');
-Route::get('/pinboard/myown', MyPinboard::class)->name('pinboard.myown');
-Route::get('/pinboard/create', CreatePinboard::class)->name('pinboard.create');
-Route::get('/pinboard/edit/{id}', EditPinboard::class)->name('pinboard.edit');
-Route::get('/pinboard', function () {
-    return redirect()->route('pinboard.show');
-})->name('pinboard');
+// Post routes
+Route::get('/post/show', ShowPosts::class)->name('post.show');
+Route::get('/post/myown', MyPosts::class)->name('post.myown');
+Route::get('/post/create', CreatePost::class)->name('post.create');
+Route::get('/post/edit/{id}', EditPost::class)->name('post.edit');
+Route::get('/post', function () {
+    return redirect()->route('post.show');
+})->name('post');
 

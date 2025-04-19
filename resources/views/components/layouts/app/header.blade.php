@@ -19,8 +19,8 @@
                 wire:navigate>
                 {{ __("All Post's") }}
             </flux:navbar.item>
-            <flux:navlist.item icon="user-circle" :href="route('pinboard.myown')"
-                :current="request()->routeIs('pinboard.myown')" wire:navigate>{{ __("My Post's") }}
+            <flux:navlist.item icon="user-circle" :href="route('post.myown')"
+                :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Post's") }}
             </flux:navlist.item>
         </flux:navbar>
 

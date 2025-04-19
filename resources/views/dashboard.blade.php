@@ -5,7 +5,7 @@
         </h1>
 
         <div class="mt-4">
-            <livewire:pinboard.show-pinboard />
+            <livewire:post.show-posts />
         </div>
     </div>
 </x-layouts.app>

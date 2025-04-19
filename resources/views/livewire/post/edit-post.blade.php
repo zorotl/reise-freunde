@@ -21,7 +21,7 @@
                                 <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}
                                 </flux:button>
                             </div>
-                            <a href="{{ route('pinboard.show') }}" class="text-gray-500 hover:underline">
+                            <a href="{{ route('post.show') }}" class="text-gray-500 hover:underline">
                                 {{ __('Cancel') }}
                             </a>
                         </div>
