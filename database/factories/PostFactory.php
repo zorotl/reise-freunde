@@ -24,8 +24,8 @@ class PostFactory extends Factory
             "user_id" => $existingUser ? $existingUser->id : User::factory()->create()->id,
             "title" => $this->faker->sentence(),
             "content" => $this->faker->paragraph(),
-            "expiry_date" => $this->faker->dateTimeBetween('now', '+1 year'),
-            "is_active" => $this->faker->boolean(70), // 70% chance to be true
+            "expiry_date" => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            "is_active" => $this->faker->boolean(75), // 75% chance to be true
         ];
     }
 }

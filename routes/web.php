@@ -3,16 +3,19 @@
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [ ] Fix the post ==> Post
-//         - [x] Fix sidebar to header
+//         - [ ] ...
 
 //     Backend:
-//         - [ ] Add birthday to the user model
-//         - [ ] Add nationality to the user model
-//         - [ ] Add a username to the user model
-//         - [ ] Add a profile picture to the user model
-//         - [ ] Add about_me to the user model
-//         - [ ] Add is_admin to the user model
+//         - [ ] Use is_admin 
+//         - [ ] Use is_moderator 
+//         - [ ] Use is_banned 
+//         - [ ] Use is_banned_until 
+//         - [ ] Use a user_add_info model
+//         - [ ] Use a username 
+//         - [ ] Use birthday 
+//         - [ ] Use nationality 
+//         - [ ] Use a profile picture 
+//         - [ ] Use about_me 
 
 //         - [ ] Add From, To, Area and Country to the post-migration, model and controller
 //         - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?

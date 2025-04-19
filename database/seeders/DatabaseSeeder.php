@@ -15,24 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
-            'name' => 'Martin',
+            'name' => 'Martin Striednig',
             'email' => 'info@stws.ch',
             'password' => Hash::make('test1234'),
         ]);
         User::factory()->create([
-            'name' => 'Zorotl',
+            'name' => 'Zorotl von Zorot',
             'email' => 'zorotl@stws.ch',
             'password' => Hash::make('test1234'),
         ]);
-        User::factory()->create([
-            'name' => 'Barbara',
-            'email' => 'barbara@stws.ch',
-            'password' => Hash::make('test1234'),
-        ]);
+        User::factory(8)->create();
 
-        Post::factory(10)->create();
+        $this->call(UserGrantSeeder::class);
+        $this->call(UserAdditionalInfoSeeder::class);
+
+        // Seed User Additional Info for all users except ID 1
+        User::whereNotIn('id', [1])->get()->each(function (User $user) {
+            \Database\Factories\UserAdditionalInfoFactory::new()->create(['user_id' => $user->id]);
+        });
+
+        Post::factory(50)->create();
     }
 }

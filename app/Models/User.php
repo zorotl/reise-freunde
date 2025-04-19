@@ -58,8 +58,18 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    public function pinboardEntries()
+    public function post()
     {
-        return $this->hasMany(PinboardEntry::class, 'user_id');
+        return $this->hasMany(Post::class, 'user_id');
+    }
+
+    public function grant()
+    {
+        return $this->hasOne(UserGrant::class, 'user_id');
+    }
+
+    public function additionalInfo()
+    {
+        return $this->hasOne(UserAdditionalInfo::class, 'user_id');
     }
 }
