@@ -1,12 +1,15 @@
 <div>
-    @if ($show === 'all')
-    <div class="mb-5">
+    <div class="mb-5 flex justify-between items-center">
+        @if ($show === 'all')
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">Find your travel buddy</h2>
+        @elseif ($show === 'my')
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">My Posts</h2>
+        @endif
         <a wire:navigate href="{{ route('post.create') }}"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Create New Entry
         </a>
     </div>
-    @endif
     <div class="space-y-6">
         @foreach ($entries as $entry)
         <div class="rounded-xl shadow-md overflow-hidden
@@ -15,41 +18,69 @@
        @else bg-white dark:bg-neutral-700
        @endif">
             <div class="p-6">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-2">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400">
                     @if ($show === 'my' && !$entry->is_active)
                     <span class="text-red-900 font-bold">[Inactive]</span>
                     @elseif ($entry->expiry_date && $entry->expiry_date->lessThan($now))
                     <span class="text-red-900 font-bold">[Expired]</span>
                     @endif
+
                     {{ $entry->title }}
                 </h3>
-                <p class="text-gray-700 dark:text-gray-100 leading-relaxed">{{ $entry->content }}</p>
-                <div class="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+
+                <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
                     <div>
-                        <span>{{ $entry->user->name }}</span>
+                        @unless ($show === 'my')
+                        <span>From {{ $entry->user->additionalInfo->username }}
+                            posted {{ $entry->created_at->diffForHumans() }}</span>
                         <span class="mx-1">•</span>
-                        <span>Posted {{ $entry->created_at->diffForHumans() }}</span>
-                        @if ($entry->expiry_date)
+                        @endunless
+
+                        @if ($entry->from_date && $entry->to_date)
+                        <span>Date: {{ $entry->from_date->format('d.m.Y') }} - {{ $entry->to_date->format('d.m.Y')
+                            }}</span>
+                        @endif
+
+                        @if ($entry->country || $entry->city)
                         <span class="mx-1">•</span>
-                        <span>Expires {{ $entry->expiry_date->format('d.m.Y H:i') }}</span>
+                        <span>Destination: {{ $entry->country ?? '' }}{{ $entry->country && $entry->city ? ' / ' : ''
+                            }}{{ $entry->city ?? '' }}</span>
                         @endif
                     </div>
-                    @if (auth()->id() === $entry->user_id)
-                    <div class="space-x-2">
-                        <flux:button wire:click="toggleActive({{ $entry->id }})" size="sm"
-                            :variant="$entry->is_active ? 'primary' : 'filled'">
-                            {{ $entry->is_active ? 'Deactivate' : 'Activate' }}
-                        </flux:button>
+                </div>
 
-                        <a wire:navigate href="/post/edit/{{ $entry->id }}"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <p class="text-gray-700 dark:text-gray-100 leading-relaxed">{{ $entry->content }}</p>
+
+                <div class="space-x-2 mt-3">
+                    <flux:button size="sm" variant="outline">
+                        <a wire:navigate href="#">
+                            Go to Profile
+                        </a>
+                    </flux:button>
+
+                    @unless ($show === 'my')
+                    <flux:button size="sm" variant="outline">
+                        <a wire:navigate href="#">
+                            Write a message
+                        </a>
+                    </flux:button>
+                    @endunless
+
+                    @if (auth()->id() === $entry->user_id)
+                    <flux:button size="sm" variant="outline">
+                        <a wire:navigate href="/post/edit/{{ $entry->id }}">
                             Edit
                         </a>
+                    </flux:button>
 
-                        <flux:button wire:click="deleteEntry({{ $entry->id }})" size="sm" variant="danger">
-                            Delete
-                        </flux:button>
-                    </div>
+                    <flux:button wire:click="toggleActive({{ $entry->id }})" size="sm"
+                        :variant="$entry->is_active ? 'primary' : 'filled'">
+                        {{ $entry->is_active ? 'Deactivate' : 'Activate' }}
+                    </flux:button>
+
+                    <flux:button wire:click="deleteEntry({{ $entry->id }})" size="sm" variant="danger">
+                        Delete
+                    </flux:button>
                     @endif
                 </div>
             </div>

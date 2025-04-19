@@ -5,29 +5,37 @@
 //     Fix the following issues:
 //         - [ ] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
-//         - [x] Fix double forms on the create and edit post pages
-//         - [x] Fix double views for all vs my post pages
+
+//     Overall:
+//         - [ ] Install german language pack
+//         - [ ] Add a language switcher
+//         - [ ] Replace all hardcoded strings with translatable strings 
+//         - [ ] Translate all strings to german 
+//         - [ ] Add a favicon
 
 //     Backend:
 //         - [ ] Use is_admin 
 //         - [ ] Use is_moderator 
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
-//         - [ ] Use a user_add_info model
+//         - [ ] Use a user_add_info model in posts
+//         - [ ] Use a user_add_info model in settings
 //         - [ ] Use a username 
 //         - [ ] Use birthday 
 //         - [ ] Use nationality 
 //         - [ ] Use a profile picture 
 //         - [ ] Use about_me 
 
-//         - [x] Add From, To, Area and Country to the post-migration, model and controller
-//         - [ ] Add From, To, Area and Country to the post-blades create, edit and show views and myown?
+//         - [x] Add From, To, City and Country to the post-blades create, edit?
+//         - [x] Add From, To, City and Country to post-list?
 //         - [ ] Add a search bar to the post
 //         - [ ] Add a filter to the post
 
 //         - [ ] Add a mail system
 //         - [ ] Add a notification system
 //         - [ ] Add a follow system
+//         - [ ] Implement user picture upload
+//         - [ ] Add picture from user to the post
 
 //         - [ ] Add a Travel-Styles table und system
 //         - [ ] Add a Travel-Styles pivot table
@@ -40,6 +48,7 @@
 //         - [ ] Add the Posts-Overview to the homepage
 
 
+use App\Livewire\User\UserProfile;
 use Livewire\Volt\Volt;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\MyPosts;
@@ -52,9 +61,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
+
+Route::get('/dashboard', function () {
+    return redirect()->route('post.show');
+})->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -76,3 +89,5 @@ Route::get('/post', function () {
     return redirect()->route('post.show');
 })->name('post');
 
+//User routes
+Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
