@@ -1,4 +1,4 @@
-<div>
+{{-- <div>
     <div class="mb-5">
         <a wire:navigate href="{{ route('post.create') }}"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -33,7 +33,8 @@
                             Edit
                         </a>
 
-                        <flux:button wire:click="deleteEntry({{ $entry->id }})" size="sm" variant="danger">Delete
+                        <flux:button wire:click="deleteEntry({{ $entry->id }})" size="sm" variant="danger">
+                            Delete
                         </flux:button>
                     </div>
                     @endif
@@ -42,4 +43,4 @@
         </div>
         @endforeach
     </div>
-</div>
+</div> --}}

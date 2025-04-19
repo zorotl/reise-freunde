@@ -5,7 +5,7 @@
         </h1>
 
         <div class="mt-4">
-            <livewire:post.show-posts />
+            <livewire:post.post-list />
         </div>
     </div>
 </x-layouts.app>

@@ -11,6 +11,10 @@ class EditPost extends Component
     public $title;
     public $content;
     public $expiryDate;
+    public $fromDate;
+    public $toDate;
+    public $country;
+    public $city;
 
     public function mount(Post $id)
     {
@@ -18,20 +22,32 @@ class EditPost extends Component
         $this->title = $this->entry->title;
         $this->content = $this->entry->content;
         $this->expiryDate = $this->entry->expiry_date ? $this->entry->expiry_date->format('Y-m-d') : null;
+        $this->fromDate = $this->entry->from_date ? $this->entry->from_date->format('Y-m-d') : null;
+        $this->toDate = $this->entry->to_date ? $this->entry->to_date->format('Y-m-d') : null;
+        $this->country = $this->entry->country;
+        $this->city = $this->entry->city;
     }
 
     public function update()
     {
         $this->validate([
             'title' => 'required|max:255',
-            'content' => 'required',
-            'expiryDate' => 'required|date|after:today',
+            'content' => 'required|min:50',
+            'expiryDate' => 'required|date|after:today|before_or_equal:+2 years',
+            'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',
+            'toDate' => 'required|date|after:today|before_or_equal:+2 years|after:fromDate',
+            'country' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
         ]);
 
         $this->entry->update([
             'title' => $this->title,
             'content' => $this->content,
             'expiry_date' => $this->expiryDate,
+            'from_date' => $this->fromDate,
+            'to_date' => $this->toDate,
+            'country' => $this->country,
+            'city' => $this->city,
         ]);
 
         session()->flash('success', 'Post successfully updated.');

@@ -6,37 +6,41 @@ use Livewire\Component;
 use App\Models\Post;
 use Illuminate\Support\Carbon;
 
-class MyPosts extends Component
+class PostList extends Component
 {
     public $newTitle;
     public $newEntry;
     public $expiryDate;
     public $entries;
     public Carbon $now;
-    public string $show = 'my';
+    public string $show = 'all';
 
     public function mount()
     {
         $this->now = Carbon::now();
-        $this->loadMyEntries();
+        $this->loadActiveEntries();
     }
 
     public function toggleActive(Post $entry)
     {
         $entry->update(['is_active' => !$entry->is_active]);
-        $this->loadMyEntries();
+        $this->loadActiveEntries();
     }
 
     public function deleteEntry(Post $entry)
     {
         $entry->delete(); // Soft delete
-        $this->loadMyEntries();
+        $this->loadActiveEntries();
     }
 
-    private function loadMyEntries()
+    private function loadActiveEntries()
     {
         $this->entries = Post::query()
-            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('expiry_date')
+                    ->orWhere('expiry_date', '>', $this->now);
+            })
             ->latest()
             ->get();
     }

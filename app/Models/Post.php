@@ -18,10 +18,16 @@ class Post extends Model
         'content',
         'expiry_date',
         'is_active',
+        'from_date',
+        'to_date',
+        'country',
+        'city',
     ];
     protected $casts = [
         'expiry_date' => 'datetime',
         'is_active' => 'boolean',
+        'from_date' => 'datetime',
+        'to_date' => 'datetime',
     ];
     public function user()
     {

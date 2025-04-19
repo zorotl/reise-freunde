@@ -39,11 +39,11 @@
 //         - [ ] Add the Posts-Overview to the homepage
 
 
+use Livewire\Volt\Volt;
+use App\Livewire\Post\PostList;
+use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\CreatePost;
 use App\Livewire\Post\EditPost;
-use App\Livewire\Post\MyPosts;
-use App\Livewire\Post\ShowPosts;
-use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
 
 
@@ -67,7 +67,7 @@ require __DIR__ . '/auth.php';
 
 
 // Post routes
-Route::get('/post/show', ShowPosts::class)->name('post.show');
+Route::get('/post/show', PostList::class)->name('post.show');
 Route::get('/post/myown', MyPosts::class)->name('post.myown');
 Route::get('/post/create', CreatePost::class)->name('post.create');
 Route::get('/post/edit/{id}', EditPost::class)->name('post.edit');
