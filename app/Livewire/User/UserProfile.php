@@ -4,7 +4,7 @@ namespace App\Livewire\User;
 
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Auth;
 
 class UserProfile extends Component
 {
@@ -12,9 +12,9 @@ class UserProfile extends Component
 
 
 
-    public function mount()
+    public function mount(int $id)
     {
-        $this->user = Auth::user()->load('additionalInfo');
+        $this->user = User::findOrFail($id)->load('additionalInfo');
     }
 
     public function render()

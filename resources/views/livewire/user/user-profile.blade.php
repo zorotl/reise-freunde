@@ -79,6 +79,7 @@
                         rows="5" readonly>{{ $user->additionalInfo->about_me ?? __('Not set') }}</textarea>
                 </div>
             </div>
+            @if (Auth::id() === $user->id)
             <div
                 class="px-4 py-3 bg-gray-50 dark:bg-neutral-900 text-right sm:px-6 border-t border-gray-200 dark:border-neutral-700">
                 <a wire:navigate href="{{ route('settings.profile') }}"
@@ -86,6 +87,15 @@
                     {{ __('Edit Profile') }}
                 </a>
             </div>
+            @else
+            <div
+                class="px-4 py-3 bg-gray-50 dark:bg-neutral-900 text-right sm:px-6 border-t border-gray-200 dark:border-neutral-700">
+                <a wire:navigate href="#"
+                    class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                    {{ __('Write a message') }}
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 </div>

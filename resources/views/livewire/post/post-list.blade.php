@@ -53,12 +53,12 @@
 
                 <div class="space-x-2 mt-3">
                     <flux:button size="sm" variant="outline">
-                        <a wire:navigate href="#">
+                        <a wire:navigate href="/user/profile/{{ $entry->user->id }}">
                             Go to Profile
                         </a>
                     </flux:button>
 
-                    @unless ($show === 'my')
+                    @unless ($show === 'my' || auth()->id() === $entry->user_id)
                     <flux:button size="sm" variant="outline">
                         <a wire:navigate href="#">
                             Write a message
