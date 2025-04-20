@@ -2,14 +2,28 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg overflow-hidden">
             <div
-                class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    {{ __('Followers of :name', ['name' => $user->name]) }}
-                </h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                    <a href="{{ route('user.profile', $user->id) }}" wire:navigate class="hover:underline">&larr; {{
-                        __('Back to profile') }}</a>
-                </p>
+                class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                        {{ __('Followers of :name', ['name' => $user->name]) }}
+                    </h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                        <a href="{{ route('user.profile', $user->id) }}" wire:navigate class="hover:underline">&larr; {{
+                            __('Back to profile') }}</a>
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ route('user.following', $user->id) }}" wire:navigate
+                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-neutral-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                        {{ __('Following') }}
+                    </a>
+                    @if (auth()->check() && auth()->id() === $user->id)
+                    <a href="{{ route('user.follow-requests') }}" wire:navigate
+                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-neutral-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                        {{ __('Follow Requests') }}
+                    </a>
+                    @endif
+                </div>
             </div>
             <div class="border-t border-gray-200 dark:border-neutral-700">
                 @if ($followers->count() > 0)

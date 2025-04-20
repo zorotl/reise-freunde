@@ -86,10 +86,13 @@
                     @endif
                     @endif
                     {{-- Add Write Message Button later if needed --}}
-                    {{-- <a wire:navigate href="#"
+                    <a wire:navigate href="{{ route('mail.compose', [
+                            'receiverId' => $user->id, 
+                            'fixReceiver' => true
+                            ]) }}"
                         class="ml-2 inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                         {{ __('Write a message') }}
-                    </a> --}}
+                    </a>
                 </div>
 
             </div>
