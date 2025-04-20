@@ -8,11 +8,20 @@
 //         - [ ] Fix header.blade.php - remove the php code and check out alternative
 
 //     Overall:
+//         - [ ] 
+
+//     Language:
+//         - [ ] Install laravel localization 
 //         - [ ] Install german language pack
 //         - [ ] Add a language switcher
 //         - [ ] Replace all hardcoded strings with translatable strings 
 //         - [ ] Translate all strings to german 
-//         - [x] Add a favicon
+
+//     Security:
+//         - [ ] Implement Laravel Gates to protect routes and admin functions
+//         - [ ] Implement Laravel Policies to protect models
+//         - [ ] Implement Laravel Socialite for social authentication ???
+//         - [ ] Implement Laravel CSRF protection for forms
 
 //     Backend:
 //         - [ ] Use is_admin 
@@ -21,18 +30,11 @@
 //         - [ ] Use is_banned_until 
 //         - [ ] Use a user_add_info model in posts
 //         - [ ] Use a user_add_info model in settings
-//         - [x] Use a username 
-//         - [x] Use birthday 
-//         - [x] Use nationality 
 //         - [ ] Use a profile picture 
-//         - [x] Use about_me 
 
-//         - [x] Add From, To, City and Country to the post-blades create, edit?
-//         - [x] Add From, To, City and Country to post-list?
 //         - [ ] Add a search bar to the post
 //         - [ ] Add a filter to the post
 
-//         - [x] Add a mail system
 //         - [ ] Add a notification system
 //         - [ ] OPTIONAL: Add a follow system
 //         - [ ] Implement user picture upload
@@ -52,6 +54,9 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Livewire\User\UserProfile;
+use App\Livewire\User\FollowersList;
+use App\Livewire\User\FollowingList;
+use App\Livewire\User\FollowRequestsList;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\CreatePost;
@@ -76,33 +81,38 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    // Settings Routes
     Route::redirect('settings', 'settings/profile');
-
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    // Post routes (assuming they require auth)
+    Route::get('/post/myown', MyPosts::class)->name('post.myown');
+    Route::get('/post/create', CreatePost::class)->name('post.create');
+    Route::get('/post/edit/{id}', EditPost::class)->name('post.edit');
+
+    // Mail routes (assuming they require auth)
+    Route::get('/mail/inbox', Inbox::class)->name('mail.inbox');
+    Route::get('/mail/outbox', Outbox::class)->name('mail.outbox');
+    Route::get('/mail/messages/{message}/{fromWhere}', MessageView::class)->name('mail.messages.view');
+    Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', MessageCompose::class)->name('mail.compose');
+    Route::get('/mail', function () {
+        return redirect()->route('mail.inbox');
+    })->name('mail');
+
+    // Follower/Following routes (require auth to view requests)
+    Route::get('/user/follow-requests', FollowRequestsList::class)->name('user.follow-requests');
+    Route::get('/user/{id}/followers', FollowersList::class)->name('user.followers'); // Keep ID for viewing others' lists
+    Route::get('/user/{id}/following', FollowingList::class)->name('user.following'); // Keep ID for viewing others' lists
 });
 
-require __DIR__ . '/auth.php';
-
-
-// Post routes
+// Publicly accessible routes (or adjust middleware as needed)
 Route::get('/post/show', PostList::class)->name('post.show');
-Route::get('/post/myown', MyPosts::class)->name('post.myown');
-Route::get('/post/create', CreatePost::class)->name('post.create');
-Route::get('/post/edit/{id}', EditPost::class)->name('post.edit');
 Route::get('/post', function () {
     return redirect()->route('post.show');
 })->name('post');
 
-//User routes
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
-// Mail routes
-Route::get('/mail/inbox', Inbox::class)->name('mail.inbox');
-Route::get('/mail/outbox', Outbox::class)->name('mail.outbox');
-Route::get('/mail/messages/{message}/{fromWhere}', MessageView::class)->name('mail.messages.view');
-Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', MessageCompose::class)->name('mail.compose');
-Route::get('/mail', function () {
-    return redirect()->route('mail.inbox');
-})->name('mail');
+require __DIR__ . '/auth.php';

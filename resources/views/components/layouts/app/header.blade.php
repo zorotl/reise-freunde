@@ -36,10 +36,9 @@
                     $unreadCount }}</span>
                 @endif
             </flux:navbar.item>
-
-
-
-
+            <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
+                :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
+            </flux:navlist.item>
         </flux:navbar>
 
         <flux:spacer />

@@ -18,10 +18,12 @@ class UserAdditionalInfo extends Model
         'nationality',
         'profile_picture',
         'about_me',
+        'is_private',
     ];
 
     protected $casts = [
         'birthday' => 'date',
+        'is_private' => 'boolean',
     ];
 
     public function user(): BelongsTo
