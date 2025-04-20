@@ -5,6 +5,7 @@
 //     Fix the following issues:
 //         - [ ] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
+//         - [ ] Fix header.blade.php - remove the php code and check out alternative
 
 //     Overall:
 //         - [ ] Install german language pack
@@ -31,9 +32,9 @@
 //         - [ ] Add a search bar to the post
 //         - [ ] Add a filter to the post
 
-//         - [ ] Add a mail system
+//         - [x] Add a mail system
 //         - [ ] Add a notification system
-//         - [ ] Add a follow system
+//         - [ ] OPTIONAL: Add a follow system
 //         - [ ] Implement user picture upload
 //         - [ ] Add picture from user to the post
 
@@ -48,13 +49,18 @@
 //         - [ ] Add the Posts-Overview to the homepage
 
 
-use App\Livewire\User\UserProfile;
+use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Livewire\User\UserProfile;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\CreatePost;
 use App\Livewire\Post\EditPost;
-use Illuminate\Support\Facades\Route;
+use App\Livewire\Mail\Inbox;
+use App\Livewire\Mail\Outbox;
+use App\Livewire\Mail\MessageView;
+use App\Livewire\Mail\MessageCompose;
+use App\Models\Message;
 
 
 Route::get('/', function () {
@@ -91,3 +97,12 @@ Route::get('/post', function () {
 
 //User routes
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
+
+// Mail routes
+Route::get('/mail/inbox', Inbox::class)->name('mail.inbox');
+Route::get('/mail/outbox', Outbox::class)->name('mail.outbox');
+Route::get('/mail/messages/{message}/{fromWhere}', MessageView::class)->name('mail.messages.view');
+Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', MessageCompose::class)->name('mail.compose');
+Route::get('/mail', function () {
+    return redirect()->route('mail.inbox');
+})->name('mail');

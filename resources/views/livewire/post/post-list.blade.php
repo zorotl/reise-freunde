@@ -60,7 +60,10 @@
 
                     @unless ($show === 'my' || auth()->id() === $entry->user_id)
                     <flux:button size="sm" variant="outline">
-                        <a wire:navigate href="#">
+                        <a wire:navigate href="{{ route('mail.compose', [
+                            'receiverId' => $entry->user_id, 
+                            'fixReceiver' => true
+                            ]) }}">
                             Write a message
                         </a>
                     </flux:button>
