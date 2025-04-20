@@ -11,7 +11,7 @@
 //         - [ ] Add a language switcher
 //         - [ ] Replace all hardcoded strings with translatable strings 
 //         - [ ] Translate all strings to german 
-//         - [ ] Add a favicon
+//         - [x] Add a favicon
 
 //     Backend:
 //         - [ ] Use is_admin 
@@ -20,11 +20,11 @@
 //         - [ ] Use is_banned_until 
 //         - [ ] Use a user_add_info model in posts
 //         - [ ] Use a user_add_info model in settings
-//         - [ ] Use a username 
-//         - [ ] Use birthday 
-//         - [ ] Use nationality 
+//         - [x] Use a username 
+//         - [x] Use birthday 
+//         - [x] Use nationality 
 //         - [ ] Use a profile picture 
-//         - [ ] Use about_me 
+//         - [x] Use about_me 
 
 //         - [x] Add From, To, City and Country to the post-blades create, edit?
 //         - [x] Add From, To, City and Country to post-list?
