@@ -1,57 +1,5 @@
 <?php
 
-// ToDo for the whole project:
-
-//     Fix the following issues:
-//         - [ ] Fix redirect after editing a post from the my posts page
-//         - [ ] Fix SiteTitle on all pages
-//         - [ ] Fix header.blade.php - remove the php code and check out alternative
-//         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
-
-//     Overall:
-//         - [ ] 
-
-//     Language:
-//         - [ ] Install laravel localization 
-//         - [ ] Install german language pack
-//         - [ ] Add a language switcher
-//         - [ ] Replace all hardcoded strings with translatable strings 
-//         - [ ] Translate all strings to german 
-
-//     Security:
-//         - [ ] Implement Laravel Gates to protect routes and admin functions
-//         - [ ] Implement Laravel Policies to protect models
-//         - [ ] Implement Laravel Socialite for social authentication ???
-//         - [ ] Implement Laravel CSRF protection for forms
-
-//     Backend:
-//         - [ ] Use is_admin 
-//         - [ ] Use is_moderator 
-//         - [ ] Use is_banned 
-//         - [ ] Use is_banned_until 
-//         - [ ] Use a user_add_info model in posts
-//         - [ ] Use a user_add_info model in settings
-//         - [ ] Use a profile picture 
-
-//         - [ ] Add a search bar to the post
-//         - [ ] Add a filter to the post
-
-//         - [ ] Add a notification system
-//         - [ ] OPTIONAL: Add a follow system
-//         - [ ] Implement user picture upload
-//         - [ ] Add picture from user to the post
-
-//         - [ ] Add a Travel-Styles table und system
-//         - [ ] Add a Travel-Styles pivot table
-//         - [ ] OPTIONAL: Add a Sports&Fun table und system
-//         - [ ] OPTIONAL: Add a Sports&Fun pivot-table
-
-
-//     Frontend:
-//         - [ ] Add a Homepage
-//         - [ ] Add the Posts-Overview to the homepage
-
-
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Livewire\User\UserProfile;
@@ -125,3 +73,71 @@ require __DIR__ . '/auth.php';
 
 
 
+
+
+
+// ToDo for the whole project:
+
+//     Fix the following issues:
+//         - [ ] Fix redirect after editing a post from the my posts page
+//         - [ ] Fix SiteTitle on all pages
+//         - [ ] Fix header.blade.php - remove the php code and check out alternative
+//         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
+//         - [ ] Fix user profile - make profile picture editable
+//         - [ ] Fix user profile - reomve name and surname from the profile
+
+//     Overall:
+//         - [ ] Implement a backend for the admin
+//         - [ ] Admin should be able to edit and delete all posts
+//         - [ ] Admin should be able to edit and delete all users
+//         - [ ] Admin should be able to ban and unban users
+//         - [ ] Admin should be able to create, update and delete hobbies
+//         - [ ] Admin should be able to create, update and delete travel styles
+//         - [ ] Implement a backend for the moderator
+//         - [ ] Implement the feature verify email
+
+//     Language:
+//         - [ ] Install laravel localization 
+//         - [ ] Install german language pack
+//         - [ ] Add a language switcher
+//         - [ ] Replace all hardcoded strings with translatable strings 
+//         - [ ] Translate all strings to german 
+
+//     Security:
+//         - [ ] Implement Laravel Gates to protect routes and admin functions
+//         - [ ] Implement Laravel Policies to protect models
+//         - [ ] Implement Laravel Socialite for social authentication ???
+//         - [ ] Implement Laravel CSRF protection for forms
+
+//     Testing:
+//         - [ ] Fix existing Pest-Testing
+//         - [ ] Implement Pest-Testing for the whole project
+
+//     Logged in user:
+//         - [ ] Use is_admin 
+//         - [ ] Use is_moderator 
+//         - [ ] Use is_banned 
+//         - [ ] Use is_banned_until 
+//         - [ ] Use a user_add_info model in posts
+//         - [ ] Use a user_add_info model in settings
+//         - [ ] Use a profile picture 
+
+//         - [ ] Add a search bar to the post
+//         - [ ] Add a filter to the post
+
+//         - [ ] Add a notification system
+//         - [x] OPTIONAL: Add a follow system
+//         - [ ] Implement user picture upload
+//         - [ ] Add picture from user to the post
+
+//         - [x] Add a Travel-Styles table und system
+//         - [x] Add a Travel-Styles pivot table
+//         - [x] OPTIONAL: Add a Sports&Fun table und system
+//         - [x] OPTIONAL: Add a Sports&Fun pivot-table
+
+
+//     Frontend / not logged in user:
+//         - [ ] Add a Homepage
+//         - [ ] Add the Posts-Overview to the homepage
+//         - [ ] Add a Search bar to the homepage
+//         - [ ] Make it difficult to use the app without being logged in

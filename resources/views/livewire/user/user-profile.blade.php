@@ -156,65 +156,57 @@
                         $user->additionalInfo?->about_me ?: __('Not set') }}</p>
                 </div>
 
-                {{-- Travel Styles (Predefined) --}}
-                @if ($user->travelStyles->count())
+                {{-- Travel Styles --}}
+                @if ($user->travelStyles->count() || $user->additionalInfo?->custom_travel_styles)
                 <div class="md:col-span-2">
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Travel Styles</label>
                     <div class="mt-1 flex flex-wrap gap-2">
+                        {{-- Travel Styles (Predefined) --}}
+                        @if ($user->travelStyles->count())
                         @foreach ($user->travelStyles as $style)
                         <span
                             class="px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
                             {{ $style->name }}
                         </span>
                         @endforeach
-                    </div>
-                </div>
-                @endif
-
-                {{-- Travel Styles (Custom) --}}
-                @if ($user->additionalInfo?->custom_travel_styles)
-                <div class="md:col-span-2">
-                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Travel
-                        Styles</label>
-                    <div class="mt-1 flex flex-wrap gap-2">
+                        @endif
+                        {{-- Travel Styles (Custom) --}}
+                        @if ($user->additionalInfo?->custom_travel_styles)
                         @foreach ($user->additionalInfo->custom_travel_styles as $style)
-                        <span class="px-3 py-1 rounded-full text-sm bg-indigo-200 text-indigo-800">
+                        <span
+                            class="px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
                             {{ $style }}
                         </span>
                         @endforeach
+                        @endif
                     </div>
                 </div>
                 @endif
 
-                {{-- Hobbies (Predefined) --}}
-                @if ($user->hobbies->count())
+                {{-- Hobbies --}}
                 <div class="md:col-span-2">
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Hobbies</label>
                     <div class="mt-1 flex flex-wrap gap-2">
+                        {{-- Hobbies (Predefined) --}}
+                        @if ($user->hobbies->count())
                         @foreach ($user->hobbies as $hobby)
                         <span
                             class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                             {{ $hobby->name }}
                         </span>
                         @endforeach
-                    </div>
-                </div>
-                @endif
-
-                {{-- Hobbies (Custom) --}}
-                @if ($user->additionalInfo?->custom_hobbies)
-                <div class="md:col-span-2">
-                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Hobbies</label>
-                    <div class="mt-1 flex flex-wrap gap-2">
+                        @endif
+                        {{-- Hobbies (Custom) --}}
+                        @if ($user->additionalInfo?->custom_hobbies)
                         @foreach ($user->additionalInfo->custom_hobbies as $hobby)
-                        <span class="px-3 py-1 rounded-full text-sm bg-green-200 text-green-800">
+                        <span
+                            class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                             {{ $hobby }}
                         </span>
                         @endforeach
+                        @endif
                     </div>
                 </div>
-                @endif
-
             </div>
             {{-- Remove the old edit/message button section at the bottom --}}
         </div>
