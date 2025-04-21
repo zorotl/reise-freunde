@@ -263,4 +263,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserAdditionalInfo::class, 'user_id');
     }
+
+    public function travelStyles()
+    {
+        return $this->belongsToMany(TravelStyle::class);
+    }
+
+    public function hobbies()
+    {
+        return $this->belongsToMany(Hobby::class);
+    }
 }

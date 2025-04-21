@@ -57,6 +57,7 @@ use App\Livewire\User\UserProfile;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
 use App\Livewire\User\FollowRequestsList;
+use App\Livewire\User\TravelStylePreferences;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\CreatePost;
@@ -80,12 +81,15 @@ Route::get('/dashboard', function () {
     return redirect()->route('post.show');
 })->name('dashboard');
 
+
 Route::middleware(['auth'])->group(function () {
     // Settings Routes
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+    Volt::route('settings/preferences', 'settings.preferences')->name('settings.preferences');
+    // Route::get('/settings/preferences', TravelStylePreferences::class)->name('settings.preferences');
 
     // Post routes (assuming they require auth)
     Route::get('/post/myown', MyPosts::class)->name('post.myown');
@@ -116,3 +120,6 @@ Route::get('/post', function () {
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
 require __DIR__ . '/auth.php';
+
+
+
