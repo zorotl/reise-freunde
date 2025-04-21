@@ -1,26 +1,32 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Models\Message;
 use Livewire\Volt\Volt;
+use App\Livewire\Mail\Inbox;
+use App\Livewire\Mail\Outbox;
+use App\Livewire\Post\MyPosts;
+use App\Livewire\Post\EditPost;
+use App\Livewire\Post\PostList;
+use App\Livewire\Post\ShowPost;
+use App\Livewire\Post\CreatePost;
+use App\Livewire\Mail\MessageView;
 use App\Livewire\User\UserProfile;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
+use App\Livewire\Mail\MessageCompose;
+use Illuminate\Support\Facades\Route;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
-use App\Livewire\Post\PostList;
-use App\Livewire\Post\MyPosts;
-use App\Livewire\Post\CreatePost;
-use App\Livewire\Post\EditPost;
-use App\Livewire\Mail\Inbox;
-use App\Livewire\Mail\Outbox;
-use App\Livewire\Mail\MessageView;
-use App\Livewire\Mail\MessageCompose;
-use App\Models\Message;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.homepage');
 })->name('home');
+
+Route::get('/users', function () {
+    // Placeholder for user directory page
+    return view('frontend.user-directory');
+})->name('user.directory');
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])
@@ -63,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Publicly accessible routes (or adjust middleware as needed)
 Route::get('/post/show', PostList::class)->name('post.show');
+Route::get('/post/{post}', ShowPost::class)->name('post.single');
 Route::get('/post', function () {
     return redirect()->route('post.show');
 })->name('post');

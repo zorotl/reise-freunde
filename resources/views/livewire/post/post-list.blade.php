@@ -25,7 +25,7 @@
                     <span class="text-red-900 font-bold">[Expired]</span>
                     @endif
 
-                    {{ $entry->title }}
+                    <a href="{{ route('post.single', ['post' => $entry->id]) }}">{{ $entry->title }}</a>
                 </h3>
 
                 <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
