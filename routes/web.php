@@ -85,6 +85,8 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user profile - reomve name and surname from the profile
+//         - [ ] Optimize the new post form, especially the length of the text area with alpine.js
+//         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 
 //     Overall:
 //         - [ ] Implement a backend for the admin
@@ -95,6 +97,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Admin should be able to create, update and delete travel styles
 //         - [ ] Implement a backend for the moderator
 //         - [ ] Implement the feature verify email
+//         - [ ] Implement a verified User System
 
 //     Language:
 //         - [ ] Install laravel localization 

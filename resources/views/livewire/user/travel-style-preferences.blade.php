@@ -14,17 +14,19 @@
     {{-- Custom Travel Styles --}}
     <div x-data="{
         input: '',
-        tags: @json($customTravelStyle),
+        tags: [],
+        init() {
+            this.tags = @js($customTravelStyle);
+            $watch('tags', value => $wire.set('customTravelStyle', value));
+        },
         addTag() {
-            if (this.input.trim()) {
+            if (this.input.trim() && !this.tags.includes(this.input.trim())) {
                 this.tags.push(this.input.trim());
                 this.input = '';
-                $wire.set('customTravelStyle', this.tags);
             }
         },
         removeTag(index) {
             this.tags.splice(index, 1);
-            $wire.set('customTravelStyle', this.tags);
         }
     }" class="mt-4">
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Travel Styles</label>
@@ -37,8 +39,11 @@
                 </span>
             </template>
         </div>
-        <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
-            class="p-2 border rounded w-full">
+        <input type="text" x-model="input" x-ref="input" @keydown.enter.prevent="addTag()"
+            placeholder="Type and press Enter" class="p-2 border rounded w-full">
+        @error('customTravelStyle')
+        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+        @enderror
     </div>
 
     {{-- Predefined Hobbies --}}
@@ -55,20 +60,22 @@
 
     {{-- Custom Hobbies --}}
     <div x-data="{
-            input: '',
-            tags: @json($customHobby),
-            addTag() {
-                if (this.input.trim()) {
-                    this.tags.push(this.input.trim());
-                    this.input = '';
-                    $wire.set('customHobby', this.tags);
-                }
-            },
-            removeTag(index) {
-                this.tags.splice(index, 1);
-                $wire.set('customHobby', this.tags);
+        input: '',
+        tags: [],
+        init() {
+            this.tags = @js($customHobby);
+            $watch('tags', value => $wire.set('customHobby', value));
+        },
+        addTag() {
+            if (this.input.trim() && !this.tags.includes(this.input.trim())) {
+                this.tags.push(this.input.trim());
+                this.input = '';
             }
-        }" class="mt-4">
+        },
+        removeTag(index) {
+            this.tags.splice(index, 1);
+        }
+    }" class="mt-4">
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Hobbies</label>
         <div class="flex flex-wrap gap-2 mb-2">
             <template x-for="(tag, index) in tags" :key="index">
@@ -79,8 +86,11 @@
                 </span>
             </template>
         </div>
-        <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
-            class="p-2 border rounded w-full">
+        <input type="text" x-model="input" x-ref="input" @keydown.enter.prevent="addTag()"
+            placeholder="Type and press Enter" class="p-2 border rounded w-full">
+        @error('customHobby')
+        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+        @enderror
     </div>
 
     {{-- Save Button --}}

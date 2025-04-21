@@ -48,22 +48,21 @@ class TravelStylePreferences extends Component
 
     public function save()
     {
+        $this->validate([
+            'customTravelStyle' => 'array|max:5',
+            'customHobby' => 'array|max:5',
+        ]);
+
         $user = Auth::user();
 
         // Sync many-to-many relations
         $user->travelStyles()->sync($this->selectedTravelStyles);
         $user->hobbies()->sync($this->selectedHobbies);
 
-        // Get or create user additional info record
-        $userInfo = $user->additionalInfo ?? $user->additionalInfo()->create([]);
-
         // Save custom preferences
+        $userInfo = $user->additionalInfo ?? $user->additionalInfo()->create([]);
         $userInfo->custom_travel_styles = array_filter($this->customTravelStyle);
         $userInfo->custom_hobbies = array_filter($this->customHobby);
-        // dd([
-        //     'custom_travel_styles' => $userInfo->custom_travel_styles,
-        //     'custom_hobbies' => $userInfo->custom_hobbies,
-        // ]);
         $userInfo->save();
 
         session()->flash('success', 'Preferences saved successfully!');
