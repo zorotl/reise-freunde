@@ -9,7 +9,7 @@
     <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-        <a href="{{ route('dashboard') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0"
+        <a href="{{ route('home') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0"
             wire:navigate>
             <x-app-logo />
         </a>
@@ -19,6 +19,8 @@
                 wire:navigate>
                 {{ __("All Post's") }}
             </flux:navbar.item>
+
+            @auth
             <flux:navlist.item icon="user-circle" :href="route('post.myown')"
                 :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Post's") }}
             </flux:navlist.item>
@@ -39,6 +41,8 @@
             <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
                 :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
             </flux:navlist.item>
+            @endauth
+
         </flux:navbar>
 
         <flux:spacer />
@@ -51,6 +55,7 @@
         </flux:navbar>
 
         <!-- Desktop User Menu -->
+        @auth
         <flux:dropdown position="top" align="end">
             <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" />
 
@@ -98,6 +103,7 @@
                 </form>
             </flux:menu>
         </flux:dropdown>
+        @endauth
     </flux:header>
 
     <!-- Mobile Menu -->
