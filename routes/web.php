@@ -6,6 +6,7 @@
 //         - [ ] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix header.blade.php - remove the php code and check out alternative
+//         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
 
 //     Overall:
 //         - [ ] 
@@ -89,7 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
     Volt::route('settings/preferences', 'settings.preferences')->name('settings.preferences');
-    // Route::get('/settings/preferences', TravelStylePreferences::class)->name('settings.preferences');
+    Volt::route('settings/privacy-settings', 'settings.privacy-settings')->name('settings.privacy-settings');
+
 
     // Post routes (assuming they require auth)
     Route::get('/post/myown', MyPosts::class)->name('post.myown');

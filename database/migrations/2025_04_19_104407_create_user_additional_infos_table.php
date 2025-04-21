@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->string('nationality')->nullable();
             $table->string('profile_picture')->nullable(); // Store path or URL
             $table->longText('about_me')->nullable();
+            $table->json('custom_travel_styles')->nullable();
+            $table->json('custom_hobbies')->nullable();
             $table->boolean('is_private')->default(false); // Add the is_private column, default to public (false)
             $table->timestamps();
         });
