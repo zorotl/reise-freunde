@@ -15,9 +15,12 @@ class EditPost extends Component
     public $toDate;
     public $country;
     public $city;
+    public $origin = 'all';
 
-    public function mount(Post $id)
+    public function mount(Post $id, $origin = 'all')
     {
+        $this->origin = $origin;
+
         $this->entry = $id;
         $this->title = $this->entry->title;
         $this->content = $this->entry->content;
@@ -51,7 +54,13 @@ class EditPost extends Component
         ]);
 
         session()->flash('success', 'Post successfully updated.');
-        $this->redirect('/post/show', navigate: true);
+
+        // Redirect based on origin
+        if ($this->origin === 'my') {
+            $this->redirect('/myown', navigate: true);
+        } else {
+            $this->redirect('/post/show', navigate: true);
+        }
     }
 
     public function render()
