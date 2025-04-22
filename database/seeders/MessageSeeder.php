@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Post;
+use App\Models\Message;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class PostSeeder extends Seeder
+class MessageSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Post::factory(30)->create();
+        Message::factory(10)->create();
     }
 }

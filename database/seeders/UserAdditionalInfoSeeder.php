@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Seeder;
 use App\Models\UserAdditionalInfo;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
 class UserAdditionalInfoSeeder extends Seeder
 {
@@ -14,20 +13,20 @@ class UserAdditionalInfoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Add additional info to the first user
+        // Füge zusätzliche Informationen zum ersten Benutzer hinzu
         if ($firstUser = User::first()) {
-            UserAdditionalInfo::create([
+            UserAdditionalInfo::factory()->create([
                 'user_id' => $firstUser->id,
-                'username' => 'mast',
-                'birthday' => '1984-08-28',
-                'nationality' => 'Swiss',
-                'about_me' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                'username' => 'mast', // Behalte den spezifischen Username bei
+                'birthday' => '1984-08-28', // Behalte das spezifische Geburtsdatum bei
+                'nationality' => 'Swiss', // Behalte die spezifische Nationalität bei
+                // 'about_me' wird von der Factory generiert
             ]);
         }
 
-        // Seed User Additional Info for all users except ID 1
-        User::whereNotIn('id', [1])->get()->each(function (User $user) {
-            \Database\Factories\UserAdditionalInfoFactory::new()->create(['user_id' => $user->id]);
+        // Erstelle UserAdditionalInfo für alle Benutzer ausser ID 1
+        User::where('id', '>', 1)->each(function (User $user) {
+            UserAdditionalInfo::factory()->create(['user_id' => $user->id]);
         });
     }
 }

@@ -24,7 +24,6 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/users', function () {
-    // Placeholder for user directory page
     return view('frontend.user-directory');
 })->name('user.directory');
 
@@ -94,6 +93,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix user profile - reomve name and surname from the profile
 //         - [ ] Optimize the new post form, especially the length of the text area with alpine.js
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
+//         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
 
 //     Overall:
 //         - [ ] Implement a backend for the admin
@@ -106,7 +106,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Implement the feature verify email
 //         - [ ] Implement a verified User System
 
-//     Language:
+//     Language (Instruction in Gemini and ChatGPT):
 //         - [ ] Install laravel localization 
 //         - [ ] Install german language pack
 //         - [ ] Add a language switcher
@@ -120,7 +120,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Implement Laravel CSRF protection for forms
 
 //     Testing:
-//         - [ ] Fix existing Pest-Testing
+//         - [x] Fix existing Pest-Testing
 //         - [ ] Implement Pest-Testing for the whole project
 
 //     Logged in user:
@@ -128,26 +128,20 @@ require __DIR__ . '/auth.php';
 //         - [ ] Use is_moderator 
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
-//         - [ ] Use a user_add_info model in posts
-//         - [ ] Use a user_add_info model in settings
 //         - [ ] Use a profile picture 
 
+//         - [ ] Add a notification system
+//         - [ ] Implement a User Finding system
+//         - [ ] Implement user picture upload
+
+//      Posts
+//         - [ ] Add picture from user to the post
+//         - [ ] Add a comment system
+//         - [ ] Add a like system
+//         - [ ] Add a report system
 //         - [ ] Add a search bar to the post
 //         - [ ] Add a filter to the post
 
-//         - [ ] Add a notification system
-//         - [x] OPTIONAL: Add a follow system
-//         - [ ] Implement user picture upload
-//         - [ ] Add picture from user to the post
-
-//         - [x] Add a Travel-Styles table und system
-//         - [x] Add a Travel-Styles pivot table
-//         - [x] OPTIONAL: Add a Sports&Fun table und system
-//         - [x] OPTIONAL: Add a Sports&Fun pivot-table
-
-
 //     Frontend / not logged in user:
-//         - [ ] Add a Homepage
-//         - [ ] Add the Posts-Overview to the homepage
-//         - [ ] Add a Search bar to the homepage
+//         - [ ] Add more information to the homepage
 //         - [ ] Make it difficult to use the app without being logged in

@@ -115,7 +115,9 @@ class User extends Authenticatable
         if ($this->relationLoaded('following')) {
             return $this->following->contains($user);
         }
-        return $this->following()->where('following_user_id', $user->id)->exists();
+        return $this->following()
+            ->where('user_follower.following_user_id', $user->id)
+            ->exists();
     }
 
     /**
