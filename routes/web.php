@@ -85,7 +85,7 @@ require __DIR__ . '/auth.php';
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [ ] Fix redirect after editing a post from the my posts page
+//         - [x] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix header.blade.php - remove the php code and check out alternative
 //         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable

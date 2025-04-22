@@ -27,16 +27,7 @@
             <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
                 wire:navigate>
                 {{ __("Inbox") }}
-                @php
-                $unreadCount = \App\Models\Message::where('receiver_id', \Illuminate\Support\Facades\Auth::id())
-                ->whereNull('read_at')
-                ->count();
-                @endphp
-                @if ($unreadCount > 0)
-                <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-700 text-white">{{
-                    $unreadCount }}</span>
-                @endif
+                <livewire:post.unread-messages-count />
             </flux:navbar.item>
             <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
                 :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}

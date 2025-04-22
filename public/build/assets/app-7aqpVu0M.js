@@ -1,1 +1,0 @@
-window.tagInput=function(i,s){return{input:"",tags:[...i],init(){this.updateWire=()=>{$wire.set(s,this.tags)}},addTag(){const t=this.input.trim();t&&!this.tags.includes(t)&&(this.tags.length>=5?alert("You can enter a maximum of 5 tags."):this.tags.push(t)),this.updateWire(),this.input=""},removeTag(t){this.tags.splice(t,1),this.updateWire()}}};
