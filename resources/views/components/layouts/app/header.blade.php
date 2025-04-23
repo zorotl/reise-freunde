@@ -34,6 +34,8 @@
             </flux:navlist.item>
             @endauth
 
+
+
         </flux:navbar>
 
         <flux:spacer />

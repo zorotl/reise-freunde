@@ -87,8 +87,8 @@ require __DIR__ . '/auth.php';
 //     Fix the following issues:
 //         - [x] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
-//         - [ ] Fix header.blade.php - remove the php code and check out alternative
-//         - [ ] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
+//         - [x] Fix header.blade.php - remove the php code and check out alternative
+//         - [x] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user profile - reomve name and surname from the profile
 //         - [ ] Optimize the new post form, especially the length of the text area with alpine.js
@@ -107,11 +107,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Implement a verified User System
 
 //     Language (Instruction in Gemini and ChatGPT):
-//         - [ ] Install laravel localization 
-//         - [ ] Install german language pack
-//         - [ ] Add a language switcher
-//         - [ ] Replace all hardcoded strings with translatable strings 
-//         - [ ] Translate all strings to german 
+//         - [ ] Install laravel localization (mcamara/laravel-localization:)
+//         - [ ] Add a language switcher front- and backend
+
 
 //     Security:
 //         - [ ] Implement Laravel Gates to protect routes and admin functions

@@ -11,7 +11,21 @@
                         <flux:input wire:model="title" :label="__('Title')" type="text" autofocus
                             autocomplete="title" />
 
-                        <flux:textarea wire:model="content" :label="__('Content')" autocomplete="content" />
+                        <div x-data="{ content: @entangle('content'), min: 50 }" class="space-y-1">
+                            <!-- Your existing textarea component -->
+                            <flux:textarea x-model="content" wire:model="content" :label="__('Content')"
+                                autocomplete="content" />
+
+                            <!-- Remaining characters until minimum reached -->
+                            <p x-text="
+                                    content.length >= min
+                                      ? 'Minimum length reached'
+                                      : `${min - content.length} more characters needed`
+                                  " class="text-sm" :class="{
+                                    'text-green-600': content.length >= min,
+                                    'text-gray-600': content.length < min
+                                  }"></p>
+                        </div>
 
                         <flux:input wire:model="expiryDate" :label="__('Expiry Date')" type="date"
                             autocomplete="expiryDate" />
