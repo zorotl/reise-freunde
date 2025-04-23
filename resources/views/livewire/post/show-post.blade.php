@@ -76,7 +76,7 @@
 
                 @if (auth()->id() === $post->user_id)
                 <flux:button size="sm" variant="outline">
-                    <a wire:navigate href="{{ route('post.edit', ['id' => $entry->id, 'origin' => $show]) }}">
+                    <a wire:navigate href="{{ route('post.edit', ['id' => $post->id, 'origin' => $show]) }}">
                         Edit
                     </a>
                 </flux:button>

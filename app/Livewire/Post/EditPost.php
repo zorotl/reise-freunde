@@ -16,6 +16,8 @@ class EditPost extends Component
     public $country;
     public $city;
     public $origin = 'all';
+    public $action = 'update';
+    public $buttonText = 'Update Post';
 
     public function mount(Post $id, $origin = 'all')
     {
@@ -66,8 +68,8 @@ class EditPost extends Component
     public function render()
     {
         return view('livewire.post.form-post', [
-            'action' => 'update',
-            'buttonText' => 'Update Post',
+            'action' => $this->action,
+            'buttonText' => $this->buttonText,
         ]);
     }
 }

@@ -85,13 +85,9 @@ require __DIR__ . '/auth.php';
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [x] Fix redirect after editing a post from the my posts page
 //         - [ ] Fix SiteTitle on all pages
-//         - [x] Fix header.blade.php - remove the php code and check out alternative
-//         - [x] Fix settings/preferences - custom travel styles and hobbies have to be loaded from the database and make them editable
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user profile - reomve name and surname from the profile
-//         - [ ] Optimize the new post form, especially the length of the text area with alpine.js
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
 
@@ -137,7 +133,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a comment system
 //         - [ ] Add a like system
 //         - [ ] Add a report system
-//         - [ ] Add a search bar to the post
+//         - [x] Add a search bar to the post
 //         - [ ] Add a filter to the post
 
 //     Frontend / not logged in user:

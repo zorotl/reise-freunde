@@ -10,6 +10,9 @@
             Create New Entry
         </a>
     </div>
+    <div>
+        <livewire:search />
+    </div>
     <div class="space-y-6">
         @foreach ($entries as $entry)
         <div class="rounded-xl shadow-md overflow-hidden

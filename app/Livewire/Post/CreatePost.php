@@ -15,6 +15,9 @@ class CreatePost extends Component
     public $toDate;
     public $country;
     public $city;
+    public $origin = 'all';
+    public $action = 'save';
+    public $buttonText = 'Create Post';
 
     public function save()
     {
@@ -45,8 +48,8 @@ class CreatePost extends Component
     public function render()
     {
         return view('livewire.post.form-post', [
-            'action' => 'save',
-            'buttonText' => 'Create Post',
+            'action' => $this->action,
+            'buttonText' => $this->buttonText,
         ]);
     }
 }
