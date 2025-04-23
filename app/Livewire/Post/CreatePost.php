@@ -4,6 +4,7 @@ namespace App\Livewire\Post;
 
 use Livewire\Component;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class CreatePost extends Component
 {
@@ -14,14 +15,13 @@ class CreatePost extends Component
     public $toDate;
     public $country;
     public $city;
-    public $entries;
 
     public function save()
     {
         $this->validate([
             'title' => 'required|max:255',
             'content' => 'required|min:50',
-            'expiryDate' => 'required|date|after:today|before_or_equal:+2 years|before:fromDate',
+            'expiryDate' => 'required|date|after:today|before_or_equal:+2 years|before_or_equal:fromDate',
             'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',
             'toDate' => 'required|date|after:today|before_or_equal:+2 years|after:fromDate',
             'country' => 'nullable|string|max:255',
