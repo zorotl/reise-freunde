@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Notifications\FollowRequestNotification;
 use App\Notifications\NewFollowerNotification;
 use App\Notifications\FollowRequestAcceptedNotification;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +51,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    // Added accessor to check if user has admin or moderator role
+    public function isAdminOrModerator(): bool
+    {
+        // Load the grant relationship if it hasn't been loaded yet
+        if (!$this->relationLoaded('grant')) {
+            $this->load('grant');
+        }
+
+        // Check if the user has a grant and if they are admin or moderator
+        return $this->grant && ($this->grant->is_admin || $this->grant->is_moderator);
     }
 
     /**

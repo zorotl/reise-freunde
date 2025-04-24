@@ -1,53 +1,43 @@
+{{-- Content from your original app/header.blade.php component view --}}
+{{-- resources/views/components/layouts/admin/header.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 
 <head>
     @include('partials.head')
+    {{-- You might define a prop for the title in the component class --}}
+    {{-- <title>{{ $title ?? config('app.name', 'Laravel') }} - Admin</title> --}}
+    <title>{{ config('app.name', 'Laravel') }} - Admin</title> {{-- Simple title for now --}}
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+{{-- Apply different classes for visual distinction --}}
+
+<body class="min-h-screen bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
+
+    <div class="bg-red-600 text-white text-center py-2 text-sm font-semibold">
+        ADMINISTRATION AREA
+    </div>
+
+    {{-- Changed header color --}}
+    <flux:header container class="border-b border-red-700 bg-red-600 dark:border-red-800 dark:bg-red-900 text-white">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-        <a href="{{ route('home') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0"
-            wire:navigate>
+        {{-- Link back to admin dashboard --}}
+        <a href="{{ route('admin.dashboard') }}"
+            class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" wire:navigate>
+            {{-- Assuming x-app-logo is fine, or create an admin version --}}
             <x-app-logo />
+            <span class="text-lg font-semibold">Admin</span> {{-- Added "Admin" badge --}}
         </a>
 
+        {{-- Admin Navbar - Add admin-specific links here later --}}
         <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                wire:navigate>
-                {{ __("All Post's") }}
-            </flux:navbar.item>
-
-            @auth
-            <flux:navlist.item icon="user-circle" :href="route('post.myown')"
-                :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Post's") }}
-            </flux:navlist.item>
-            <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
-                wire:navigate>
-                {{ __("Inbox") }}
-                <livewire:post.unread-messages-count />
-            </flux:navbar.item>
-            <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
-                :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
-            </flux:navlist.item>
-            @endauth
-
-
-
+            {{-- Links will go here --}}
         </flux:navbar>
 
         <flux:spacer />
 
-        <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-            <flux:tooltip :content="__('Search')" position="bottom">
-                <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#"
-                    :label="__('Search')" />
-            </flux:tooltip>
-        </flux:navbar>
-
-        <!-- Desktop User Menu -->
+        {{-- User Menu - Keep as is or adapt --}}
         @auth
         <flux:dropdown position="top" align="end">
             <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" />
@@ -73,6 +63,15 @@
 
                 <flux:menu.separator />
 
+                {{-- Link back to main site dashboard --}}
+                <flux:menu.radio.group>
+                    <flux:menu.item :href="route('dashboard')" icon="layout-grid" wire:navigate>{{ __('Main Dashboard')
+                        }}
+                    </flux:menu.item>
+                </flux:menu.radio.group>
+
+                <flux:menu.separator />
+
                 <flux:menu.radio.group>
                     <flux:menu.item :href="'/user/profile/' . auth()->user()->id" icon="user" wire:navigate>{{
                         __('Show Profile') }}
@@ -88,16 +87,7 @@
 
                 <flux:menu.separator />
 
-                {{-- Add Admin/Moderator link conditionally --}}
-                @if(auth()->user()->isAdminOrModerator())
-                <flux:menu.radio.group>
-                    <flux:menu.item :href="route('admin.dashboard')" icon="shield-check" wire:navigate>
-                        {{ __('Admin Area') }}
-                    </flux:menu.item>
-                </flux:menu.radio.group>
-                @endif
-
-                <flux:menu.separator />
+                {{-- No Admin link in admin area menu --}}
 
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
@@ -108,28 +98,29 @@
             </flux:menu>
         </flux:dropdown>
         @endauth
+
     </flux:header>
 
-    <!-- Mobile Menu -->
     <flux:sidebar stashable sticky
-        class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        class="lg:hidden border-e border-red-700 bg-red-600 dark:border-red-800 dark:bg-red-900 text-white"> {{--
+        Changed colors --}}
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+        {{-- Link back to admin dashboard --}}
+        <a href="{{ route('admin.dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse"
+            wire:navigate>
             <x-app-logo />
+            <span class="text-lg font-semibold">Admin</span>
         </a>
 
+        {{-- Admin Mobile Navlist - Add admin-specific links here later --}}
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Platform')">
-                <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
-                </flux:navlist.item>
-            </flux:navlist.group>
+            {{-- Links will go here --}}
         </flux:navlist>
 
         <flux:spacer />
 
+        {{-- Optional: keep documentation links or remove --}}
         <flux:navlist variant="outline">
             <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
                 target="_blank">
@@ -140,11 +131,15 @@
                 {{ __('Documentation') }}
             </flux:navlist.item>
         </flux:navlist>
+
     </flux:sidebar>
 
-    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4 flex items-center">
+
+    {{-- Main content area - The $slot prop will render the page content here --}}
+    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4 py-8">
         {{ $slot }}
     </div>
+
 
     @fluxScripts
 </body>

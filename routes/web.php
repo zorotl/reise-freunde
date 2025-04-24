@@ -4,19 +4,20 @@ use App\Models\Message;
 use Livewire\Volt\Volt;
 use App\Livewire\Mail\Inbox;
 use App\Livewire\Mail\Outbox;
+use App\Livewire\Mail\MessageView;
+use App\Livewire\Mail\MessageCompose;
 use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\EditPost;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\ShowPost;
 use App\Livewire\Post\CreatePost;
-use App\Livewire\Mail\MessageView;
 use App\Livewire\User\UserProfile;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
-use App\Livewire\Mail\MessageCompose;
-use Illuminate\Support\Facades\Route;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminOrModeratorMiddleware;
 
 
 Route::get('/', function () {
@@ -66,6 +67,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/{id}/following', FollowingList::class)->name('user.following'); // Keep ID for viewing others' lists
 });
 
+// --- Admin/Moderator Routes ---
+// Grouped under /admin and protected by the custom middleware
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
+    ->group(function () {
+
+        // Admin Dashboard
+        Volt::route('/', 'pages.admin.dashboard')->name('dashboard');
+
+        // Add other admin routes here later (users, posts, messages, hobbies, travel styles)
+    
+    });
+
 // Publicly accessible routes (or adjust middleware as needed)
 Route::get('/post/show', PostList::class)->name('post.show');
 Route::get('/post/{post}', ShowPost::class)->name('post.single');
@@ -89,7 +104,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user profile - reomve name and surname from the profile
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
+//         - [ ] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
+//         - [ ] Fix mobile menu, missing links
 
 //     Overall:
 //         - [ ] Implement a backend for the admin
