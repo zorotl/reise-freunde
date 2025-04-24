@@ -9,7 +9,9 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Middleware;
 
-new class extends Component {    
+new 
+#[Layout('components.layouts.admin')]
+class extends Component {    
     public $userCount; 
     public $postCount;
     public $messageCount;
