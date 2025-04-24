@@ -2,6 +2,9 @@
 
 use App\Models\User;
 use App\Models\UserGrant;
+use Livewire\Livewire;
+use App\Livewire\Admin\Users\ManageUsers;
+use App\Livewire\Admin\Users\EditUserModal;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -56,6 +59,35 @@ test('guest users are redirected to login when trying to access admin dashboard'
         ->assertRedirect(route('login')); // Expect a redirect to the login page
 });
 
-// You might need to adjust the UserFactory to ensure no UserGrant is created by default,
-// or add a step to delete it in the tests for regular users.
-// Alternatively, update your UserFactory to optionally create a UserGrant.
+test('non admin/moderator users cannot access admin user management', function () {
+    $user = User::factory()->create();
+    UserGrant::where('user_id', $user->id)->delete(); // Ensure no admin/moderator grant
+
+    actingAs($user)
+        ->get(route('admin.users'))
+        ->assertForbidden(); // Or the redirect you chose in middleware
+});
+
+test('admin users can access admin user management', function () {
+    $adminUser = User::factory()->create();
+    UserGrant::updateOrCreate(['user_id' => $adminUser->id], ['is_admin' => true]);
+
+    actingAs($adminUser)
+        ->get(route('admin.users'))
+        ->assertOk();
+});
+
+test('moderator users can access admin user management', function () {
+    $moderatorUser = User::factory()->create();
+    UserGrant::updateOrCreate(['user_id' => $moderatorUser->id], ['is_moderator' => true]);
+
+    actingAs($moderatorUser)
+        ->get(route('admin.users'))
+        ->assertOk();
+});
+
+test('guest users are redirected to login when trying to access admin user management', function () {
+    get(route('admin.users'))
+        ->assertRedirect(route('login'));
+});
+

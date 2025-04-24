@@ -6,11 +6,11 @@ use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
 use Livewire\Volt\Component;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Middleware;
+use Livewire\Attributes\{layout, middleware};;
 
 new 
 #[Layout('components.layouts.admin')]
+#[Middleware('auth', 'admin_or_moderator')]
 class extends Component {    
     public $userCount; 
     public $postCount;

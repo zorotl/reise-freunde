@@ -32,7 +32,31 @@
 
         {{-- Admin Navbar - Add admin-specific links here later --}}
         <flux:navbar class="-mb-px max-lg:hidden">
-            {{-- Links will go here --}}
+            {{-- Link to Admin Dashboard --}}
+            <flux:navbar.item icon="layout-grid" :href="route('admin.dashboard')"
+                :current="request()->routeIs('admin.dashboard')" wire:navigate>
+                {{ __('Dashboard') }}
+            </flux:navbar.item>
+
+            {{-- Link to Manage Users --}}
+            <flux:navbar.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.users')"
+                wire:navigate>
+                {{ __('Manage Users') }}
+            </flux:navbar.item>
+
+            {{-- Link to Manage Posts --}}
+            <flux:navbar.item icon="document" :href="route('admin.posts')" :current="request()->routeIs('admin.posts')"
+                wire:navigate>
+                {{ __('Manage Posts') }}
+            </flux:navbar.item>
+
+            {{-- Link to Manage Messages --}}
+            <flux:navbar.item icon="envelope" :href="route('admin.messages')"
+                :current="request()->routeIs('admin.messages')" wire:navigate>
+                {{ __('Manage Messages') }}
+            </flux:navbar.item>
+
+            {{-- Add other admin links here later --}}
         </flux:navbar>
 
         <flux:spacer />
@@ -115,7 +139,37 @@
 
         {{-- Admin Mobile Navlist - Add admin-specific links here later --}}
         <flux:navlist variant="outline">
-            {{-- Links will go here --}}
+            <flux:navlist.group :heading="__('Administration')"> {{-- You might want a group for admin links --}}
+                {{-- Link to Admin Dashboard --}}
+                <flux:navlist.item icon="layout-grid" :href="route('admin.dashboard')"
+                    :current="request()->routeIs('admin.dashboard')" wire:navigate>
+                    {{ __('Dashboard') }}
+                </flux:navlist.item>
+
+                {{-- Link to Manage Users --}}
+                <flux:navlist.item icon="users" :href="route('admin.users')"
+                    :current="request()->routeIs('admin.users')" wire:navigate>
+                    {{ __('Manage Users') }}
+                </flux:navlist.item>
+
+                {{-- Link to Manage Posts --}}
+                <flux:navlist.item icon="document" :href="route('admin.posts')"
+                    :current="request()->routeIs('admin.posts')" wire:navigate>
+                    {{ __('Manage Posts') }}
+                </flux:navlist.item>
+
+                {{-- Link to Manage Messages --}}
+                <flux:navlist.item icon="envelope" :href="route('admin.messages')"
+                    :current="request()->routeIs('admin.messages')" wire:navigate>
+                    {{ __('Manage Messages') }}
+                </flux:navlist.item>
+
+                {{-- Add other admin links here later --}}
+            </flux:navlist.group>
+
+            {{-- Existing Platform Group --}}
+            {{-- <flux:navlist.group :heading="__('Platform')"> ... </flux:navlist.group> --}}
+
         </flux:navlist>
 
         <flux:spacer />

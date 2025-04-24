@@ -17,7 +17,7 @@ use App\Livewire\User\FollowingList;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AdminOrModeratorMiddleware;
+// use App\Http\Middleware\AdminOrModeratorMiddleware;
 
 
 Route::get('/', function () {
@@ -71,12 +71,14 @@ Route::middleware(['auth'])->group(function () {
 // Grouped under /admin and protected by the custom middleware
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
+    // ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
     ->group(function () {
 
-        // Admin Dashboard
-        Volt::route('/', 'pages.admin.dashboard')->name('dashboard');
-
+        Volt::route('/', 'pages.admin.dashboard')->name('dashboard'); // Admin Dashboard    
+        Volt::route('/users', 'pages.admin.users.index')->name('users');  // User Management Route
+        Volt::route('/posts', 'pages.admin.posts.index')->name('posts');  // Post Management Route
+        Volt::route('/messages', 'pages.admin.messages.index')->name('messages');  // Message Management Route
+    
         // Add other admin routes here later (users, posts, messages, hobbies, travel styles)
     
     });

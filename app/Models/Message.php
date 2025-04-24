@@ -18,6 +18,13 @@ class Message extends Model
         'read_at',
     ];
 
+    protected $casts = [
+        'read_at' => 'datetime',
+        'created_at' => 'datetime', // <--- Ensure this line is present
+        'updated_at' => 'datetime', // <-- This is often included automatically, but good to be explicit
+        'deleted_at' => 'datetime', // <-- If you plan to soft delete messages
+    ];
+
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
