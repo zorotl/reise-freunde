@@ -73,14 +73,12 @@ Route::prefix('admin')
     ->name('admin.')
     // ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
     ->group(function () {
-
         Volt::route('/', 'pages.admin.dashboard')->name('dashboard'); // Admin Dashboard    
         Volt::route('/users', 'pages.admin.users.index')->name('users');  // User Management Route
         Volt::route('/posts', 'pages.admin.posts.index')->name('posts');  // Post Management Route
         Volt::route('/messages', 'pages.admin.messages.index')->name('messages');  // Message Management Route
-    
-        // Add other admin routes here later (users, posts, messages, hobbies, travel styles)
-    
+        Volt::route('/hobbies', 'pages.admin.hobbies.index')->name('hobbies'); // Hobby Management Route
+        Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route        
     });
 
 // Publicly accessible routes (or adjust middleware as needed)

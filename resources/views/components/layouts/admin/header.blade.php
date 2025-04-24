@@ -41,22 +41,32 @@
             {{-- Link to Manage Users --}}
             <flux:navbar.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.users')"
                 wire:navigate>
-                {{ __('Manage Users') }}
+                {{ __('Users') }}
             </flux:navbar.item>
 
             {{-- Link to Manage Posts --}}
             <flux:navbar.item icon="document" :href="route('admin.posts')" :current="request()->routeIs('admin.posts')"
                 wire:navigate>
-                {{ __('Manage Posts') }}
+                {{ __('Posts') }}
             </flux:navbar.item>
 
             {{-- Link to Manage Messages --}}
             <flux:navbar.item icon="envelope" :href="route('admin.messages')"
                 :current="request()->routeIs('admin.messages')" wire:navigate>
-                {{ __('Manage Messages') }}
+                {{ __('Messages') }}
             </flux:navbar.item>
 
-            {{-- Add other admin links here later --}}
+            {{-- Link to Manage Hobbies --}}
+            <flux:navbar.item icon="bookmark" :href="route('admin.hobbies')"
+                :current="request()->routeIs('admin.hobbies')" wire:navigate>
+                {{ __('Hobbies') }}
+            </flux:navbar.item>
+
+            {{-- Link to Manage Travel Styles --}}
+            <flux:navbar.item icon="map" :href="route('admin.travel-styles')"
+                :current="request()->routeIs('admin.travel-styles')" wire:navigate>
+                {{ __('Travel Styles') }}
+            </flux:navbar.item>
         </flux:navbar>
 
         <flux:spacer />
@@ -149,22 +159,32 @@
                 {{-- Link to Manage Users --}}
                 <flux:navlist.item icon="users" :href="route('admin.users')"
                     :current="request()->routeIs('admin.users')" wire:navigate>
-                    {{ __('Manage Users') }}
+                    {{ __('Users') }}
                 </flux:navlist.item>
 
                 {{-- Link to Manage Posts --}}
                 <flux:navlist.item icon="document" :href="route('admin.posts')"
                     :current="request()->routeIs('admin.posts')" wire:navigate>
-                    {{ __('Manage Posts') }}
+                    {{ __('Posts') }}
                 </flux:navlist.item>
 
                 {{-- Link to Manage Messages --}}
                 <flux:navlist.item icon="envelope" :href="route('admin.messages')"
                     :current="request()->routeIs('admin.messages')" wire:navigate>
-                    {{ __('Manage Messages') }}
+                    {{ __('Messages') }}
                 </flux:navlist.item>
 
-                {{-- Add other admin links here later --}}
+                {{-- Link to Manage Hobbies --}}
+                <flux:navlist.item icon="bookmark" :href="route('admin.hobbies')"
+                    :current="request()->routeIs('admin.hobbies')" wire:navigate>
+                    {{ __('Hobbies') }}
+                </flux:navlist.item>
+
+                {{-- Link to Manage Travel Styles --}}
+                <flux:navlist.item icon="map" :href="route('admin.travel-styles')"
+                    :current="request()->routeIs('admin.travel-styles')" wire:navigate>
+                    {{ __('Travel Styles') }}
+                </flux:navlist.item>
             </flux:navlist.group>
 
             {{-- Existing Platform Group --}}
