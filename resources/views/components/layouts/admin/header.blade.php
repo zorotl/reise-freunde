@@ -11,7 +11,8 @@
 
 <body class="min-h-screen bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
     {{-- Changed header color --}}
-    <flux:header container class="border-b border-red-700 bg-red-600 dark:border-red-800 dark:bg-red-900 text-white">
+    <flux:header container
+        class="border-b border-black bg-amber-400 text-black dark:border-amber-900 dark:bg-amber-800  dark:text-white">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         {{-- Link back to admin dashboard --}}
