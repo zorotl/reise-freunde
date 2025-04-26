@@ -106,20 +106,19 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix mobile menu, missing links
 
 //     Overall:
-//         - [ ] Implement a backend for the admin
-//         - [ ] Admin should be able to edit and delete all posts
-//         - [ ] Admin should be able to edit and delete all users
-//         - [ ] Admin should be able to ban and unban users
-//         - [ ] Admin should be able to create, update and delete hobbies
-//         - [ ] Admin should be able to create, update and delete travel styles
-//         - [ ] Implement a backend for the moderator
-//         - [ ] Implement the feature verify email
+//         - [x] Implement a backend for the admin
+//         - [x] Admin should be able to edit and delete all posts
+//         - [x] Admin should be able to edit and delete all users
+//         - [x] Admin should be able to ban and unban users
+//         - [x] Admin should be able to create, update and delete hobbies
+//         - [x] Admin should be able to create, update and delete travel styles
+//         - [ ] Implement a different backend for the moderator
+//         - [ ] Implement the feature verify email (absolutely in the end of project)
 //         - [ ] Implement a verified User System
 
 //     Language (Instruction in Gemini and ChatGPT):
 //         - [ ] Install laravel localization (mcamara/laravel-localization:)
 //         - [ ] Add a language switcher front- and backend
-
 
 //     Security:
 //         - [ ] Implement Laravel Gates to protect routes and admin functions
@@ -129,11 +128,11 @@ require __DIR__ . '/auth.php';
 
 //     Testing:
 //         - [x] Fix existing Pest-Testing
-//         - [ ] Implement Pest-Testing for the whole project
+//         - [x] Implement Pest-Testing for the whole project
 
 //     Logged in user:
-//         - [ ] Use is_admin 
-//         - [ ] Use is_moderator 
+//         - [x] Use is_admin 
+//         - [x] Use is_moderator 
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
 //         - [ ] Use a profile picture 
@@ -148,8 +147,8 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a like system
 //         - [ ] Add a report system
 //         - [x] Add a search bar to the post
-//         - [ ] Add a filter to the post
+//         - [ ] Add a filter (Country, Region) to the post
 
 //     Frontend / not logged in user:
-//         - [ ] Add more information to the homepage
+//         - [x] Add more information to the homepage
 //         - [ ] Make it difficult to use the app without being logged in
