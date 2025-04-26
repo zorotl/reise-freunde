@@ -20,6 +20,13 @@
             <input wire:model.live="search" type="text" placeholder="{{ __('Search users...') }}"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
         </div>
+        {{-- Add Clear Filter Button if filterUserId is set --}}
+        @if ($filterUserId)
+        <button wire:click="clearFilter"
+            class="ms-3 text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">{{
+            __('Clear Filter') }}</button>
+        @endif
+
         <div>
             <label for="perPage" class="sr-only">{{ __('Per Page') }}</label>
             <select wire:model.live="perPage" id="perPage"
@@ -80,17 +87,18 @@
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
                 @forelse ($users as $user)
                 <tr @if($user->trashed()) class="bg-red-100 dark:bg-red-900/50 opacity-75" @endif>
-                    {{-- Name Cell - added max-w-xs and truncate/overflow classes --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        {{ $user->name }}
+                    {{-- Name Cell --}}
+                    <td>
+                        <a href="{{ route('user.profile', $user->id) }}"
+                            class="text-sm font-medium text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
+                            {{ $user->name }}</a>
                     </td>
-                    {{-- Email Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Email Cell --}}
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         {{ $user->email }}
                     </td>
-                    {{-- Username Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Username Cell --}}
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         {{ $user->additionalInfo->username ?? '-' }}
@@ -121,9 +129,6 @@
                     {{-- Actions Cell - added w-40 --}}
                     <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium w-40">
                         {{-- Action Buttons --}}
-                        <a href="{{ route('user.profile', $user->id) }}"
-                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">{{
-                            __('View Profile') }}</a>
                         <button wire:click="$dispatch('openEditModal', { userId: {{ $user->id }} })"
                             class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 me-3">{{
                             __('Edit') }}</button>

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->boolean('is_moderator')->default(false);
             $table->boolean('is_banned')->default(false);
             $table->timestamp('is_banned_until')->nullable();
+            $table->text('banned_reason')->nullable();
             $table->timestamps();
         });
     }

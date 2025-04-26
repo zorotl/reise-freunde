@@ -102,17 +102,23 @@
                 {{-- Highlight if sender is soft deleted --}}
                 <tr @if($message->sender && $message->sender->trashed()) class="bg-yellow-100 dark:bg-yellow-900/50
                     opacity-75" @endif>
-                    {{-- Subject Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Subject Cell --}}
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        {{ $message->subject }}
+                        {{-- Link Subject to Admin View Message Page --}}
+                        <a href="{{ route('admin.messages.show', $message->id) }}" class="text-blue-600 hover:underline"
+                            wire:navigate> {{-- Added link --}}
+                            {{ $message->subject }}
+                        </a>
                     </td>
-                    {{-- Sender Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Sender Cell --}}
                     <td
-                        class="px-6 py-4 whitespace-normal  text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         @if($message->sender)
-                        <a href="{{ route('user.profile', $message->sender->id) }}"
-                            class="text-blue-600 hover:underline">
+                        {{-- Link to Admin User Management filtered by sender --}}
+                        <a href="{{ route('admin.users', ['filterUserId' => $message->sender->id]) }}"
+                            class="text-blue-600 hover:underline" wire:navigate> {{-- Added wire:navigate and route
+                            params --}}
                             {{ $message->sender->name }} ({{ $message->sender->email }})
                         </a>
                         @if($message->sender->trashed())
@@ -122,12 +128,14 @@
                         {{ __('Deleted User') }}
                         @endif
                     </td>
-                    {{-- Receiver Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Receiver Cell --}}
                     <td
-                        class="px-6 py-4 whitespace-normal  text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         @if($message->receiver)
-                        <a href="{{ route('user.profile', $message->receiver->id) }}"
-                            class="text-blue-600 hover:underline">
+                        {{-- Link to Admin User Management filtered by receiver --}}
+                        <a href="{{ route('admin.users', ['filterUserId' => $message->receiver->id]) }}"
+                            class="text-blue-600 hover:underline" wire:navigate> {{-- Added wire:navigate and route
+                            params --}}
                             {{ $message->receiver->name }} ({{ $message->receiver->email }})
                         </a>
                         @if($message->receiver->trashed())
@@ -164,7 +172,7 @@
                             w-48 to w-56 --}} {{-- Action Button: Ban Sender --}} @if($message->sender &&
                             !$message->sender->trashed())
                             <button wire:click="banSender({{ $message->sender->id }})"
-                                onclick="return confirm('{{ __('Are you sure you want to ban this sender? This will soft delete the user.') }}')"
+                                onclick="return confirm('{{ __('Are you sure you want to ban this sender?') }}')"
                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">{{
                                 __('Ban Sender') }}</button>
                             @elseif($message->sender && $message->sender->trashed())

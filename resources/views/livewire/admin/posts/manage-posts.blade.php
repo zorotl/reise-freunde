@@ -93,12 +93,13 @@
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
                 @forelse ($posts as $post)
                 <tr @if($post->trashed()) class="bg-red-100 dark:bg-red-900/50 opacity-75" @endif>
-                    {{-- Title Cell - added max-w-xs and truncate/overflow classes --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        {{ $post->title }}
+                    {{-- Title Cell --}}
+                    <td>
+                        <a href="{{ route('post.single', $post->id) }}"
+                            class="text-sm font-medium text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
+                            {{ $post->title }}</a>
                     </td>
-                    {{-- Author Cell - added max-w-xs and truncate/overflow classes --}}
+                    {{-- Author Cell --}}
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         {{ $post->user->name ?? 'N/A' }}
@@ -126,9 +127,6 @@
                     {{-- Actions Cell - added w-40 --}}
                     <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium w-40">
                         {{-- Action Buttons --}}
-                        <a href="{{ route('post.single', $post->id) }}"
-                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">{{
-                            __('View') }}</a>
                         <button wire:click="$dispatch('openEditPostModal', { postId: {{ $post->id }} })"
                             class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 me-3">{{
                             __('Edit') }}</button>

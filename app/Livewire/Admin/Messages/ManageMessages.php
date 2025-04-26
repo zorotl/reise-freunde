@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Admin\Messages;
 
-use App\Models\Message; // Import the Message model
-use App\Models\User; // Import the User model (needed for banning sender)
+use App\Models\Message;
+use App\Models\User;
+use App\Models\UserGrant;
 use Livewire\Component;
-use Livewire\WithPagination; // Trait for pagination
+use Livewire\Attributes\Computed;
+use Livewire\WithPagination;
+use Carbon\Carbon;
 
 class ManageMessages extends Component
 {
@@ -79,40 +82,51 @@ class ManageMessages extends Component
         ]);
     }
 
-    // --- Action Method: Ban Sender (Soft Delete User) ---
+    // Computed property to check if the current user is admin or moderator
+    #[Computed()]
+    public function isAdminOrModerator()
+    {
+        // Assuming auth() returns the current user and they have grant relationship
+        return auth()->check() && auth()->user()->isAdminOrModerator(); // Using the method on User model
+    }
 
-    // Method to ban the sender of a message (soft delete the user)
+    // --- Corrected Ban Sender Action ---
     public function banSender($senderId)
     {
-        $sender = User::find($senderId);
+        // Ensure the current user is authorized before performing the action
+        if (!$this->isAdminOrModerator) {
+            session()->flash('error', 'You are not authorized to perform this action.');
+            return;
+        }
+
+        $sender = User::with('grant')->find($senderId); // Eager load grant
 
         if (!$sender) {
             session()->flash('error', 'Sender user not found.');
             return;
         }
 
-        // Prevent banning admin/moderator via this action (optional safety)
+        // Prevent banning admin/moderator (optional safety)
         if ($sender->isAdminOrModerator()) {
             session()->flash('error', 'Cannot ban an admin or moderator via this action.');
             return;
         }
 
-        // Check if the user is already soft deleted
-        if ($sender->trashed()) {
-            session()->flash('message', 'Sender is already banned/soft deleted.');
+        // Find or create the user grant record
+        $grant = $sender->grant ?? new UserGrant(['user_id' => $sender->id]);
+
+        // Check if the user is already banned via grant       
+        if ($grant->is_banned) {
+            session()->flash('error', 'Sender user is already banned.');
             return;
         }
 
-        // Perform the soft delete on the sender's User model
-        $sender->delete(); // Requires SoftDeletes trait and deleted_at column on 'users' table
+        $grant->is_banned = true;
+        $grant->is_banned_until = null; // Set to null for permanent ban via this button
 
-        // Optional: Add a record to user_grants indicating they were banned for a specific reason/duration
-        // UserGrant::updateOrCreate(['user_id' => $sender->id], ['is_banned' => true, 'is_banned_until' => null, 'banned_reason' => 'Banned via message action']);
-
+        $grant->save();
 
         session()->flash('message', 'Sender user banned successfully.');
-        $this->dispatch('senderBanned'); // Dispatch event to refresh the list
+        $this->dispatch('senderBanned');
     }
-
-    // Note: We might add message soft delete/restore actions later if needed
 }

@@ -37,36 +37,45 @@ class extends Component {
 
     {{-- Basic Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {{-- Example Stat Card (using simple divs as FluxUI cards have issues) --}}
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">Total Users</h2>
-            {{-- Access public properties directly --}}
+        {{-- Total Users Card (now a link) --}}
+        <a href="{{ route('admin.users') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition"> {{-- Added link
+            and hover effect --}}
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Users') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $userCount }}</p>
-        </div>
+        </a>
 
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">Total Posts</h2>
-            {{-- Access public properties directly --}}
+        {{-- Total Posts Card (now a link) --}}
+        <a href="{{ route('admin.posts') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition"> {{-- Added link
+            and hover effect --}}
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Posts') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $postCount }}</p>
-        </div>
+        </a>
 
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">Total Messages</h2>
-            {{-- Access public properties directly --}}
+        {{-- Total Messages Card (now a link) --}}
+        <a href="{{ route('admin.messages') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition"> {{-- Added link
+            and hover effect --}}
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Messages') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $messageCount }}</p>
-        </div>
+        </a>
 
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">Total Hobbies</h2>
-            {{-- Access public properties directly --}}
+        {{-- Total Hobbies Card (now a link) --}}
+        <a href="{{ route('admin.hobbies') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition"> {{-- Added link
+            and hover effect --}}
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Hobbies') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $hobbyCount }}</p>
-        </div>
+        </a>
 
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">Total Travel Styles</h2>
-            {{-- Access public properties directly --}}
+        {{-- Total Travel Styles Card (now a link) --}}
+        <a href="{{ route('admin.travel-styles') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition"> {{-- Added link
+            and hover effect --}}
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Travel Styles') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $travelStyleCount }}</p>
-        </div>
+        </a>
     </div>
 
     {{-- More dashboard content can be added here later --}}

@@ -5,19 +5,11 @@
 
 <head>
     @include('partials.head')
-    {{-- You might define a prop for the title in the component class --}}
-    {{-- <title>{{ $title ?? config('app.name', 'Laravel') }} - Admin</title> --}}
-    <title>{{ config('app.name', 'Laravel') }} - Admin</title> {{-- Simple title for now --}}
 </head>
 
 {{-- Apply different classes for visual distinction --}}
 
 <body class="min-h-screen bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
-
-    <div class="bg-red-600 text-white text-center py-2 text-sm font-semibold">
-        ADMINISTRATION AREA
-    </div>
-
     {{-- Changed header color --}}
     <flux:header container class="border-b border-red-700 bg-red-600 dark:border-red-800 dark:bg-red-900 text-white">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
@@ -25,8 +17,8 @@
         {{-- Link back to admin dashboard --}}
         <a href="{{ route('admin.dashboard') }}"
             class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" wire:navigate>
-            {{-- Assuming x-app-logo is fine, or create an admin version --}}
-            <x-app-logo />
+            {{--
+            <x-app-logo /> --}}
             <span class="text-lg font-semibold">Admin</span> {{-- Added "Admin" badge --}}
         </a>
 
@@ -134,7 +126,7 @@
         @endauth
 
     </flux:header>
-
+    <!-- Mobile Menu -->
     <flux:sidebar stashable sticky
         class="lg:hidden border-e border-red-700 bg-red-600 dark:border-red-800 dark:bg-red-900 text-white"> {{--
         Changed colors --}}

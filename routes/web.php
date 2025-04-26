@@ -77,6 +77,7 @@ Route::prefix('admin')
         Volt::route('/users', 'pages.admin.users.index')->name('users');  // User Management Route
         Volt::route('/posts', 'pages.admin.posts.index')->name('posts');  // Post Management Route
         Volt::route('/messages', 'pages.admin.messages.index')->name('messages');  // Message Management Route
+        Volt::route('/messages/{messageId}', 'pages.admin.messages.show')->name('messages.show');  // Route for viewing a single message in admin panel
         Volt::route('/hobbies', 'pages.admin.hobbies.index')->name('hobbies'); // Hobby Management Route
         Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route        
     });
