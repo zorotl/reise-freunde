@@ -4,19 +4,20 @@ use App\Models\Message;
 use Livewire\Volt\Volt;
 use App\Livewire\Mail\Inbox;
 use App\Livewire\Mail\Outbox;
-use App\Livewire\Mail\MessageView;
-use App\Livewire\Mail\MessageCompose;
 use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\EditPost;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\ShowPost;
 use App\Livewire\Post\CreatePost;
+use App\Livewire\Mail\MessageView;
 use App\Livewire\User\UserProfile;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
+use App\Livewire\Mail\MessageCompose;
+use Illuminate\Support\Facades\Route;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
-use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminOrModeratorMiddleware;
 // use App\Http\Middleware\AdminOrModeratorMiddleware;
 
 
@@ -71,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
 // Grouped under /admin and protected by the custom middleware
 Route::prefix('admin')
     ->name('admin.')
-    // ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
+    ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
     ->group(function () {
         Volt::route('/', 'pages.admin.dashboard')->name('dashboard'); // Admin Dashboard    
         Volt::route('/users', 'pages.admin.users.index')->name('users');  // User Management Route

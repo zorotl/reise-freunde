@@ -91,10 +91,6 @@
                         class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         {{ __('Status') }}
                     </th>
-                    {{-- Actions Header --}}
-                    <th scope="col"
-                        class="px-6 py-3 text-end text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        {{ __('Actions') }} </th>
                 </tr>
             </thead>
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
@@ -117,15 +113,20 @@
                         @if($message->sender)
                         {{-- Link to Admin User Management filtered by sender --}}
                         <a href="{{ route('admin.users', ['filterUserId' => $message->sender->id]) }}"
-                            class="text-blue-600 hover:underline" wire:navigate> {{-- Added wire:navigate and route
-                            params --}}
-                            {{ $message->sender->name }} ({{ $message->sender->email }})
+                            class="text-blue-600 hover:underline" wire:navigate>
+                            {{ $message->sender->name }}
                         </a>
-                        @if($message->sender->trashed())
-                        <span class="ms-1 text-red-500">({{ __('Banned') }})</span>
+                        @if($message->sender->grant->is_banned)
+                        <br><span class="ms-1 text-red-500">({{ __('Banned') }})</span>
+                        @else
+                        <br>
+                        <button wire:click="banSender({{ $message->sender->id }})"
+                            onclick="return confirm('{{ __('Are you sure you want to ban this sender?') }}')"
+                            class="px-3 py-1 text-xs font-semibold text-red-600 border border-red-600 bg-white rounded hover:bg-red-100 dark:bg-gray-900 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10">
+                            {{ __('Ban Sender') }}</button>
                         @endif
                         @else
-                        {{ __('Deleted User') }}
+                        <br><span class="ms-1 text-red-500">({{ __('Deleted User') }})</span>
                         @endif
                     </td>
                     {{-- Receiver Cell --}}
@@ -136,10 +137,10 @@
                         <a href="{{ route('admin.users', ['filterUserId' => $message->receiver->id]) }}"
                             class="text-blue-600 hover:underline" wire:navigate> {{-- Added wire:navigate and route
                             params --}}
-                            {{ $message->receiver->name }} ({{ $message->receiver->email }})
+                            {{ $message->receiver->name }}
                         </a>
-                        @if($message->receiver->trashed())
-                        <span class="ms-1 text-red-500">({{ __('Banned') }})</span>
+                        @if($message->receiver->grant->is_banned)
+                        <br><span class="ms-1 text-red-500">({{ __('Banned') }})</span>
                         @endif
                         @else
                         {{ __('Deleted User') }}
@@ -166,22 +167,6 @@
                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">{{
                             __('Msg Deleted') }}</span>
                         @endif
-                    </td>
-                    {{-- Actions Cell - increased width again --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium w-56"> {{-- <--- Changed from
-                            w-48 to w-56 --}} {{-- Action Button: Ban Sender --}} @if($message->sender &&
-                            !$message->sender->trashed())
-                            <button wire:click="banSender({{ $message->sender->id }})"
-                                onclick="return confirm('{{ __('Are you sure you want to ban this sender?') }}')"
-                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">{{
-                                __('Ban Sender') }}</button>
-                            @elseif($message->sender && $message->sender->trashed())
-                            <span class="text-gray-500 dark:text-gray-400">{{ __('Sender Banned') }}</span>
-                            @else
-                            <span class="text-gray-500 dark:text-gray-400">{{ __('Sender Deleted') }}</span>
-                            @endif
-
-                            {{-- Optional: Add View Message, Soft Delete Message, etc. buttons here later --}}
                     </td>
                 </tr>
                 @empty

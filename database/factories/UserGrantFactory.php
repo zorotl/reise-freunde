@@ -17,7 +17,7 @@ class UserGrantFactory extends Factory
      */
     public function definition(): array
     {
-        $isBanned = $this->faker->boolean(5); // 5% Chance auf gebannt
+        $isBanned = $this->faker->boolean(10); // 10% Chance auf gebannt
 
         return [
             'is_admin' => $this->faker->boolean(10), // 10% Chance auf Admin
