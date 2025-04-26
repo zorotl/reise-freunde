@@ -29,14 +29,9 @@ Route::get('/users', function () {
     return view('frontend.user-directory');
 })->name('user.directory');
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
-
-Route::get('/dashboard', function () {
-    return redirect()->route('post.show');
-})->name('dashboard');
-
+Volt::route('/dashboard', 'pages.dashboard.overview') // Points to the new Volt component
+    ->middleware(['auth', 'verified']) // Keep existing middleware
+    ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     // Settings Routes

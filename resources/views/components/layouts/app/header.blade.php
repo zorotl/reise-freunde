@@ -15,41 +15,48 @@
         </a>
 
         <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
+            {{-- New Dashboard Link --}}
+            <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                 wire:navigate>
-                {{ __("All Post's") }}
+                {{ __('Dashboard') }}
+            </flux:navbar.item>
+
+            {{-- Renamed "All Posts" Link --}}
+            <flux:navbar.item icon="rectangle-stack" :href="route('post.show')"
+                :current="request()->routeIs('post.show')" wire:navigate>
+                {{ __("All Posts") }}
             </flux:navbar.item>
 
             @auth
-            <flux:navlist.item icon="user-circle" :href="route('post.myown')"
-                :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Post's") }}
-            </flux:navlist.item>
+            {{-- Existing Auth Links --}}
+            <flux:navbar.item icon="user-circle" :href="route('post.myown')" :current="request()->routeIs('post.myown')"
+                wire:navigate>{{ __("My Posts") }}
+            </flux:navbar.item>
             <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
                 wire:navigate>
                 {{ __("Inbox") }}
                 <livewire:post.unread-messages-count />
             </flux:navbar.item>
-            <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
+            <flux:navbar.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
                 :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
-            </flux:navlist.item>
+            </flux:navbar.item>
             @endauth
-
-
-
         </flux:navbar>
 
         <flux:spacer />
 
+        {{-- Search Icon --}}
         <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
             <flux:tooltip :content="__('Search')" position="bottom">
                 <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#"
-                    :label="__('Search')" />
+                    :label="__('Search')" /> {{-- Update search link if needed --}}
             </flux:tooltip>
         </flux:navbar>
 
-        <!-- Desktop User Menu -->
+        {{-- User Menu Dropdown --}}
         @auth
         <flux:dropdown position="top" align="end">
+            {{-- ... rest of dropdown remains the same ... --}}
             <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" />
 
             <flux:menu>
@@ -95,9 +102,9 @@
                         {{ __('Admin Area') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
+                <flux:menu.separator /> {{-- Separator after Admin link if shown --}}
                 @endif
 
-                <flux:menu.separator />
 
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
@@ -108,23 +115,65 @@
             </flux:menu>
         </flux:dropdown>
         @endauth
+        @guest
+        {{-- Show Login/Register if user is not authenticated --}}
+        <div class="flex items-center space-x-2">
+            <a href="{{ route('login') }}"
+                class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                wire:navigate>
+                {{ __('Log in') }}
+            </a>
+            @if (Route::has('register'))
+            <a href="{{ route('register') }}"
+                class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                wire:navigate>
+                {{ __('Register') }}
+            </a>
+            @endif
+        </div>
+        @endguest
     </flux:header>
 
-    <!-- Mobile Menu -->
+    {{-- ... (Mobile Menu and rest of the layout) ... --}}
     <flux:sidebar stashable sticky
         class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+        <a href="{{ route('home') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
             <x-app-logo />
         </a>
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')">
+                {{-- Mobile: New Dashboard Link --}}
                 <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
                     :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
+                {{-- Mobile: Renamed "All Posts" Link --}}
+                <flux:navlist.item icon="rectangle-stack" :href="route('post.show')"
+                    :current="request()->routeIs('post.show')" wire:navigate>
+                    {{ __("All Posts") }}
+                </flux:navlist.item>
+                @auth
+                <flux:navlist.item icon="user-circle" :href="route('post.myown')"
+                    :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Posts") }}
+                </flux:navlist.item>
+                <flux:navlist.item icon="envelope" :href="route('mail.inbox')"
+                    :current="request()->routeIs('mail.inbox')" wire:navigate>
+                    {{ __("Inbox") }}
+                    <livewire:post.unread-messages-count />
+                </flux:navlist.item>
+                <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
+                    :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
+                </flux:navlist.item>
+                {{-- Mobile: Admin Area Link --}}
+                @if(auth()->user()->isAdminOrModerator())
+                <flux:navlist.item icon="shield-check" :href="route('admin.dashboard')" wire:navigate>
+                    {{ __('Admin Area') }}
+                </flux:navlist.item>
+                @endif
+                @endauth
             </flux:navlist.group>
         </flux:navlist>
 
@@ -142,7 +191,7 @@
         </flux:navlist>
     </flux:sidebar>
 
-    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4 flex items-center">
+    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4"> {{-- Removed flex items-center --}}
         {{ $slot }}
     </div>
 

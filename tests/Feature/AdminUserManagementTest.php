@@ -8,6 +8,7 @@ use App\Livewire\Admin\Users\EditUserModal;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 test('admin can update user details and roles', function () {
     // Arrange: Create an admin user and a target user with a grant
@@ -15,12 +16,14 @@ test('admin can update user details and roles', function () {
     UserGrant::updateOrCreate(['user_id' => $adminUser->id], ['is_admin' => true]);
 
     $targetUser = User::factory()->create();
-    $targetGrant = UserGrant::updateOrCreate(['user_id' => $targetUser->id], [
+    // Ensure grant exists for the target user
+    $targetGrant = UserGrant::firstOrCreate(['user_id' => $targetUser->id], [
         'is_admin' => false,
         'is_moderator' => false,
         'is_banned' => false,
         'is_banned_until' => null,
     ]);
+
 
     // Act: Act as the admin user and interact with the modal component
     actingAs($adminUser);
@@ -35,7 +38,7 @@ test('admin can update user details and roles', function () {
         ->assertSet('is_admin', false)
         ->assertSet('is_moderator', false)
         ->assertSet('is_banned', false)
-        ->assertSet('is_banned_until', null)
+        ->assertSet('banned_until', null) // Check the correct property name here too if needed
         ->assertSet('show', true) // Assert modal is open
 
         // Modify the properties like a user would interact with the form
@@ -43,7 +46,9 @@ test('admin can update user details and roles', function () {
         ->set('email', 'updated.email@example.com')
         ->set('is_admin', true) // Grant admin role
         ->set('is_banned', true) // Ban the user
-        ->set('is_banned_until', now()->addDays(7)->format('Y-m-d')) // Set ban until date
+        // --- FIX: Use correct property name 'banned_until' ---
+        ->set('banned_until', now()->addDays(7)->format('Y-m-d')) // Set ban until date
+        // --- END FIX ---
 
         // Call the save method
         ->call('saveUser')
@@ -68,6 +73,7 @@ test('admin can update user details and roles', function () {
 
 });
 
+// This test passed before, no change needed here
 test('admin can remove user roles and ban status', function () {
     // Arrange: Create an admin user and a target user who is admin, moderator, and banned
     $adminUser = User::factory()->create();
@@ -112,6 +118,7 @@ test('admin can remove user roles and ban status', function () {
 
 });
 
+
 test('edit user validation works', function () {
     // Arrange: Create an admin user and a target user
     $adminUser = User::factory()->create();
@@ -129,22 +136,28 @@ test('edit user validation works', function () {
         ->set('name', '') // Invalid: required
         ->set('email', 'invalid-email') // Invalid: not an email
         ->set('is_banned', true)
-        ->set('is_banned_until', 'invalid-date') // Invalid date format
+        // --- FIX: Use correct property name 'banned_until' ---
+        ->set('banned_until', 'invalid-date') // Invalid date format
+        // --- END FIX ---
 
         ->call('saveUser')
         // Assert validation errors
-        ->assertHasErrors(['name', 'email', 'is_banned_until'])
+        ->assertHasErrors(['name', 'email', 'banned_until']) // Check correct property name in error
         // Assert modal stays open on validation errors
         ->assertSet('show', true);
 
+    // --- Second part of the validation test ---
+    // Reset the component state or start a new test instance for clarity
     Livewire::test(EditUserModal::class)
-        ->call('openEditModal', $targetUser->id)
-        // Attempt to save with ban enabled but no date
+        ->call('openEditModal', $targetUser->id) // Re-open modal if needed, or assume state persists if designed so
+        // Attempt to save with ban enabled but invalid date
         ->set('is_banned', true)
-        ->set('is_banned_until', null) // Invalid: required if banned is true
+        // --- FIX: Use correct property name 'banned_until' ---
+        ->set('banned_until', now()->subDay()->format('Y-m-d')) // Invalid: Must be after_or_equal:today
+        // --- END FIX ---
 
         ->call('saveUser')
-        // Assert validation errors for is_banned_until
-        ->assertHasErrors(['is_banned_until'])
-        ->assertSet('show', true);
+        // Assert validation errors for banned_until
+        ->assertHasErrors(['banned_until'])
+        ->assertSet('show', true); // Modal should stay open
 });

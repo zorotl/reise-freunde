@@ -14,28 +14,40 @@ test('profile information can be updated', function () {
 
     $this->actingAs($user);
 
+    // Ensure UserAdditionalInfo exists or is created if needed by the component logic
+    $user->additionalInfo()->firstOrCreate(['user_id' => $user->id], ['username' => 'initial_username']);
+
+
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
+        ->set('username', 'testuser') // Add username update
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
 
     $user->refresh();
+    $user->load('additionalInfo'); // Load relation to check
 
     expect($user->name)->toEqual('Test User');
     expect($user->email)->toEqual('test@example.com');
     expect($user->email_verified_at)->toBeNull();
+    expect($user->additionalInfo->username)->toEqual('testuser'); // Check updated username
 });
+
 
 test('email verification status is unchanged when email address is unchanged', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
+    // Ensure UserAdditionalInfo exists or is created if needed by the component logic
+    $user->additionalInfo()->firstOrCreate(['user_id' => $user->id], ['username' => 'initial_username']);
+
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
-        ->set('email', $user->email)
+        ->set('email', $user->email) // Keep email same
+        ->set('username', 'testuserunchanged') // Add username update
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -43,22 +55,28 @@ test('email verification status is unchanged when email address is unchanged', f
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
     $response = Volt::test('settings.delete-user-form')
-        ->set('password', 'password')
+        ->set('password', 'password') // Assuming default factory password is 'password'
         ->call('deleteUser');
 
     $response
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
-    expect(auth()->check())->toBeFalse();
+    // --- FIX: Check if the user is trashed ---
+    // expect($user->fresh())->toBeNull(); // This fails with SoftDeletes
+    expect($user->fresh()->trashed())->toBeTrue();
+    // --- END FIX ---
+
+    expect(auth()->check())->toBeFalse(); // Check user is logged out
 });
+
 
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();
@@ -72,4 +90,5 @@ test('correct password must be provided to delete account', function () {
     $response->assertHasErrors(['password']);
 
     expect($user->fresh())->not->toBeNull();
+    expect($user->fresh()->trashed())->toBeFalse(); // Ensure user was NOT soft-deleted
 });
