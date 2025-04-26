@@ -122,7 +122,7 @@
                         <br>
                         <button wire:click="banSender({{ $message->sender->id }})"
                             onclick="return confirm('{{ __('Are you sure you want to ban this sender?') }}')"
-                            class="px-3 py-1 text-xs font-semibold text-red-600 border border-red-600 bg-white rounded hover:bg-red-100 dark:bg-gray-900 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10">
+                            class="px-2 py-1 text-xs font-semibold text-red-600 border border-red-600 bg-white rounded hover:bg-red-100 dark:bg-gray-900 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10">
                             {{ __('Ban Sender') }}</button>
                         @endif
                         @else

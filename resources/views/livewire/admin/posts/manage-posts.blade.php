@@ -127,24 +127,29 @@
                     <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium w-40">
                         {{-- Action Buttons --}}
                         <button wire:click="$dispatch('openEditPostModal', { postId: {{ $post->id }} })"
-                            class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 me-3">{{
-                            __('Edit') }}</button>
+                            class="px-2 py-1 text-xs font-semibold text-indigo-600 border border-indigo-600 bg-white rounded hover:bg-indigo-100 dark:bg-gray-900 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-500/10">
+                            {{ __('Edit') }}
+                        </button>
 
                         @if($post->trashed())
                         <button wire:click="restorePost({{ $post->id }})"
                             onclick="return confirm('{{ __('Are you sure you want to restore this post?') }}')"
-                            class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600 me-3">{{
-                            __('Restore') }}</button>
+                            class="px-2 py-1 text-xs font-semibold text-green-600 border border-green-600 bg-white rounded hover:bg-green-100 dark:bg-gray-900 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-500/10">
+                            {{ __('Restore') }}
+                        </button>
                         <button wire:click="forceDeletePost({{ $post->id }})"
                             onclick="return confirm('{{ __('Are you sure you want to permanently delete this post? This action cannot be undone.') }}')"
-                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-600">{{
-                            __('Force Delete') }}</button>
+                            class="px-2 py-1 text-xs font-semibold text-red-600 border border-red-600 bg-white rounded hover:bg-red-100 dark:bg-gray-900 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10">
+                            {{ __('Force Delete') }}
+                        </button>
                         @else
                         <button wire:click="softDeletePost({{ $post->id }})"
                             onclick="return confirm('{{ __('Are you sure you want to soft delete this post?') }}')"
-                            class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-600">{{
-                            __('Soft Delete') }}</button>
+                            class="px-2 py-1 text-xs font-semibold text-yellow-600 border border-yellow-600 bg-white rounded hover:bg-yellow-100 dark:bg-gray-900 dark:border-yellow-400 dark:text-yellow-400 dark:hover:bg-yellow-500/10">
+                            {{ __('Soft Delete') }}
+                        </button>
                         @endif
+
                     </td>
                 </tr>
                 @empty
