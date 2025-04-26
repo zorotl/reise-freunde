@@ -13,18 +13,32 @@
         </span>
     </div>
     @endif
+    @if (session()->has('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline">{{ session('error') }}</span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
+                <title>Close</title>
+                <path
+                    d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15L6.305 5.107a1.2 1.2 0 0 1 1.697-1.697l2.757 3.15 2.651-3.029a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.15 2.758 3.15a1.2 1.2 0 0 1 0 1.697z" />
+            </svg>
+        </span>
+    </div>
+    @endif
 
     {{-- Controls: Search and Per Page --}}
     <div class="mb-4 flex justify-between items-center">
-        <div class="flex-1 me-4">
+        <div class="flex-1">
             <input wire:model.live="search" type="text" placeholder="{{ __('Search users...') }}"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
         </div>
         {{-- Add Clear Filter Button if filterUserId is set --}}
         @if ($filterUserId)
         <button wire:click="clearFilter"
-            class="ms-3 text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">{{
-            __('Clear Filter') }}</button>
+            class="mx-2 text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">
+            {{ __('Clear Filter') }}
+        </button>
         @endif
 
         <div>
@@ -88,9 +102,9 @@
                 @forelse ($users as $user)
                 <tr @if($user->trashed()) class="bg-red-100 dark:bg-red-900/50 opacity-75" @endif>
                     {{-- Name Cell --}}
-                    <td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium max-w-xs overflow-hidden text-ellipsis">
                         <a href="{{ route('user.profile', $user->id) }}"
-                            class="text-sm font-medium text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
                             {{ $user->name }}</a>
                     </td>
                     {{-- Email Cell --}}

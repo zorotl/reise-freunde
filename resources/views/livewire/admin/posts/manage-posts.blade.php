@@ -27,7 +27,6 @@
     </div>
     @endif
 
-
     {{-- Controls: Search and Per Page --}}
     <div class="mb-4 flex justify-between items-center">
         <div class="flex-1 me-4">
@@ -94,9 +93,9 @@
                 @forelse ($posts as $post)
                 <tr @if($post->trashed()) class="bg-red-100 dark:bg-red-900/50 opacity-75" @endif>
                     {{-- Title Cell --}}
-                    <td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium max-w-xs overflow-hidden text-ellipsis">
                         <a href="{{ route('post.single', $post->id) }}"
-                            class="text-sm font-medium text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
                             {{ $post->title }}</a>
                     </td>
                     {{-- Author Cell --}}
