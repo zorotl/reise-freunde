@@ -65,6 +65,10 @@ class ViewMessage extends Component
             return;
         }
 
+        // Dispatch the event to open the Edit User Modal for the sender's user ID.
+        // The modal will load the user's data including their ban status.
+        $this->dispatch('openEditModal', userId: $senderId);
+
         // Find or create the user grant record
         $grant = $sender->grant ?? new UserGrant(['user_id' => $sender->id]);
 
