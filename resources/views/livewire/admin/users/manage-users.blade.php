@@ -28,7 +28,7 @@
     @endif
 
     {{-- Controls: Search and Per Page --}}
-    <div class="mb-4 flex justify-between items-center">
+    <div class="mb-4 me-2 flex justify-between items-center">
         <div class="flex-1">
             <input wire:model.live="search" type="text" placeholder="{{ __('Search users...') }}"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
@@ -36,7 +36,7 @@
         {{-- Add Clear Filter Button if filterUserId is set --}}
         @if ($filterUserId)
         <button wire:click="clearFilter"
-            class="mx-2 text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">
+            class="text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">
             {{ __('Clear Filter') }}
         </button>
         @endif
@@ -44,7 +44,7 @@
         <div>
             <label for="perPage" class="sr-only">{{ __('Per Page') }}</label>
             <select wire:model.live="perPage" id="perPage"
-                class="shadow border rounded py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
+                class="shadow border rounded ms-2 py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>

@@ -116,7 +116,7 @@
                             class="text-blue-600 hover:underline" wire:navigate>
                             {{ $message->sender->name }}
                         </a>
-                        @if($message->sender->grant->is_banned)
+                        @if($message->sender->grant?->is_banned)
                         <br><span class="ms-1 text-red-500">({{ __('Banned') }})</span>
                         @else
                         <br>
