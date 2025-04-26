@@ -19,7 +19,7 @@ class UserAdditionalInfoSeeder extends Seeder
                 'user_id' => $firstUser->id,
                 'username' => 'mast', // Behalte den spezifischen Username bei
                 'birthday' => '1984-08-28', // Behalte das spezifische Geburtsdatum bei
-                'nationality' => 'Swiss', // Behalte die spezifische Nationalität bei
+                'nationality' => 'Switzerland', // Behalte die spezifische Nationalität bei
                 // 'about_me' wird von der Factory generiert
             ]);
         }

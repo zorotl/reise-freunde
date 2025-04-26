@@ -17,11 +17,14 @@ class UserGrantFactory extends Factory
      */
     public function definition(): array
     {
+        $isBanned = $this->faker->boolean(5); // 5% Chance auf gebannt
+
         return [
             'is_admin' => $this->faker->boolean(10), // 10% Chance auf Admin
             'is_moderator' => $this->faker->boolean(20), // 20% Chance auf Moderator
-            'is_banned' => $this->faker->boolean(5), // 5% Chance auf gebannt
-            'is_banned_until' => $this->faker->optional(0.1)->dateTimeBetween('now', '+1 year'), // Seltenes Ablaufdatum für Bann
+            'is_banned' => $isBanned,
+            'is_banned_until' => $isBanned ? $this->faker->dateTimeBetween('now', '+1 month') : null,
+            'banned_reason' => $isBanned ? 'banned from seeder' : null,
         ];
     }
 

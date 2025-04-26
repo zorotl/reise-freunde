@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserAdditionalInfoSeeder::class);
         $this->call(HobbyAndTravelStyleSeeder::class);
         $this->call(PostSeeder::class);
-        $this->call(MessageSeeder::class); // Neuer Seeder
-        $this->call(UserFollowerSeeder::class); // Neuer Seeder
+        $this->call(MessageSeeder::class);
+        $this->call(UserFollowerSeeder::class);
     }
 }

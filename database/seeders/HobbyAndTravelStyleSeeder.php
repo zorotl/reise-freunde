@@ -15,8 +15,57 @@ class HobbyAndTravelStyleSeeder extends Seeder
      */
     public function run(): void
     {
-        $travelStyles = ['Adventure', 'Mountains', 'Camping', 'City Trips', 'Boat/Ship', 'High Mountains', 'Car'];
-        $hobbies = ['Photography', 'Hiking', 'Cooking', 'Tennis', 'Cycling', 'Skiing', 'Wellness', 'Wandering', 'Waterski'];
+        $travelStyles = [
+            'Adventure',
+            'Mountains',
+            'Camping',
+            'City Trips',
+            'Boat/Ship',
+            'High Mountains',
+            'Car',
+            'Backpacking',
+            'Luxury Travel',
+            'Road Trips',
+            'Island Hopping',
+            'Cruises',
+            'Nature Tours',
+            'Safari',
+            'Beach Holidays',
+            'Cultural Trips',
+            'Eco Tourism',
+            'Winter Sports',
+            'Train Travel',
+            'Glamping',
+            'Historical Tours',
+            'Remote Villages',
+            'Wildlife Expeditions'
+        ];
+
+        $hobbies = [
+            'Photography',
+            'Hiking',
+            'Cooking',
+            'Tennis',
+            'Cycling',
+            'Skiing',
+            'Wellness',
+            'Wandering',
+            'Waterski',
+            'Painting',
+            'Fishing',
+            'Yoga',
+            'Running',
+            'Rock Climbing',
+            'Diving',
+            'Bird Watching',
+            'Horseback Riding',
+            'Surfing',
+            'Golf',
+            'Sailing',
+            'Pottery',
+            'Dancing',
+            'Kitesurfing'
+        ];
 
         $travelStyleModels = collect();
         foreach ($travelStyles as $style) {
@@ -30,8 +79,8 @@ class HobbyAndTravelStyleSeeder extends Seeder
 
         // Weise jedem Benutzer zufällig einige Hobbys und Reisestile zu
         User::all()->each(function ($user) use ($hobbyModels, $travelStyleModels) {
-            $user->hobbies()->attach($hobbyModels->random(rand(0, 3))->pluck('id'));
-            $user->travelStyles()->attach($travelStyleModels->random(rand(0, 2))->pluck('id'));
+            $user->hobbies()->attach($hobbyModels->random(rand(0, 5))->pluck('id'));
+            $user->travelStyles()->attach($travelStyleModels->random(rand(0, 5))->pluck('id'));
         });
     }
 }
