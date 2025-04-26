@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
 use App\Http\Middleware\AdminOrModeratorMiddleware;
-// use App\Http\Middleware\AdminOrModeratorMiddleware;
 
 
 Route::get('/', function () {
@@ -103,15 +102,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
-//         - [ ] Fix mobile menu, missing links
+//         - [x] Fix mobile menu, missing links
 
 //     Overall:
-//         - [x] Implement a backend for the admin
-//         - [x] Admin should be able to edit and delete all posts
-//         - [x] Admin should be able to edit and delete all users
-//         - [x] Admin should be able to ban and unban users
-//         - [x] Admin should be able to create, update and delete hobbies
-//         - [x] Admin should be able to create, update and delete travel styles
 //         - [ ] Implement a different backend for the moderator
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
 //         - [ ] Implement a verified User System
@@ -127,12 +120,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Implement Laravel CSRF protection for forms
 
 //     Testing:
-//         - [x] Fix existing Pest-Testing
-//         - [x] Implement Pest-Testing for the whole project
+//         - [ ] Test continuing
 
 //     Logged in user:
-//         - [x] Use is_admin 
-//         - [x] Use is_moderator 
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
 //         - [ ] Use a profile picture 
@@ -146,9 +136,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a comment system
 //         - [ ] Add a like system
 //         - [ ] Add a report system
-//         - [x] Add a search bar to the post
 //         - [ ] Add a filter (Country, Region) to the post
 
 //     Frontend / not logged in user:
-//         - [x] Add more information to the homepage
 //         - [ ] Make it difficult to use the app without being logged in

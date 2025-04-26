@@ -8,28 +8,40 @@
                     <div
                         class="rounded-full overflow-hidden w-16 h-16 sm:w-24 sm:h-24 bg-gray-300 flex items-center justify-center flex-shrink-0">
                         @if ($user->additionalInfo?->profile_picture)
-                        {{-- Placeholder - Implement image storage/retrieval later --}}
-                        {{-- <img src="{{ asset('storage/' . $user->additionalInfo->profile_picture) }}"
-                            alt="Profile Picture" class="w-full h-full object-cover"> --}}
+                        {{-- Placeholder --}}
                         <span class="text-xl text-gray-600 dark:text-gray-400">{{ $user->initials() }}</span>
                         @else
                         <span class="text-xl text-gray-600 dark:text-gray-400">{{ $user->initials() }}</span>
                         @endif
                     </div>
-                    {{-- Name & Counts --}}
+                    {{-- Name/Username & Counts --}}
                     <div>
+                        {{-- Req 1.1: Show Name for own profile, Username otherwise --}}
                         <h2 class="text-lg sm:text-xl font-medium text-gray-900 dark:text-gray-100">
+                            @if ($this->isOwnProfile)
                             {{ $user->name }}
+                            @else
+                            {{-- Show username if available, otherwise fall back to name (shouldn't happen often) --}}
+                            {{ $user->additionalInfo?->username ?: $user->name }}
+                            @endif
                         </h2>
-                        @if ($user->additionalInfo?->username)
+                        {{-- Show username below name only if it's NOT the main title and exists --}}
+                        @if ($this->isOwnProfile && $user->additionalInfo?->username)
                         <p class="text-sm text-gray-500 dark:text-gray-400">
                             {{ '@' . $user->additionalInfo->username }}
-                            @if($user->isPrivate())
-                            <flux:icon.lock-closed class="size-8" /> {{ __('Private Account') }}
-                            @endif
                         </p>
                         @endif
-                        {{-- Follower/Following Counts --}}
+
+                        {{-- Show Private icon if applicable --}}
+                        @if($user->isPrivate())
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+                            <flux:icon.lock-closed class="size-4 mr-1" /> {{-- Adjusted icon size --}}
+                            <span>{{ __('Private Account') }}</span>
+                        </p>
+                        @endif
+
+                        {{-- Req 2: Conditionally show Follower/Following Counts --}}
+                        @if ($this->canViewSensitiveInfo)
                         <div class="mt-2 flex space-x-4 text-sm text-gray-600 dark:text-gray-400">
                             <a href="{{ route('user.followers', $user->id) }}" wire:navigate class="hover:underline">
                                 <span class="font-semibold text-gray-900 dark:text-gray-100">{{
@@ -40,12 +52,19 @@
                                     $this->user->following_count }}</span> {{ __('Following') }}
                             </a>
                         </div>
+                        @else
+                        {{-- Optionally show placeholder text for private profiles if not following --}}
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 italic">
+                            {{ __('Follow this user to see their network.') }}
+                        </div>
+                        @endif
                     </div>
                 </div>
 
-                {{-- Action Buttons --}}
+                {{-- Action Buttons (existing logic is fine) --}}
                 <div class="flex-shrink-0">
                     @if ($this->isOwnProfile)
+                    {{-- Edit Profile Button --}}
                     <a wire:navigate href="{{ route('settings.profile') }}"
                         class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-700 border border-gray-300 dark:border-neutral-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 disabled:opacity-25 transition ease-in-out duration-150">
                         {{ __('Edit Profile') }}
@@ -69,11 +88,11 @@
                         {{ __('Request Sent') }}
                     </button>
                     @elseif ($this->hasPendingFollowRequestFrom)
-                    {{-- Button to accept request FROM this user (Better on dedicated page) --}}
                     <span
                         class="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                         {{ __('Wants to follow you') }}
                     </span>
+                    {{-- Consider adding Accept/Decline here or keeping them separate --}}
                     @else
                     {{-- Follow Button --}}
                     <button wire:click="follow" wire:loading.attr="disabled"
@@ -84,26 +103,32 @@
                         {{ $user->isPrivate() ? __('Request Follow') : __('Follow') }}
                     </button>
                     @endif
-                    @endif
-                    {{-- Add Write Message Button later if needed --}}
-                    <a wire:navigate href="{{ route('mail.compose', [
-                            'receiverId' => $user->id, 
-                            'fixReceiver' => true
-                            ]) }}"
+                    {{-- Message Button - Always show if can interact --}}
+                    <a wire:navigate
+                        href="{{ route('mail.compose', ['receiverId' => $user->id, 'fixReceiver' => true]) }}"
                         class="ml-2 inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                         {{ __('Write a message') }}
                     </a>
+                    @endif
                 </div>
-
             </div>
+
+            {{-- Details Section --}}
+            {{-- Req 2: Conditionally show details if profile is private --}}
+            @if ($this->canViewSensitiveInfo)
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                {{-- Existing profile fields --}}
+                {{-- Req 1.2: Only show Name div if own profile --}}
+                @if ($this->isOwnProfile)
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Name') }}</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $user->name }}</p>
                 </div>
+                @endif
 
-                @if ($user->additionalInfo?->username)
+                {{-- Show username if available (removed redundant check, username is shown in header if not own
+                profile) --}}
+                @if ($user->additionalInfo?->username && $this->isOwnProfile) {{-- Only show again if own profile and it
+                exists --}}
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Username')
                         }}</label>
@@ -111,24 +136,26 @@
                 </div>
                 @endif
 
+                {{-- Req 1.2: Only show Email div if own profile --}}
+                @if ($this->isOwnProfile)
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Email') }}</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $user->email }}</p>
                     {{-- Email verification status --}}
-                    @if ($this->isOwnProfile) {{-- Only show verification status on own profile --}}
                     @if (!$user->hasVerifiedEmail())
                     <p class="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
                         {{ __('Your email address is not verified.') }}
-                        {{-- Add link to resend verification --}}
+                        {{-- Add link to resend verification if needed --}}
                     </p>
                     @else
                     <p class="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center">
-                        <flux:icon.check-circle class="size-8" /> {{ __('Email Verified') }}
+                        <flux:icon.check-circle class="size-4 mr-1" /> {{ __('Email Verified') }}
                     </p>
                     @endif
-                    @endif
                 </div>
+                @endif
 
+                {{-- Other details (assuming they follow same privacy rule) --}}
                 @if ($user->additionalInfo?->birthday)
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Age') }}</label>
@@ -148,7 +175,6 @@
                 </div>
                 @endif
 
-                {{-- About Me --}}
                 <div class="md:col-span-2">
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('About Me')
                         }}</label>
@@ -157,20 +183,17 @@
                 </div>
 
                 {{-- Travel Styles --}}
-                @if ($user->travelStyles->count() || $user->additionalInfo?->custom_travel_styles)
+                @if ($user->travelStyles->count() || ($user->additionalInfo?->custom_travel_styles &&
+                count($user->additionalInfo->custom_travel_styles) > 0) )
                 <div class="md:col-span-2">
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Travel Styles</label>
                     <div class="mt-1 flex flex-wrap gap-2">
-                        {{-- Travel Styles (Predefined) --}}
-                        @if ($user->travelStyles->count())
                         @foreach ($user->travelStyles as $style)
                         <span
                             class="px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
                             {{ $style->name }}
                         </span>
                         @endforeach
-                        @endif
-                        {{-- Travel Styles (Custom) --}}
                         @if ($user->additionalInfo?->custom_travel_styles)
                         @foreach ($user->additionalInfo->custom_travel_styles as $style)
                         <span
@@ -184,19 +207,17 @@
                 @endif
 
                 {{-- Hobbies --}}
+                @if ($user->hobbies->count() || ($user->additionalInfo?->custom_hobbies &&
+                count($user->additionalInfo->custom_hobbies) > 0) )
                 <div class="md:col-span-2">
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Hobbies</label>
                     <div class="mt-1 flex flex-wrap gap-2">
-                        {{-- Hobbies (Predefined) --}}
-                        @if ($user->hobbies->count())
                         @foreach ($user->hobbies as $hobby)
                         <span
                             class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                             {{ $hobby->name }}
                         </span>
                         @endforeach
-                        @endif
-                        {{-- Hobbies (Custom) --}}
                         @if ($user->additionalInfo?->custom_hobbies)
                         @foreach ($user->additionalInfo->custom_hobbies as $hobby)
                         <span
@@ -207,8 +228,16 @@
                         @endif
                     </div>
                 </div>
+                @endif
+
             </div>
-            {{-- Remove the old edit/message button section at the bottom --}}
+            @else
+            {{-- Message shown for private profiles when not allowed to view details --}}
+            <div class="p-6 text-center text-gray-500 dark:text-gray-400 italic">
+                <flux:icon.lock-closed class="mx-auto h-8 w-8 mb-2" />
+                This profile is private. Follow this user to see their details.
+            </div>
+            @endif
         </div>
     </div>
 </div>

@@ -43,6 +43,19 @@ class UserProfile extends Component
         return $this->loggedInUser && !$this->isOwnProfile;
     }
 
+    /**
+     * Determine if the logged-in user can view sensitive info
+     * (e.g., counts on private profiles).
+     */
+    #[Computed]
+    public function canViewSensitiveInfo(): bool
+    {
+        // Can view if it's their own profile,
+        // or if the profile is not private,
+        // or if they are following the private profile.
+        return $this->isOwnProfile || !$this->user->isPrivate() || $this->isFollowing;
+    }
+
     public function mount(int $id)
     {
         // Eager load relationships needed on the profile page + follow status checks
