@@ -54,8 +54,11 @@
 
                         @if ($entry->country || $entry->city)
                         <span class="mx-1">•</span>
-                        <span>Destination: {{ $entry->country ?? '' }}{{ $entry->country && $entry->city ? ' / ' : ''
-                            }}{{ $entry->city ?? '' }}</span>
+                        <span>Destination:
+                            {{ $this->countryList[$entry->country] ?? '' }}
+                            {{ $this->countryList[$entry->country] && $entry->city ? ' / ' : ''}}
+                            {{ $entry->city ?? '' }}
+                        </span>
                         @endif
                     </div>
                 </div>

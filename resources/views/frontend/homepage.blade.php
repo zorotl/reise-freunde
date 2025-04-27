@@ -81,13 +81,13 @@
                     </div>
                 </div>
 
-                <livewire:post.recent-posts />
                 <livewire:search />
+                <livewire:post.recent-posts />
 
                 {{-- Travel Styles Section --}}
                 <div class="py-8">
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Explore by Travel
-                        Style') }}</h2>
+                        Style *** STATISCHER INHALT ***') }}</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white dark:bg-neutral-800 rounded-lg shadow overflow-hidden">
                             <div class="p-4">
@@ -120,20 +120,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {{-- Basic Search Form (Keep this below the Travel Styles) --}}
-                <div class="mb-8">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Search for
-                        Adventures') }}</h2>
-                    <form action="#" method="GET" class="flex items-center">
-                        <input type="text" name="query" placeholder="{{ __('Enter keywords...') }}"
-                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300">
-                        <button type="submit"
-                            class="ml-3 inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
-                            {{ __('Search') }}
-                        </button>
-                    </form>
                 </div>
 
                 {{-- More homepage content will go here --}}

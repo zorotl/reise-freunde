@@ -5,6 +5,7 @@ namespace App\Livewire\Post;
 use Livewire\Component;
 use App\Models\Post;
 use Illuminate\Support\Carbon;
+use Monarobase\CountryList\CountryListFacade as Countries;
 
 class PostList extends Component
 {
@@ -14,11 +15,13 @@ class PostList extends Component
     public $entries;
     public Carbon $now;
     public string $show = 'all';
+    public array $countryList = [];
 
     public function mount()
     {
         $this->now = Carbon::now();
         $this->loadActiveEntries();
+        $this->countryList = Countries::getList('en', 'php');
     }
 
     public function toggleActive(Post $entry)

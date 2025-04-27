@@ -4,6 +4,8 @@ namespace App\Livewire\Post;
 
 use Livewire\Component;
 use App\Models\Post;
+use Monarobase\CountryList\CountryListFacade as Countries;
+use Illuminate\Validation\Rule;
 
 class EditPost extends Component
 {
@@ -18,6 +20,7 @@ class EditPost extends Component
     public $origin = 'all';
     public $action = 'update';
     public $buttonText = 'Update Post';
+    public array $countryList = [];
 
     public function mount(Post $id, $origin = 'all')
     {
@@ -31,6 +34,7 @@ class EditPost extends Component
         $this->toDate = $this->entry->to_date ? $this->entry->to_date->format('Y-m-d') : null;
         $this->country = $this->entry->country;
         $this->city = $this->entry->city;
+        $this->countryList = Countries::getList('en', 'php');
     }
 
     public function update()
@@ -41,7 +45,12 @@ class EditPost extends Component
             'expiryDate' => 'required|date|after:today|before_or_equal:+2 years',
             'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',
             'toDate' => 'required|date|after:today|before_or_equal:+2 years|after:fromDate',
-            'country' => 'nullable|string|max:255',
+            'country' => [
+                'nullable',
+                'string',
+                'size:2',
+                Rule::in(array_keys($this->countryList)) // Validate against fetched country codes
+            ],
             'city' => 'nullable|string|max:255',
         ]);
 

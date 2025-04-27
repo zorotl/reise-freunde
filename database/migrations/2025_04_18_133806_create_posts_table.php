@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->boolean('is_active')->default(true); // New active status, defaults to true
             $table->timestamp('from_date');
             $table->timestamp('to_date');
-            $table->string('country')->nullable();
+            $table->char('country', 2)->nullable()->index();
             $table->string('city')->nullable();
             $table->timestamps();
             $table->softDeletes(); // Enable soft deletes

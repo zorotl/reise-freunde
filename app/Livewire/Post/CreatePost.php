@@ -5,6 +5,8 @@ namespace App\Livewire\Post;
 use Livewire\Component;
 use App\Models\Post;
 use Carbon\Carbon;
+use Monarobase\CountryList\CountryListFacade as Countries;
+use Illuminate\Validation\Rule;
 
 class CreatePost extends Component
 {
@@ -18,7 +20,12 @@ class CreatePost extends Component
     public $origin = 'all';
     public $action = 'save';
     public $buttonText = 'Create Post';
+    public array $countryList = [];
 
+    public function mount()
+    {
+        $this->countryList = Countries::getList('en', 'php');
+    }
     public function save()
     {
         $this->validate([
@@ -27,7 +34,12 @@ class CreatePost extends Component
             'expiryDate' => 'required|date|after:today|before_or_equal:+2 years|before_or_equal:fromDate',
             'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',
             'toDate' => 'required|date|after:today|before_or_equal:+2 years|after:fromDate',
-            'country' => 'nullable|string|max:255',
+            'country' => [
+                'nullable',
+                'string',
+                'size:2',
+                Rule::in(array_keys($this->countryList)) // Validate against fetched country codes
+            ],
             'city' => 'nullable|string|max:255',
         ]);
 

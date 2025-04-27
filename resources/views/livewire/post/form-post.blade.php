@@ -36,8 +36,20 @@
 
             <flux:input wire:model="toDate" label="To Date" type="date" autocomplete="toDate" required />
 
-            <flux:input wire:model="country" label="Country (optional)" type="text" autocomplete="country"
-              maxlength="255" />
+            <div class="mb-4"> {{-- Add mb-4 if needed, like other inputs --}}
+              <label for="country-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ __('Country (optional)') }}
+              </label>
+              <select wire:model="country" id="country-select"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <option value="">{{ __('Select Country...') }}</option>
+                {{-- Loop through the country list from the component --}}
+                @foreach($countryList as $code => $name)
+                <option value="{{ $code }}">{{ $name }}</option>
+                @endforeach
+              </select>
+              @error('country') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
 
             <flux:input wire:model="city" label="City (optional)" type="text" autocomplete="city" maxlength="255" />
 

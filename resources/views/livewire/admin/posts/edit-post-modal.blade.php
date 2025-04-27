@@ -91,10 +91,18 @@
                     <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         {{-- Country --}}
                         <div>
-                            <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{
-                                __('Country') }}</label>
-                            <input type="text" wire:model="country" id="country"
+                            <label for="country-select"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ __('Country (optional)') }}
+                            </label>
+                            <select wire:model="country" id="country-select"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <option value="">{{ __('Select Country...') }}</option>
+                                {{-- Loop through the country list from the component --}}
+                                @foreach($countryList as $code => $name)
+                                <option value="{{ $code }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
                             @error('country') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
                         {{-- City --}}

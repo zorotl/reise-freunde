@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Admin\Posts;
 
-use App\Models\Post; // Import Post model
+use App\Models\Post;
 use Livewire\Component;
-use Livewire\Attributes\On; // Trait for listeners
-use Carbon\Carbon; // Import Carbon for date handling
+use Livewire\Attributes\On;
+use Carbon\Carbon;
+use Illuminate\Validation\Rule;
+use Monarobase\CountryList\CountryListFacade as Countries;
 
 class EditPostModal extends Component
 {
@@ -21,16 +23,16 @@ class EditPostModal extends Component
     public $to_date;
     public $country;
     public $city;
+    public array $countryList = [];
 
     // Define validation rules
-    protected $rules = [
+    protected $baseRules = [
         'title' => 'required|string|max:255',
         'content' => 'required|string',
         'expiry_date' => 'required|date|after_or_equal:today',
         'is_active' => 'boolean',
         'from_date' => 'required|date',
         'to_date' => 'required|date|after_or_equal:from_date',
-        'country' => 'nullable|string|max:255',
         'city' => 'nullable|string|max:255',
     ];
 
@@ -47,6 +49,9 @@ class EditPostModal extends Component
             return;
         }
 
+        // --- Load Country List ---
+        $this->countryList = Countries::getList('en', 'php');
+
         // Populate properties with post data
         $this->postId = $post->id;
         $this->title = $post->title;
@@ -56,7 +61,7 @@ class EditPostModal extends Component
         $this->is_active = $post->is_active;
         $this->from_date = $post->from_date ? $post->from_date->format('Y-m-d') : null;
         $this->to_date = $post->to_date ? $post->to_date->format('Y-m-d') : null;
-        $this->country = $post->country;
+        $this->country = $post->country; // Assign the country code
         $this->city = $post->city;
 
 
@@ -66,7 +71,17 @@ class EditPostModal extends Component
     // Save the post changes
     public function savePost()
     {
-        $this->validate(); // Run validation
+        // --- Define dynamic rules HERE ---
+        $rules = $this->baseRules; // Start with base rules
+        $rules['country'] = [         // Add the dynamic country rule
+            'nullable',
+            'string',
+            'size:2',
+            Rule::in(array_keys($this->countryList)) // Now $this->countryList is available
+        ];
+
+        // Validate using the dynamically built rules array
+        $validatedData = $this->validate($rules);
 
         $post = Post::find($this->postId);
 
@@ -76,15 +91,18 @@ class EditPostModal extends Component
             return;
         }
 
+        // Update post properties using validated data
+        $post->update($validatedData); // Use mass assignment with validated data
+
         // Update post properties
-        $post->title = $this->title;
-        $post->content = $this->content;
-        $post->expiry_date = $this->expiry_date;
-        $post->is_active = $this->is_active;
-        $post->from_date = $this->from_date;
-        $post->to_date = $this->to_date;
-        $post->country = $this->country;
-        $post->city = $this->city;
+        // $post->title = $this->title;
+        // $post->content = $this->content;
+        // $post->expiry_date = $this->expiry_date;
+        // $post->is_active = $this->is_active;
+        // $post->from_date = $this->from_date;
+        // $post->to_date = $this->to_date;
+        // $post->country = $this->country;
+        // $post->city = $this->city;
 
         $post->save();
 
@@ -108,6 +126,7 @@ class EditPostModal extends Component
             'to_date',
             'country',
             'city',
+            'countryList',
         ]); // Reset all properties
         $this->resetValidation(); // Clear validation errors
     }
