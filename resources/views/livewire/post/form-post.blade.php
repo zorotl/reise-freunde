@@ -36,18 +36,53 @@
 
             <flux:input wire:model="toDate" label="To Date" type="date" autocomplete="toDate" required />
 
-            <div class="mb-4"> {{-- Add mb-4 if needed, like other inputs --}}
-              <label for="country-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{-- Searchable Country Dropdown --}}
+            <div wire:ignore x-data="{
+              tomSelectInstance: null,
+              countryValue: @entangle('country'), // Entangle with Livewire's $country property
+              initTomSelect() {
+                  if (typeof TomSelect === 'undefined') { console.error('TomSelect not loaded'); return; }
+                  this.tomSelectInstance = new TomSelect(this.$refs.countrySelectElement, {
+                      create: false,
+                      valueField: 'code',
+                      labelField: 'name',
+                      searchField: ['name'],
+                      placeholder: '{{ __('Select Country...') }}',
+                      options: @js(collect($countryList)->map(fn($name, $code) => ['code' => $code, 'name' => $name])->values()->all()),
+                      onChange: (value) => {
+                          // Update Livewire property when TomSelect changes
+                          if (this.countryValue !== value) {
+                              this.countryValue = value;
+                          }
+                      }
+                  });
+          
+                  // Watch for changes coming FROM Livewire (e.g., when editing)
+                  this.$watch('countryValue', (newValue) => {
+                      if (this.tomSelectInstance.getValue() !== newValue) {
+                          this.tomSelectInstance.setValue(newValue, true); // Update TomSelect silently
+                      }
+                  });
+          
+                  // Set initial value when the component/modal loads
+                  if (this.countryValue) {
+                       this.tomSelectInstance.setValue(this.countryValue, true);
+                  }
+          
+                  // Optional: Listen for reset events if needed elsewhere
+                  // Livewire.on('reset-my-form-event', () => {
+                  //     if (this.tomSelectInstance) { this.tomSelectInstance.clear(); }
+                  // });
+              }
+          }" x-init="initTomSelect()" class="mb-4"> {{-- Added mb-4 for spacing --}}
+
+              <label for="country-select-{{ $this->getId() }}"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {{ __('Country (optional)') }}
               </label>
-              <select wire:model="country" id="country-select"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                <option value="">{{ __('Select Country...') }}</option>
-                {{-- Loop through the country list from the component --}}
-                @foreach($countryList as $code => $name)
-                <option value="{{ $code }}">{{ $name }}</option>
-                @endforeach
-              </select>
+              {{-- The underlying select element that TomSelect will enhance --}}
+              <select id="country-select-{{ $this->getId() }}" x-ref="countrySelectElement"
+                placeholder="{{ __('Select Country...') }}"></select>
               @error('country') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 

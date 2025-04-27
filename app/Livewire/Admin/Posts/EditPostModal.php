@@ -11,10 +11,10 @@ use Monarobase\CountryList\CountryListFacade as Countries;
 
 class EditPostModal extends Component
 {
-    public $show = false; // Property to control modal visibility
-    public $postId; // To store the ID of the post being edited
+    public $show = false;
+    public $postId;
 
-    // Properties to hold post data for the form
+    // Form properties
     public $title;
     public $content;
     public $expiry_date;
@@ -23,9 +23,9 @@ class EditPostModal extends Component
     public $to_date;
     public $country;
     public $city;
-    public array $countryList = [];
 
-    // Define validation rules
+    public array $countryList = []; // Keep this public property
+
     protected $baseRules = [
         'title' => 'required|string|max:255',
         'content' => 'required|string',
@@ -36,83 +36,58 @@ class EditPostModal extends Component
         'city' => 'nullable|string|max:255',
     ];
 
-    // Listen for the openEditModal event
-    #[On('openEditPostModal')] // <-- Use a distinct event name for posts
+    #[On('openEditPostModal')]
     public function openEditPostModal($postId)
     {
-        $post = Post::find($postId); // Find the post
+        // Ensure countryList is populated when modal opens
+        $this->countryList = Countries::getList('en', 'php');
 
+        $post = Post::find($postId);
         if (!$post) {
-            // Handle case where post is not found
             session()->flash('error', 'Post not found.');
             $this->closeModal();
             return;
         }
 
-        // --- Load Country List ---
-        $this->countryList = Countries::getList('en', 'php');
-
-        // Populate properties with post data
+        // Populate properties
         $this->postId = $post->id;
         $this->title = $post->title;
         $this->content = $post->content;
-        // Format dates for input fields (typically YYYY-MM-DD or YYYY-MM-DDTHH:MM)
         $this->expiry_date = $post->expiry_date ? $post->expiry_date->format('Y-m-d') : null;
         $this->is_active = $post->is_active;
         $this->from_date = $post->from_date ? $post->from_date->format('Y-m-d') : null;
         $this->to_date = $post->to_date ? $post->to_date->format('Y-m-d') : null;
-        $this->country = $post->country; // Assign the country code
+        $this->country = $post->country;
         $this->city = $post->city;
 
-
-        $this->show = true; // Show the modal
+        $this->resetValidation();
+        $this->show = true;
     }
 
-    // Save the post changes
     public function savePost()
     {
-        // --- Define dynamic rules HERE ---
-        $rules = $this->baseRules; // Start with base rules
-        $rules['country'] = [         // Add the dynamic country rule
+        $rules = $this->baseRules;
+        // Ensure countryList is loaded if validation happens before mount/open (unlikely here, but safe)
+        $countries = empty($this->countryList) ? Countries::getList('en', 'php') : $this->countryList;
+        $rules['country'] = [
             'nullable',
             'string',
             'size:2',
-            Rule::in(array_keys($this->countryList)) // Now $this->countryList is available
+            Rule::in(array_keys($countries))
         ];
 
-        // Validate using the dynamically built rules array
         $validatedData = $this->validate($rules);
-
         $post = Post::find($this->postId);
-
-        if (!$post) {
-            session()->flash('error', 'Post not found.');
-            $this->closeModal();
+        if (!$post) { /* handle error */
             return;
         }
 
-        // Update post properties using validated data
-        $post->update($validatedData); // Use mass assignment with validated data
-
-        // Update post properties
-        // $post->title = $this->title;
-        // $post->content = $this->content;
-        // $post->expiry_date = $this->expiry_date;
-        // $post->is_active = $this->is_active;
-        // $post->from_date = $this->from_date;
-        // $post->to_date = $this->to_date;
-        // $post->country = $this->country;
-        // $post->city = $this->city;
-
-        $post->save();
-
+        $post->update($validatedData);
         session()->flash('message', 'Post updated successfully.');
-
-        $this->dispatch('postUpdated'); // Dispatch event to refresh the post list
-        $this->closeModal(); // Close the modal
+        $this->dispatch('postUpdated');
+        $this->closeModal();
     }
 
-    // Close the modal and reset properties
     public function closeModal()
     {
         $this->show = false;
@@ -126,12 +101,13 @@ class EditPostModal extends Component
             'to_date',
             'country',
             'city',
-            'countryList',
-        ]); // Reset all properties
-        $this->resetValidation(); // Clear validation errors
+            'countryList' // Still reset countryList
+        ]);
+        $this->resetValidation();
     }
 
-    // Render the modal view
+    // No with() method needed here
+
     public function render()
     {
         return view('livewire.admin.posts.edit-post-modal');

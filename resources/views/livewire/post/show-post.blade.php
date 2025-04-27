@@ -50,7 +50,7 @@
                     <span class="mx-1">•</span>
                     <span>Destination:
                         {{ $this->countryList[$post->country] ?? $post->country ?? '' }}
-                        {{ $this->countryList[$post->country] && $post->city ? ' / ' : ''}}
+                        {{ $post->country && $post->city ? ' / ' : ''}}
                         {{ $post->city ?? '' }}
                     </span>
                     @endif

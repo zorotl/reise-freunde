@@ -90,21 +90,73 @@
                     {{-- Location --}}
                     <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         {{-- Country --}}
-                        <div>
-                            <label for="country-select"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Country (optional)') }}
-                            </label>
-                            <select wire:model="country" id="country-select"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="">{{ __('Select Country...') }}</option>
-                                {{-- Loop through the country list from the component --}}
-                                @foreach($countryList as $code => $name)
-                                <option value="{{ $code }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
+                        <div wire:ignore x-data="{
+                            tomSelectInstance: null,
+                            countryValue: @entangle('country'), // Keep entangle for Livewire -> Alpine sync
+                            // Removed countryOptions from here
+                            initTomSelect() {
+                                if (typeof TomSelect === 'undefined') { console.error('TomSelect not loaded'); return; }
+                        
+                                // --- Prepare options directly from $wire ---
+                                let optionsForTomSelect = [];
+                                // Check if $wire and $wire.countryList are available
+                                if (typeof $wire !== 'undefined' && $wire.countryList) {
+                                     // $wire.countryList is likely key-value (code => name) from PHP
+                                     for (const code in $wire.countryList) {
+                                          if ($wire.countryList.hasOwnProperty(code)) {
+                                               optionsForTomSelect.push({ code: code, name: $wire.countryList[code] });
+                                          }
+                                     }
+                                } else {
+                                     console.warn('Livewire countryList property not available during TomSelect init.');
+                                }
+                                // --- End Prepare options ---
+                        
+                                this.tomSelectInstance = new TomSelect(this.$refs.countrySelectElementModal, {
+                                    create: false,
+                                    valueField: 'code',
+                                    labelField: 'name',
+                                    searchField: ['name'],
+                                    placeholder: '{{ __('Select Country...') }}',
+                                    // Use the options prepared above
+                                    options: optionsForTomSelect,
+                                    dropdownParent: 'body',
+                                    onChange: (value) => {
+                                        // Update Livewire property directly
+                                        if ($wire.country !== value) {
+                                             $wire.set('country', value);
+                                        }
+                                    }
+                                });
+                        
+                                // Watch for changes FROM Livewire
+                                this.$watch('countryValue', (newValue) => {
+                                    if (this.tomSelectInstance.getValue() !== newValue) {
+                                        this.tomSelectInstance.setValue(newValue, true);
+                                    }
+                                });
+                        
+                                // Set initial value
+                                if (this.countryValue) {
+                                    this.tomSelectInstance.setValue(this.countryValue, true);
+                                } else {
+                                    this.tomSelectInstance.clear(true);
+                                }
+                        
+                                // Cleanup
+                                this.$refs.countrySelectElementModal.addEventListener('disconnect', () => {
+                                    if (this.tomSelectInstance) { this.tomSelectInstance.destroy(); }
+                                });
+                            }
+                        }" x-init="initTomSelect()">
+                            <label for="country-modal-select-{{ $this->getId() }}"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+                                __('Country') }}</label>
+                            <select id="country-modal-select-{{ $this->getId() }}" x-ref="countrySelectElementModal"
+                                placeholder="{{ __('Select Country...') }}"></select>
                             @error('country') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
+
                         {{-- City --}}
                         <div>
                             <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{

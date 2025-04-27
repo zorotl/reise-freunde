@@ -6,9 +6,12 @@ use Livewire\Component;
 use App\Models\Post;
 use Illuminate\Support\Carbon;
 use Monarobase\CountryList\CountryListFacade as Countries;
+use Livewire\WithPagination;
 
 class PostList extends Component
 {
+    // use WithPagination; // <-- Add if using pagination
+
     public $newTitle;
     public $newEntry;
     public $expiryDate;
@@ -20,8 +23,8 @@ class PostList extends Component
     public function mount()
     {
         $this->now = Carbon::now();
-        $this->loadActiveEntries();
         $this->countryList = Countries::getList('en', 'php');
+        $this->loadActiveEntries();
     }
 
     public function toggleActive(Post $entry)
@@ -38,14 +41,16 @@ class PostList extends Component
 
     private function loadActiveEntries()
     {
+        // Ensure user relationship is loaded if needed elsewhere
         $this->entries = Post::query()
+            ->with('user.additionalInfo') // Eager load user->additionalInfo
             ->where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('expiry_date')
                     ->orWhere('expiry_date', '>', $this->now);
             })
             ->latest()
-            ->get();
+            ->get(); // Or ->paginate(10) if using pagination
     }
     public function render()
     {
