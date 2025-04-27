@@ -24,9 +24,11 @@ Route::get('/', function () {
     return view('frontend.homepage');
 })->name('home');
 
-Route::get('/users', function () {
-    return view('frontend.user-directory');
-})->name('user.directory');
+// Route::get('/users', function () {
+//     return view('frontend.user-directory');
+// })->name('user.directory');
+
+Volt::route('/users', 'user.search')->name('user.directory');
 
 Volt::route('/dashboard', 'pages.dashboard.overview') // Points to the new Volt component
     ->middleware(['auth', 'verified']) // Keep existing middleware

@@ -171,7 +171,10 @@
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Nationality')
                         }}</label>
-                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $user->additionalInfo->nationality }}
+                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {{-- Access the component property directly using $this --}}
+                        {{ $this->countryList[$user->additionalInfo->nationality] ?? $user->additionalInfo->nationality
+                        }}
                     </p>
                 </div>
                 @endif

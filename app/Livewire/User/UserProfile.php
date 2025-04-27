@@ -4,13 +4,15 @@ namespace App\Livewire\User;
 
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth; // Make sure this is imported
-use Livewire\Attributes\Computed; // For computed properties
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
+use Monarobase\CountryList\CountryListFacade as Countries;
 
 class UserProfile extends Component
 {
     public User $user;
     public ?User $loggedInUser; // Nullable for guests
+    public array $countryList = [];
 
     // Computed properties for cleaner view logic
     #[Computed]
@@ -68,6 +70,9 @@ class UserProfile extends Component
         if ($this->loggedInUser) {
             $this->loggedInUser->load(['following', 'pendingFollowingRequests']);
         }
+
+        // <-- Add this line to load the country list -->
+        $this->countryList = Countries::getList('en', 'php'); // Use 'php' format for key=>value
     }
 
     // --- Actions ---
