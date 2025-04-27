@@ -13,19 +13,23 @@ class UserAdditionalInfoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Füge spezifischen Informationen zum ersten Benutzer hinzu
-        if ($firstUser = User::first()) {
-            UserAdditionalInfo::factory()->create([
-                'user_id' => $firstUser->id,
-                'username' => 'mast',
-                'birthday' => '1984-08-28',
-                'nationality' => 'Switzerland',
-            ]);
+        // Add specific info for the first user
+        if ($firstUser = User::find(1)) { // Find user with ID 1
+            // Use updateOrCreate to avoid errors if the record somehow exists
+            UserAdditionalInfo::updateOrCreate(
+                ['user_id' => $firstUser->id], // Match condition
+                [
+                    'username' => 'martin84',
+                    'birthday' => '1984-08-28',
+                    'nationality' => 'CH', // Use the ISO 3166-1 alpha-2 code for Switzerland
+                ]
+            );
         }
 
-        // Erstelle UserAdditionalInfo für alle Benutzer ausser ID 1
         User::where('id', '>', 1)->each(function (User $user) {
-            UserAdditionalInfo::factory()->create(['user_id' => $user->id]);
+            if (!$user->additionalInfo) {
+                UserAdditionalInfo::factory()->create(['user_id' => $user->id]);
+            }
         });
     }
 }

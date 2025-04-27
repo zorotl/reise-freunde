@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->unique(); // One-to-one with users
             $table->string('username')->unique()->nullable();
             $table->date('birthday')->nullable();
-            $table->string('nationality')->nullable();
+            $table->char('nationality', 2)->nullable()->index();
             $table->string('profile_picture')->nullable(); // Store path or URL
             $table->longText('about_me')->nullable();
             $table->json('custom_travel_styles')->nullable();

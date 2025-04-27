@@ -7,6 +7,7 @@ use App\Models\UserAdditionalInfo;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str; // Import Str facade
+use Monarobase\CountryList\CountryListFacade; // Import the Facade
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserAdditionalInfo>
@@ -22,11 +23,22 @@ class UserAdditionalInfoFactory extends Factory
     {
         $faker = Faker::create();
 
+        // Get a list of valid ISO 3166-1 alpha-2 country codes from the package
+        // Wrap in try-catch in case the package isn't fully available during initial setup/testing phases outside full app boot
+        try {
+            $countryCodes = array_keys(CountryListFacade::getList('en')); // Get codes using English list
+            $nationalityCode = !empty($countryCodes) ? $faker->randomElement($countryCodes) : 'US'; // Default to 'US' if list is empty
+        } catch (\Exception $e) {
+            // Fallback if the facade isn't available (e.g., during composer install before providers are registered)
+            $countryCodes = ['US', 'GB', 'DE', 'CH', 'FR', 'CA', 'AU']; // Example fallback codes
+            $nationalityCode = $faker->randomElement($countryCodes);
+        }
+
+
         // Define other attributes first
         return [
-            // 'username' will be set in the configure method
             'birthday' => $faker->date(),
-            'nationality' => $faker->country(),
+            'nationality' => $nationalityCode,
             'profile_picture' => $faker->optional()->imageUrl(),
             'about_me' => $faker->paragraph(3),
             'is_private' => $faker->boolean(30),
@@ -50,13 +62,18 @@ class UserAdditionalInfoFactory extends Factory
             // This runs after the model instance is created and saved
             if ($additionalInfo->user) { // Check if the user relationship exists
                 $firstname = $additionalInfo->user->firstname;
-                $usernameBase = Str::lower(preg_replace('/[^a-zA-Z0-9]/', '', $firstname)); // Clean the firstname
+                // Use a default base if firstname is null or empty
+                $usernameBase = Str::lower(preg_replace('/[^a-zA-Z0-9]/', '', $firstname ?: 'user'));
+                if (empty($usernameBase)) {
+                    $usernameBase = 'user'; // Ensure usernameBase is never empty
+                }
+
 
                 // Generate username and ensure uniqueness (simple retry loop)
                 $username = '';
                 $attempts = 0;
                 do {
-                    $randomNumber = $this->faker->numberBetween(1, 99);
+                    $randomNumber = $this->faker->numberBetween(1, 999); // Increased range for better uniqueness
                     $username = $usernameBase . $randomNumber;
                     $attempts++;
                     // Check if username already exists, retry up to 10 times
@@ -68,11 +85,20 @@ class UserAdditionalInfoFactory extends Factory
                     $username = $usernameBase . $this->faker->unique()->randomNumber(4);
                 }
 
-                $additionalInfo->username = $username;
-                $additionalInfo->save(); // Save the updated username
+                // Ensure username is not null before saving
+                if (!is_null($username)) {
+                    $additionalInfo->username = $username;
+                    $additionalInfo->save(); // Save the updated username
+                } else {
+                    // Handle the case where a unique username couldn't be generated (log error, assign default, etc.)
+                    // For now, let's assign a fallback unique username
+                    $additionalInfo->username = $this->faker->unique()->userName() . Str::random(3);
+                    $additionalInfo->save();
+                }
+
             } else {
                 // Fallback if user relationship isn't available (shouldn't happen with standard factory usage)
-                $additionalInfo->username = $this->faker->unique()->userName();
+                $additionalInfo->username = $this->faker->unique()->userName() . Str::random(3);
                 $additionalInfo->save();
             }
         });

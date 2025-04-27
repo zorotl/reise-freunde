@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\UserAdditionalInfo;
 use Livewire\Volt\Volt;
 
 test('profile page is displayed', function () {
@@ -97,4 +98,56 @@ test('correct password must be provided to delete account', function () {
 
     expect($user->fresh())->not->toBeNull();
     expect($user->fresh()->trashed())->toBeFalse(); // Ensure user was NOT soft-deleted
+});
+
+test('nationality can be updated', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    // Ensure UserAdditionalInfo exists or is created
+    $user->additionalInfo()->firstOrCreate(['user_id' => $user->id], ['username' => 'nationalitytest']);
+
+    $validCountryCode = 'DE'; // Use a valid ISO code for testing
+
+    // --- Assuming settings.profile is a Volt component ---
+    $response = Volt::test('settings.profile') // Use the Volt route name/path
+        // Set other required fields to prevent validation errors
+        ->set('firstname', $user->firstname)
+        ->set('lastname', $user->lastname)
+        ->set('email', $user->email)
+        // Ensure username is set, potentially reloading from the created additionalInfo
+        ->set('username', $user->additionalInfo()->first()->username)
+        ->set('birthday', $user->additionalInfo()->first()->birthday?->format('Y-m-d') ?? '1990-01-01')
+        // Set the nationality code
+        ->set('nationality', $validCountryCode)
+        ->call('updateProfileInformation');
+
+    $response->assertHasNoErrors();
+
+    $user->refresh(); // Refresh user model
+    $user->load('additionalInfo'); // Reload the relationship
+
+    // Assert the nationality code was saved
+    expect($user->additionalInfo->nationality)->toBe($validCountryCode);
+
+    // --- Test validation for invalid code ---
+    $responseInvalidSize = Volt::test('settings.profile')
+        ->set('firstname', $user->firstname) // Resend required fields
+        ->set('lastname', $user->lastname)
+        ->set('email', $user->email)
+        ->set('username', $user->additionalInfo->username)
+        ->set('birthday', $user->additionalInfo->birthday?->format('Y-m-d') ?? '1990-01-01')
+        ->set('nationality', 'XYZ') // Invalid 3-letter code
+        ->call('updateProfileInformation');
+    $responseInvalidSize->assertHasErrors(['nationality' => 'size']); // Should fail size validation
+
+    $responseInvalidCode = Volt::test('settings.profile')
+        ->set('firstname', $user->firstname) // Resend required fields
+        ->set('lastname', $user->lastname)
+        ->set('email', $user->email)
+        ->set('username', $user->additionalInfo->username)
+        ->set('birthday', $user->additionalInfo->birthday?->format('Y-m-d') ?? '1990-01-01')
+        ->set('nationality', 'XX') // Non-existent 2-letter code
+        ->call('updateProfileInformation');
+    $responseInvalidCode->assertHasErrors(['nationality' => 'in']); // Should fail 'in' validation rule
 });

@@ -1,1 +1,0 @@
-document.addEventListener("DOMContentLoaded",function(){const o=document.querySelector(".bg-cover");o&&window.addEventListener("scroll",function(){const n=window.scrollY;o.style.backgroundPositionY=n*.3+"px"})});

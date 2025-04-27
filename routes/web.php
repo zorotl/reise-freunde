@@ -98,14 +98,11 @@ require __DIR__ . '/auth.php';
 //     Fix the following issues:
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix user profile - make profile picture editable
-//         - [ ] Fix user profile - reomve name and surname from the profile
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
-//         - [x] Fix mobile menu, missing links
 
 //     Overall:
-//         - [ ] Implement a different backend for the moderator
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
 //         - [ ] Implement a verified User System
 
