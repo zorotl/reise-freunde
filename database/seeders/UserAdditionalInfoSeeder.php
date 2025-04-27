@@ -13,14 +13,13 @@ class UserAdditionalInfoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Füge zusätzliche Informationen zum ersten Benutzer hinzu
+        // Füge spezifischen Informationen zum ersten Benutzer hinzu
         if ($firstUser = User::first()) {
             UserAdditionalInfo::factory()->create([
                 'user_id' => $firstUser->id,
-                'username' => 'mast', // Behalte den spezifischen Username bei
-                'birthday' => '1984-08-28', // Behalte das spezifische Geburtsdatum bei
-                'nationality' => 'Switzerland', // Behalte die spezifische Nationalität bei
-                // 'about_me' wird von der Factory generiert
+                'username' => 'mast',
+                'birthday' => '1984-08-28',
+                'nationality' => 'Switzerland',
             ]);
         }
 

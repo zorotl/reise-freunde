@@ -8,9 +8,12 @@ uses(TestCase::class, RefreshDatabase::class)->in(__DIR__);
 
 // initials() Methode
 it('returns correct initials', function () {
-    $user = User::factory()->make(['name' => 'Max Mustermann']);
+    $user = User::factory()->make([
+        'firstname' => 'Max',
+        'lastname' => 'Power',
+    ]);
 
-    expect($user->initials())->toBe('MM');
+    expect($user->initials())->toBe('MP');
 });
 
 // isFollowing()

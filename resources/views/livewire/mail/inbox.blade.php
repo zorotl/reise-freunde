@@ -32,8 +32,9 @@
                     <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
                         <div class="truncate">
                             <div class="flex items-center space-x-3">
-                                <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{
-                                    $message->sender->name }}</h3>
+                                <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                    {{ $message->sender->additionalInfo->username }}
+                                </h3>
                                 @if (!$message->read_at)
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">New</span>

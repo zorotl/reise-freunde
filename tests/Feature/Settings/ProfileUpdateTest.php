@@ -19,9 +19,11 @@ test('profile information can be updated', function () {
 
 
     $response = Volt::test('settings.profile')
-        ->set('name', 'Test User')
+        ->set('firstname', 'Test')
+        ->set('lastname', 'User')
         ->set('email', 'test@example.com')
         ->set('username', 'testuser') // Add username update
+        ->set('birthday', '1984-08-28')
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -29,9 +31,11 @@ test('profile information can be updated', function () {
     $user->refresh();
     $user->load('additionalInfo'); // Load relation to check
 
-    expect($user->name)->toEqual('Test User');
+    expect($user->firstname)->toEqual('Test');
+    expect($user->lastname)->toEqual('User');
     expect($user->email)->toEqual('test@example.com');
     expect($user->email_verified_at)->toBeNull();
+    expect($user->additionalInfo->birthday->format('Y-m-d'))->toEqual('1984-08-28');
     expect($user->additionalInfo->username)->toEqual('testuser'); // Check updated username
 });
 
@@ -45,9 +49,11 @@ test('email verification status is unchanged when email address is unchanged', f
     $user->additionalInfo()->firstOrCreate(['user_id' => $user->id], ['username' => 'initial_username']);
 
     $response = Volt::test('settings.profile')
-        ->set('name', 'Test User')
+        ->set('firstname', 'Test')
+        ->set('lastname', 'User')
         ->set('email', $user->email) // Keep email same
         ->set('username', 'testuserunchanged') // Add username update
+        ->set('birthday', '1984-08-28')
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();

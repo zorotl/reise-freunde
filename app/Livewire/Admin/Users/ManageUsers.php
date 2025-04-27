@@ -84,7 +84,8 @@ class ManageUsers extends Component
                 $query->where('id', $userId);
             }) // <--- Add this when clause
             ->when($this->search, function (Builder $query) { // Add Builder type hint for clarity
-                $query->where('name', 'like', '%' . $this->search . '%')
+                $query->where('firstname', 'like', '%' . $this->search . '%')
+                    ->orWhere('lastname', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhereHas('additionalInfo', function ($q) {
                     $q->where('username', 'like', '%' . $this->search . '%');

@@ -13,8 +13,9 @@ use App\Notifications\FollowRequestNotification;
 use App\Notifications\NewFollowerNotification;
 use App\Notifications\FollowRequestAcceptedNotification;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute; // Import the Attribute class
 
-class User extends Authenticatable
+class User extends Authenticatable // Add MustVerifyEmail if you implement it later
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
@@ -25,7 +26,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        // 'name', // Remove name
+        'firstname', // Add firstname
+        'lastname', // Add lastname
         'email',
         'password',
     ];
@@ -52,6 +55,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Define an accessor for the 'name' attribute.
+     * This combines firstname and lastname for backward compatibility.
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => ($attributes['firstname'] ?? '') . ' ' . ($attributes['lastname'] ?? ''),
+        );
+    }
+
+
     // Added accessor to check if user has admin or moderator role
     public function isAdminOrModerator(): bool
     {
@@ -66,13 +82,13 @@ class User extends Authenticatable
 
     /**
      * Get the user's initials
+     * Updated to use firstname and lastname
      */
     public function initials(): string
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
-            ->implode('');
+        $firstInitial = Str::of($this->firstname ?? '')->substr(0, 1);
+        $lastInitial = Str::of($this->lastname ?? '')->substr(0, 1);
+        return $firstInitial . $lastInitial;
     }
 
 
@@ -250,19 +266,11 @@ class User extends Authenticatable
         $this->pendingFollowingRequests()->detach($userToUnfollow->id); // This covers cancelling requests
     }
 
-
-
-
-
-
-
-
-
     /**
      * Relationships
      */
 
-    public function post()
+    public function posts() // Corrected relationship name (plural)
     {
         return $this->hasMany(Post::class, 'user_id');
     }
@@ -285,5 +293,21 @@ class User extends Authenticatable
     public function hobbies()
     {
         return $this->belongsToMany(Hobby::class);
+    }
+
+    /**
+     * Get the messages sent by the user.
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Get the messages received by the user.
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 }

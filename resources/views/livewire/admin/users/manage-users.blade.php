@@ -58,16 +58,25 @@
         <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
             <thead class="bg-gray-50 dark:bg-neutral-700">
                 <tr>
-                    {{-- Name Header - added max-w-xs --}}
+                    {{-- Firstname Header --}}
                     <th scope="col"
                         class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer max-w-xs"
-                        wire:click="sortBy('name')">
-                        {{ __('Name') }}
-                        @if ($sortField === 'name')
+                        wire:click="sortBy('firstname')">
+                        {{ __('Firstname') }}
+                        @if ($sortField === 'firstname')
                         <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                         @endif
                     </th>
-                    {{-- Email Header - added max-w-xs --}}
+                    {{-- Lastname Header --}}
+                    <th scope="col"
+                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer max-w-xs"
+                        wire:click="sortBy('lastname')">
+                        {{ __('Lastname') }}
+                        @if ($sortField === 'lastname')
+                        <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                        @endif
+                    </th>
+                    {{-- Email Header --}}
                     <th scope="col"
                         class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer max-w-xs"
                         wire:click="sortBy('email')">
@@ -76,7 +85,7 @@
                         <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                         @endif
                     </th>
-                    {{-- Username Header - added max-w-xs --}}
+                    {{-- Username Header --}}
                     <th scope="col"
                         class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider max-w-xs">
                         {{ __('Username') }}
@@ -101,11 +110,17 @@
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
                 @forelse ($users as $user)
                 <tr @if($user->trashed()) class="bg-red-100 dark:bg-red-900/50 opacity-75" @endif>
-                    {{-- Name Cell --}}
+                    {{-- Firstname Cell --}}
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium max-w-xs overflow-hidden text-ellipsis">
                         <a href="{{ route('user.profile', $user->id) }}"
                             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
-                            {{ $user->name }}</a>
+                            {{ $user->firstname }}</a>
+                    </td>
+                    {{-- Lastname Cell --}}
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium max-w-xs overflow-hidden text-ellipsis">
+                        <a href="{{ route('user.profile', $user->id) }}"
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 me-3">
+                            {{ $user->lastname }}</a>
                     </td>
                     {{-- Email Cell --}}
                     <td

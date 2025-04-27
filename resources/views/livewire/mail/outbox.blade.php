@@ -25,7 +25,7 @@
                     <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
                         <div class="truncate">
                             <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">To: {{
-                                $message->receiver->name }}</h3>
+                                $message->receiver->additionalInfo->username }}</h3>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 truncate">{{ $message->subject }}
                             </p>
                         </div>

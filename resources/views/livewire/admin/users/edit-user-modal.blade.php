@@ -29,13 +29,22 @@
 
                 {{-- Edit User Form --}}
                 <form wire:submit.prevent="saveUser" class="mt-4">
-                    {{-- Name --}}
+                    {{-- Firstname --}}
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{
-                            __('Name') }}</label>
-                        <input type="text" wire:model="name" id="name"
+                        <label for="firstname" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+                            __('Firstname') }}</label>
+                        <input type="text" wire:model="firstname" id="firstname"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @error('firstname') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    {{-- Lastname --}}
+                    <div class="mb-4">
+                        <label for="lastname" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+                            __('Lastname') }}</label>
+                        <input type="text" wire:model="lastname" id="lastname"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        @error('lastname') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- Email --}}

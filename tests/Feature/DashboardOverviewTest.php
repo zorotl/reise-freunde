@@ -25,11 +25,11 @@ test('authenticated users can view the dashboard', function () {
 });
 
 test('dashboard displays welcome message', function () {
-    $user = User::factory()->create(['name' => 'Test User']);
+    $user = User::factory()->create(['firstname' => 'Test']);
 
     actingAs($user)
         ->get(route('dashboard'))
-        ->assertSee('Welcome back, Test User!');
+        ->assertSee('Welcome back, Test!');
 });
 
 test('dashboard displays feed posts from self and followed users', function () {
@@ -100,7 +100,10 @@ test('dashboard displays follower and following counts', function () {
 test('dashboard displays pending follow requests notification', function () {
     $user = User::factory()->create();
     // Ensure the requester name matches exactly what the failing test output shows
-    $requester = User::factory()->create(['name' => 'Dr. Robert Gleason IV']);
+    $requester = User::factory()->create([
+        'firstname' => 'Dr. Robert',
+        'lastname' => ' Gleason IV',
+    ]);
 
     // $requester requests to follow $user
     $requester->pendingFollowingRequests()->attach($user->id);
@@ -113,7 +116,8 @@ test('dashboard displays pending follow requests notification', function () {
         })
         // --- FIX: Use assertSeeHtml to check for the specific rendered list item ---
         ->assertSeeHtml('<span class="text-gray-600 dark:text-gray-400">wants to follow you.</span>') // Check for the static part
-        ->assertSeeHtml($requester->name); // Check for the dynamic name within the HTML
+        ->assertSeeHtml($requester->firstname) // Check for the dynamic name within the HTML
+        ->assertSeeHtml($requester->lastname); // Check for the dynamic name within the HTML
     // --- END FIX ---
 
 });

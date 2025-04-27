@@ -21,8 +21,9 @@
                             @if ($this->isOwnProfile)
                             {{ $user->name }}
                             @else
-                            {{-- Show username if available, otherwise fall back to name (shouldn't happen often) --}}
-                            {{ $user->additionalInfo?->username ?: $user->name }}
+                            {{-- Show username if available, otherwise fall back to firstname (shouldn't happen often)
+                            --}}
+                            {{ $user->additionalInfo?->username ?: $user->firstname }}
                             @endif
                         </h2>
                         {{-- Show username below name only if it's NOT the main title and exists --}}

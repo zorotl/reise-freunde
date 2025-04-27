@@ -4,7 +4,7 @@
 
         {{-- Welcome Message --}}
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
-            {{ __('Welcome back, :name!', ['name' => $user->name]) }}
+            {{ __('Welcome back, :name!', ['name' => $user->firstname]) }}
         </h1>
 
         {{-- Status message for follow actions --}}

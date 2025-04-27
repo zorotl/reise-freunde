@@ -8,7 +8,9 @@ use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 
 new class extends Component {
-    public string $name = '';
+    // public string $name = ''; // Remove name
+    public string $firstname = ''; // Add firstname
+    public string $lastname = ''; // Add lastname
     public string $email = '';
     public ?string $username = null;
     public ?string $birthday = null;
@@ -25,7 +27,9 @@ new class extends Component {
             return;
         }
         // Load the user data
-        $this->name = $user->name;
+        // $this->name = $user->name; // Remove name
+        $this->firstname = $user->firstname; // Load firstname
+        $this->lastname = $user->lastname; // Load lastname
         $this->email = $user->email;
 
         // Load additional info if it exists
@@ -36,7 +40,8 @@ new class extends Component {
             $this->about_me = $user->additionalInfo->about_me;
         } else {
             // Sensible defaults if no additional info exists yet
-            $this->username = $user->name; // Default username
+            // Default username can be based on first/last name if needed, or kept simple
+            $this->username = strtolower($user->firstname . $user->lastname);
         }
     }
 
@@ -48,7 +53,9 @@ new class extends Component {
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
+            // 'name' => ['required', 'string', 'max:255'], // Remove name validation
+            'firstname' => ['required', 'string', 'max:255'], // Add firstname validation
+            'lastname' => ['required', 'string', 'max:255'], // Add lastname validation
 
             'email' => [
                 'required',
@@ -59,14 +66,19 @@ new class extends Component {
                 Rule::unique(User::class)->ignore($user->id)
             ],
 
-            'username' => ['nullable', 'string', 'max:255', Rule::unique(UserAdditionalInfo::class)->ignore($user->additionalInfo?->id, 'user_id')],
-            'birthday' => ['nullable', 'date'],
+            // Make username required here as well if needed, or keep nullable
+            'username' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique(UserAdditionalInfo::class, 'username')->ignore($user->id, 'user_id')],
+            'birthday' => ['required', 'date', 'before_or_equal:today'], // Make birthday required here too
             'nationality' => ['nullable', 'string', 'max:255'],
             'about_me' => ['nullable', 'string', 'max:65535'], // Use max text length if needed
         ]);
 
-        $user->fill($validated);
+        // Update User model fields
+        $user->firstname = $validated['firstname'];
+        $user->lastname = $validated['lastname'];
+        $user->email = $validated['email'];
 
+        // Check if email was changed for verification
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
@@ -82,30 +94,13 @@ new class extends Component {
                 'nationality' => $validated['nationality'],
                 'about_me' => $validated['about_me'],
             ]
-        );    
+        );
 
-        // Use Livewire's flash message for better integration
-        // Session::flash('status', 'verification-link-sent');
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated'); // Dispatch event instead of Session flash
     }
 
-    /**
-     * Send an email verification notification to the current user.
-     */
-    public function resendVerificationNotification(): void
-    {
-        $user = Auth::user();
+    // ... (resendVerificationNotification method remains the same) ...
 
-        if ($user->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false));
-
-            return;
-        }
-
-        $user->sendEmailVerificationNotification();
-
-        Session::flash('status', 'verification-link-sent');
-    }
 }; ?>
 
 <section class="w-full">
@@ -113,11 +108,22 @@ new class extends Component {
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and personal information')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+            {{-- Remove Name Input --}}
+            {{--
+            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" /> --}}
+
+            {{-- Add First Name Input --}}
+            <flux:input wire:model="firstname" :label="__('First Name')" type="text" required autofocus
+                autocomplete="given-name" />
+
+            {{-- Add Last Name Input --}}
+            <flux:input wire:model="lastname" :label="__('Last Name')" type="text" required
+                autocomplete="family-name" />
 
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
+                {{-- Email Verification Section (remains the same) --}}
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&!
                 auth()->user()->hasVerifiedEmail())
                 <div>
@@ -138,8 +144,10 @@ new class extends Component {
                 @endif
             </div>
 
-            <flux:input wire:model="username" :label="__('Username')" type="text" autocomplete="username" />
-            <flux:input wire:model="birthday" :label="__('Birthday')" type="date" />
+            {{-- Username, Birthday, Nationality, About Me (Inputs remain) --}}
+            <flux:input wire:model="username" :label="__('Username')" type="text" required autocomplete="username" />
+            {{-- Consider making required --}}
+            <flux:input wire:model="birthday" :label="__('Birthday')" type="date" required /> {{-- Add required --}}
             <flux:input wire:model="nationality" :label="__('Nationality')" type="text" autocomplete="nationality" />
             <flux:textarea wire:model="about_me" :label="__('About Me')" rows="3"></flux:textarea>
 

@@ -12,7 +12,8 @@ class EditUserModal extends Component
 {
     public $show = false;
     public $userId;
-    public $name;
+    public $firstname;
+    public $lastname;
     public $email;
     public $is_admin;
     public $is_moderator;
@@ -23,7 +24,8 @@ class EditUserModal extends Component
     public $banned_reason; // Property for the banned_reason text
 
     protected $rules = [
-        'name' => 'required|string|max:255',
+        'firstname' => 'required|string|max:255',
+        'lastname' => 'required|string|max:255',
         'email' => 'required|email|max:255',
         'is_admin' => 'boolean',
         'is_moderator' => 'boolean',
@@ -47,7 +49,8 @@ class EditUserModal extends Component
 
         // Populate existing properties
         $this->userId = $user->id;
-        $this->name = $user->name;
+        $this->firstname = $user->firstname;
+        $this->lastname = $user->lastname;
         $this->email = $user->email;
 
         // Default roles to false if grant relationship is null
@@ -91,7 +94,8 @@ class EditUserModal extends Component
         }
 
         // Update basic user properties
-        $user->name = $this->name;
+        $user->firstname = $this->firstname;
+        $user->lastname = $this->lastname;
         $user->email = $this->email;
         $user->save();
 
@@ -124,7 +128,8 @@ class EditUserModal extends Component
         // Reset all properties to their initial states
         $this->reset([
             'userId',
-            'name',
+            'firstname',
+            'lastname',
             'email',
             'is_admin',
             'is_moderator',

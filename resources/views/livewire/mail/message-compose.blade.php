@@ -39,12 +39,6 @@
                     @endunless
                 </div>
 
-                {{-- @if ($selectedRecipientName && $receiver_id)
-                <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recipient: {{ $selectedRecipientName }}</div>
-                @elseif ($selectedRecipientName)
-                <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">Selected: {{ $selectedRecipientName }}</div>
-                @endif --}}
-
                 @error('receiver_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 <div x-show="showResults && search.length >= 2 && $wire.searchResults.length > 0 && !$wire.receiver_id"
                     class="absolute z-10 mt-1 w-full bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md shadow-lg">

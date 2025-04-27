@@ -10,9 +10,11 @@
             Create New Entry
         </a>
     </div>
+    @unless ($show === 'my')
     <div>
         <livewire:search />
     </div>
+    @endunless
     <div class="space-y-6">
         @foreach ($entries as $entry)
         <div class="rounded-xl shadow-md overflow-hidden
@@ -34,8 +36,14 @@
                 <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
                     <div>
                         @unless ($show === 'my')
-                        <span>From {{ $entry->user->additionalInfo->username }}
-                            posted {{ $entry->created_at->diffForHumans() }}</span>
+                        <span>
+                            From
+                            <a wire:navigate href="/user/profile/{{ $entry->user->id }}"
+                                class="text-blue-600 dark:text-blue-500 hover:underline">
+                                {{ $entry->user->additionalInfo->username }}
+                            </a>
+                            posted {{ $entry->created_at->diffForHumans() }}
+                        </span>
                         <span class="mx-1">•</span>
                         @endunless
 

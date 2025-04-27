@@ -33,7 +33,8 @@ test('admin can update user details and roles', function () {
         ->call('openEditModal', $targetUser->id)
         // Assert that properties are loaded
         ->assertSet('userId', $targetUser->id)
-        ->assertSet('name', $targetUser->name)
+        ->assertSet('firstname', $targetUser->firstname)
+        ->assertSet('lastname', $targetUser->lastname)
         ->assertSet('email', $targetUser->email)
         ->assertSet('is_admin', false)
         ->assertSet('is_moderator', false)
@@ -42,7 +43,8 @@ test('admin can update user details and roles', function () {
         ->assertSet('show', true) // Assert modal is open
 
         // Modify the properties like a user would interact with the form
-        ->set('name', 'Updated Name')
+        ->set('firstname', 'Updated')
+        ->set('lastname', 'Name')
         ->set('email', 'updated.email@example.com')
         ->set('is_admin', true) // Grant admin role
         ->set('is_banned', true) // Ban the user
@@ -133,7 +135,8 @@ test('edit user validation works', function () {
     Livewire::test(EditUserModal::class)
         ->call('openEditModal', $targetUser->id)
         // Attempt to save with invalid data
-        ->set('name', '') // Invalid: required
+        ->set('firstname', '') // Invalid: required
+        ->set('lastname', '') // Invalid: required
         ->set('email', 'invalid-email') // Invalid: not an email
         ->set('is_banned', true)
         // --- FIX: Use correct property name 'banned_until' ---
@@ -142,7 +145,7 @@ test('edit user validation works', function () {
 
         ->call('saveUser')
         // Assert validation errors
-        ->assertHasErrors(['name', 'email', 'banned_until']) // Check correct property name in error
+        ->assertHasErrors(['firstname', 'lastname', 'email', 'banned_until']) // Check correct property name in error
         // Assert modal stays open on validation errors
         ->assertSet('show', true);
 

@@ -19,9 +19,9 @@
         <div class="px-4 py-5 sm:px-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $message->subject }}</h2>
             <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span>From: {{ $message->sender->name }}</span>
+                <span>From: {{ $message->sender->additionalInfo->username }}</span>
                 <span class="mx-2">&middot;</span>
-                <span>To: {{ $message->receiver->name }}</span>
+                <span>To: {{ $message->receiver->additionalInfo->username }}</span>
                 <span class="mx-2">&middot;</span>
                 <span>Date: {{ $message->created_at->format('Y-m-d H:i') }}</span>
             </div>

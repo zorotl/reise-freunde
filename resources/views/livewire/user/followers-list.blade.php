@@ -5,7 +5,7 @@
                 class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 flex items-center justify-between flex-wrap gap-4">
                 <div>
                     <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Followers of :name', ['name' => $user->name]) }}
+                        {{ __('Followers of :name', ['name' => $user->firstname]) }}
                     </h3>
                     <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                         <a href="{{ route('user.profile', $user->id) }}" wire:navigate class="hover:underline">&larr; {{

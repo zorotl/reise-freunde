@@ -29,9 +29,6 @@
 
             @auth
             {{-- Existing Auth Links --}}
-            <flux:navbar.item icon="user-circle" :href="route('post.myown')" :current="request()->routeIs('post.myown')"
-                wire:navigate>{{ __("My Posts") }}
-            </flux:navbar.item>
             <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
                 wire:navigate>
                 {{ __("Inbox") }}
@@ -83,6 +80,14 @@
                 <flux:menu.radio.group>
                     <flux:menu.item :href="'/user/profile/' . auth()->user()->id" icon="user" wire:navigate>{{
                         __('Show Profile') }}
+                    </flux:menu.item>
+                </flux:menu.radio.group>
+
+                <flux:menu.separator />
+
+                <flux:menu.radio.group>
+                    <flux:menu.item :href="route('post.myown')" icon="user-circle" wire:navigate>{{
+                        __('My Posts') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
 

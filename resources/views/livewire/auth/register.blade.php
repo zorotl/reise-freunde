@@ -10,9 +10,11 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.auth')] class extends Component {
-    public string $name = '';
+    public string $firstname = ''; 
+    public string $lastname = ''; 
     public string $username = '';
     public string $email = '';
+    public ?string $birthday = null; 
     public string $password = '';
     public string $password_confirmation = '';
     public ?string $usernameCheck = null;
@@ -23,24 +25,29 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     public function register(): void
     {
+        // Updated validation rules
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'firstname' => ['required', 'string', 'max:255'], 
+            'lastname' => ['required', 'string', 'max:255'], 
             'username' => ['required', 'string', 'max:255', 'alpha_dash', 'unique:user_additional_infos,username'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'birthday' => ['required', 'date', 'before_or_equal:today'], 
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         // Create the User
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create([
-            'name' => $validated['name'],
+            'firstname' => $validated['firstname'], 
+            'lastname' => $validated['lastname'], 
             'email' => $validated['email'],
             'password' => $validated['password'],
         ]);
 
-        // Create the related additionalInfo with the provided username
+        // Create the related additionalInfo with username and birthday
         $user->additionalInfo()->create([
             'username' => $validated['username'],
+            'birthday' => $validated['birthday'], 
         ]);
 
         event(new Registered($user));
@@ -54,27 +61,26 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <x-auth-header :title="__('Create an account')"
         :description="__('Enter your details below to create your account')" />
 
-    <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="register" class="flex flex-col gap-6">
-        <!-- Name -->
-        <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name"
-            :placeholder="__('Full name')" />
+        <flux:input wire:model="firstname" :label="__('First Name')" type="text" required autofocus
+            autocomplete="given-name" :placeholder="__('First name')" />
 
-        <!-- Username -->
+        <flux:input wire:model="lastname" :label="__('Last Name')" type="text" required autocomplete="family-name"
+            :placeholder="__('Last name')" />
+
         <flux:input wire:model.debounce.500ms="username" :label="__('Username')" type="text" required
             autocomplete="username" placeholder="username123" />
 
-        <!-- Email Address -->
         <flux:input wire:model.debounce.500ms="email" :label="__('Email address')" type="email" required
             autocomplete="email" placeholder="email@example.com" />
 
-        <!-- Password -->
+        <flux:input wire:model="birthday" :label="__('Birthday')" type="date" required />
+
         <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="new-password"
             :placeholder="__('Password')" />
 
-        <!-- Confirm Password -->
         <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
             autocomplete="new-password" :placeholder="__('Confirm password')" />
 

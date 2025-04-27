@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('user_additional_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->unique(); // One-to-one with users
-            $table->string('username')->unique();
+            $table->string('username')->unique()->nullable();
             $table->date('birthday')->nullable();
             $table->string('nationality')->nullable();
             $table->string('profile_picture')->nullable(); // Store path or URL
