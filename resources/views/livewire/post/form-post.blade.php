@@ -1,4 +1,9 @@
 <div>
+  {{-- Add a heading or breadcrumbs if needed for the admin context --}}
+  <h1 class="text-xl font-semibold mb-4">
+    {{ $buttonText === 'Update Post' ? __('Edit Post') : __('Create Post') }}
+    @if ($origin ?? '' === 'admin') (Admin) @endif {{-- Optional indicator --}}
+  </h1>
   <section class="w-full">
     <div class="flex items-start max-md:flex-col">
       <div class="flex-1 self-stretch max-md:pt-6">
@@ -88,13 +93,29 @@
 
             <flux:input wire:model="city" label="City (optional)" type="text" autocomplete="city" maxlength="255" />
 
+            {{-- Is Active Checkbox (only for Admin Edit) --}}
+            @if ($origin === 'admin')
+            <div class="mb-4">
+              <label for="is_active" class="inline-flex items-center">
+                <input type="checkbox" wire:model="is_active" id="is_active"
+                  class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50 dark:bg-neutral-700 dark:border-neutral-600 dark:text-green-500">
+                <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Is Active') }}</span>
+              </label>
+              @error('is_active') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+            @endif
+
             <div class="flex items-center gap-4">
               <!-- Klick löst erst prepareExpiry aus, dann Livewire save -->
               <flux:button variant="primary" type="button" class="w-full mt-3"
                 @click="prepareExpiry(); triggerAction()">
                 {{ __($buttonText) }}
               </flux:button>
-              <a href="{{ route('post.show') }}" class="text-gray-500 hover:underline">Cancel</a>
+              {{-- Redirect back to admin posts list if origin is admin --}}
+              <a href="{{ $origin === 'admin' ? route('admin.posts') : route('post.show') }}" wire:navigate
+                class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 whitespace-nowrap">
+                {{ __('Cancel') }}
+              </a>
             </div>
           </form>
         </div>

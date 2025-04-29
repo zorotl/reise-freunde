@@ -126,10 +126,10 @@
                     {{-- Actions Cell - added w-40 --}}
                     <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium w-40">
                         {{-- Action Buttons --}}
-                        <button wire:click="$dispatch('openEditPostModal', { postId: {{ $post->id }} })"
-                            class="px-2 py-1 text-xs font-semibold text-indigo-600 border border-indigo-600 bg-white rounded hover:bg-indigo-100 dark:bg-gray-900 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-500/10">
+                        <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" wire:navigate
+                            class="px-2 py-1 me-1 text-xs font-semibold text-indigo-600 border border-indigo-600 bg-white rounded hover:bg-indigo-100 dark:bg-gray-900 dark:border-indigo-400 dark:text-indigo-400 dark:hover:bg-indigo-500/10">
                             {{ __('Edit') }}
-                        </button>
+                        </a>
 
                         @if($post->trashed())
                         <button wire:click="restorePost({{ $post->id }})"
