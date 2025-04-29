@@ -168,8 +168,4 @@
     <div class="mt-4">
         {{ $posts->links() }}
     </div>
-
-    {{-- Include the Edit Post Modal component --}}
-    <livewire:admin.posts.edit-post-modal />
-
 </div>

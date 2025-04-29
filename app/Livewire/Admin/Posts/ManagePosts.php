@@ -103,6 +103,4 @@ class ManagePosts extends Component
             $this->dispatch('postDeleted'); // Dispatch event to refresh list
         }
     }
-
-    // Edit functionality will be added in the next step, likely using a modal
 }
