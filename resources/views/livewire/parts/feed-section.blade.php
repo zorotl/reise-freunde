@@ -7,7 +7,7 @@
         @forelse ($feedPosts as $post)
         {{-- Include the individual post card component for each post --}}
         {{-- Pass the individual post object to the PostCardSection component --}}
-        <livewire:parts.post-card-section :post="$post" wire:key="post-card-{{ $post->id }}" />
+        <livewire:parts.post-card-section :post="$post" :show="$show" wire:key="post-card-{{ $post->id }}" />
         @empty
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Your feed is empty. Follow some users or create your
             own post!') }}</p>

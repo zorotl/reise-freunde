@@ -9,6 +9,7 @@ class FeedSection extends Component
 {
     // Property to receive the collection of posts from the parent component (Overview)
     public Collection $feedPosts;
+    public string $show;
 
     /**
      * Render the component view.

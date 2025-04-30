@@ -22,6 +22,7 @@ class Overview extends Component
     public int $followingCount = 0;
     public Collection $pendingRequests; // Data for NotificationSection
     public Collection $suggestedUsers; // Data for SuggestedUsersSection
+    public string $show = 'feed';
 
     /**
      * Mount the component. This is where initial data is loaded.
@@ -173,6 +174,7 @@ class Overview extends Component
             'suggestedUsers' => $this->suggestedUsers, // Pass suggestions to SuggestedUsersSection
             'followerCount' => $this->followerCount, // Pass counts to NetworkStats
             'followingCount' => $this->followingCount, // Pass counts to NetworkStats
+            'show' => $this->show, // Pass the current view mode to the FeedSection
         ]);
     }
 }

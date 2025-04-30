@@ -15,13 +15,15 @@
         </div>
         @endif
 
+
+
+
         {{-- Grid for Dashboard Sections --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {{-- Main Content Area (Feed) - Spans 2 columns on large screens --}}
             <div class="lg:col-span-2 space-y-6">
-                <livewire:parts.feed-section :feedPosts="$feedPosts" /> {{-- Pass the feedPosts data collection to
-                the FeedSection component --}}
+                <livewire:parts.feed-section :feedPosts="$feedPosts" :show="$show" />
             </div>
 
             {{-- Sidebar Area (Notifications, Suggestions, Counts) - Spans 1 column on large screens --}}
