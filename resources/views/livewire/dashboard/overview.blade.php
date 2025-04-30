@@ -21,8 +21,7 @@
             {{-- Main Content Area (Feed) - Spans 2 columns on large screens --}}
             <div class="lg:col-span-2 space-y-6">
                 <livewire:parts.feed-section :feedPosts="$feedPosts" /> {{-- Pass the feedPosts data collection to
-                the
-                FeedSection component --}}
+                the FeedSection component --}}
             </div>
 
             {{-- Sidebar Area (Notifications, Suggestions, Counts) - Spans 1 column on large screens --}}

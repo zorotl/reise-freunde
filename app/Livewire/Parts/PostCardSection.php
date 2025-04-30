@@ -4,11 +4,18 @@ namespace App\Livewire\Parts;
 
 use App\Models\Post; // Import Post model
 use Livewire\Component;
+use Monarobase\CountryList\CountryListFacade as Countries;
 
 class PostCardSection extends Component
 {
     // Property to receive a single Post model instance from the FeedSection component
     public Post $post;
+    public array $countryList = [];
+
+    public function mount()
+    {
+        $this->countryList = Countries::getList('en', 'php');
+    }
 
     /**
      * Render the component view.

@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/dashboard/post-card-section.blade.php --}}
 {{-- This component displays a single post card within the feed. --}}
 {{-- It receives a single $post object as a property. --}}
 <div class="border border-gray-200 dark:border-neutral-700 rounded-lg p-4
@@ -32,8 +31,11 @@
                 </a>
                 @if ($post->country || $post->city)
                 <span class="mx-1">&middot;</span>
-                <span>{{ $post->country ?? '' }}{{ ($post->country && $post->city) ? ' / ' : '' }}{{ $post->city ?? ''
-                    }}</span>
+                <span>
+                    {{ $this->countryList[$post->country] ?? $post->country ?? '' }}
+                    {{ ($post->country && $post->city) ? ' / ' : '' }}
+                    {{ $post->city ?? '' }}
+                </span>
                 @endif
             </p>
         </div>
