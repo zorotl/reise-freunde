@@ -2,34 +2,42 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Post;
+use App\Models\Post; // Make sure necessary models are imported
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection; // Import Collection
+use Illuminate\Support\Collection;
+use Livewire\Attributes\On; // Import On attribute if using listeners
 
 class Overview extends Component
 {
+    // Middleware is applied to the component class
+    protected $middleware = ['auth'];
+
+    // Properties to hold data loaded in this component and passed to children
     public User $user;
     public Collection $feedPosts;
     public int $followerCount = 0;
     public int $followingCount = 0;
-    public Collection $pendingRequests; // For notifications
-    public Collection $suggestedUsers; // For suggestions
+    public Collection $pendingRequests; // Data for NotificationSection
+    public Collection $suggestedUsers; // Data for SuggestedUsersSection
 
     /**
-     * Mount the component and load initial data.
+     * Mount the component. This is where initial data is loaded.
      */
     public function mount(): void
     {
-        $this->user = Auth::user();
-        $this->loadData();
+        $this->user = Auth::user(); // Get the authenticated user
+        $this->loadData(); // Load all data needed for the dashboard sections
     }
 
     /**
-     * Load all necessary data for the dashboard.
+     * Load all necessary data for the dashboard components.
+     * This method can be called to refresh data.
      */
+    // Example of listening for an event to refresh data
+    // #[On('data-refreshed')]
     public function loadData(): void
     {
         $this->loadCounts();
@@ -38,12 +46,13 @@ class Overview extends Component
         $this->loadSuggestedUsers();
     }
 
+
     /**
      * Load follower and following counts.
      */
     public function loadCounts(): void
     {
-        // Eager load counts for efficiency
+        // Eager load the counts on the user model
         $this->user->loadCount(['followers', 'following']);
         $this->followerCount = $this->user->followers_count;
         $this->followingCount = $this->user->following_count;
@@ -51,12 +60,14 @@ class Overview extends Component
 
     /**
      * Load posts for the feed (own posts + posts from followed users).
-     * Limits to the latest 15 posts for performance.
+     * Limits to the latest 15 posts.
      */
     public function loadFeedPosts(): void
     {
-        $followingIds = $this->user->following()->pluck('users.id'); // Get IDs of users being followed
-        $userIds = $followingIds->push($this->user->id)->unique(); // Add own ID and ensure uniqueness
+        // Get IDs of users being followed
+        $followingIds = $this->user->following()->pluck('users.id');
+        // Add own ID to the list and ensure uniqueness
+        $userIds = $followingIds->push($this->user->id)->unique();
 
         $this->feedPosts = Post::whereIn('user_id', $userIds)
             ->with([
@@ -75,11 +86,11 @@ class Overview extends Component
     }
 
     /**
-     * Load pending follower requests for the notification section.
+     * Load pending follower requests for the notification section preview.
      */
     public function loadPendingRequests(): void
     {
-        // Reuse the existing relationship, limit to a few recent ones
+        // Fetch a limited number of pending follower requests
         $this->pendingRequests = $this->user->pendingFollowerRequests()
             ->with('additionalInfo') // Load info for display
             ->orderBy('user_follower.created_at', 'desc') // Order by request time
@@ -93,69 +104,75 @@ class Overview extends Component
     public function loadSuggestedUsers(): void
     {
         $currentUser = $this->user;
-        $currentUser->load(['hobbies:id', 'travelStyles:id']); // Eager load only IDs
+        // Eager load only IDs of current user's interests
+        $currentUser->load(['hobbies:id', 'travelStyles:id']);
 
+        // Get IDs to exclude (current user, users already followed, users with pending requests)
         $followingIds = $currentUser->following()->pluck('users.id')->toArray();
         $pendingRequestIds = $currentUser->pendingFollowingRequests()->pluck('users.id')->toArray();
-        $excludeIds = array_merge($followingIds, $pendingRequestIds, [$currentUser->id]); // Exclude self, already followed, and pending requests
+        $excludeIds = array_merge($followingIds, $pendingRequestIds, [$currentUser->id]);
 
         $currentUserHobbyIds = $currentUser->hobbies->pluck('id');
-        $currentUserTravelStyleIds = $currentUser->travelStyles->pluck('id');
+        $currentUserTravelStyleIds = $currentUser->travelStyles()->pluck('travel_styles.id');
 
-        // Find users with at least one shared hobby OR travel style, excluding the current user and those already followed/requested
+
+        // Query for users who are not excluded and share at least one interest
         $this->suggestedUsers = User::query()
-            ->whereNotIn('id', $excludeIds) // Exclude specified users
+            ->whereNotIn('id', $excludeIds)
             ->where(function (Builder $query) use ($currentUserHobbyIds, $currentUserTravelStyleIds) {
-                // Must have at least one shared hobby OR travel style
                 $query->whereHas('hobbies', function (Builder $q) use ($currentUserHobbyIds) {
-                    $q->whereIn('hobbies.id', $currentUserHobbyIds); // Check hobbies table directly
+                    $q->whereIn('hobbies.id', $currentUserHobbyIds);
                 })
                     ->orWhereHas('travelStyles', function (Builder $q) use ($currentUserTravelStyleIds) {
-                    $q->whereIn('travel_styles.id', $currentUserTravelStyleIds); // Check travel_styles table directly
-                });
+                        $q->whereIn('travel_styles.id', $currentUserTravelStyleIds);
+                    });
             })
             ->with('additionalInfo') // Eager load for display
             ->withCount([
-                // Count shared hobbies
                 'hobbies as shared_hobbies_count' => function (Builder $query) use ($currentUserHobbyIds) {
                     $query->whereIn('hobbies.id', $currentUserHobbyIds);
                 },
-                // Count shared travel styles
                 'travelStyles as shared_travel_styles_count' => function (Builder $query) use ($currentUserTravelStyleIds) {
                     $query->whereIn('travel_styles.id', $currentUserTravelStyleIds);
                 }
             ])
-            // Order by the number of shared interests (descending), then randomly
             ->orderByRaw('(shared_hobbies_count + shared_travel_styles_count) DESC')
-            ->inRandomOrder() // Add randomness for users with same number of shared interests
-            ->take(5) // Limit suggestions
+            ->inRandomOrder()
+            ->take(5)
             ->get();
     }
 
+
     /**
-     * Follow a suggested user.
-     * This reuses the follow logic from UserProfile, slightly adapted.
+     * Handle the action to follow a user.
+     * Triggered from the SuggestedUsersSection view.
      */
     public function followUser(int $userIdToFollow)
     {
         $userToFollow = User::find($userIdToFollow);
         if ($userToFollow) {
-            $this->user->follow($userToFollow);
-            // Refresh suggestions after following
-            $this->loadSuggestedUsers();
-            // Optionally refresh feed if needed immediately, or rely on next page load
-            // $this->loadFeedPosts();
-            // Dispatch an event or show a success message
-            session()->flash('status', 'Follow request sent to ' . $userToFollow->name); // Or 'Now following...' for public profiles
+            Auth::user()->follow($userToFollow);
+            // Refresh relevant data after a follow action
+            $this->loadData(); // Reload all data
+            // Set a flash message
+            session()->flash('status', $userToFollow->isPrivate() ? 'Follow request sent to ' . $userToFollow->name : 'Now following ' . $userToFollow->name);
         }
     }
 
+
     /**
-     * Render the dashboard view.
+     * Render the dashboard overview view.
      */
     public function render()
     {
-        // Pass the loaded data to the view
-        return view('livewire.dashboard.overview');
+        // Pass the loaded data to the overview Blade view
+        return view('livewire.dashboard.overview', [
+            'user' => $this->user, // Pass the authenticated user
+            'feedPosts' => $this->feedPosts, // Pass feed posts to FeedSection
+            'pendingRequests' => $this->pendingRequests, // Pass requests to NotificationSection
+            'suggestedUsers' => $this->suggestedUsers, // Pass suggestions to SuggestedUsersSection
+            'followerCount' => $this->followerCount, // Pass counts to NetworkStats
+            'followingCount' => $this->followingCount, // Pass counts to NetworkStats
+        ]);
     }
 }
