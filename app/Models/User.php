@@ -13,7 +13,8 @@ use App\Notifications\FollowRequestNotification;
 use App\Notifications\NewFollowerNotification;
 use App\Notifications\FollowRequestAcceptedNotification;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute; // Import the Attribute class
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable // Add MustVerifyEmail if you implement it later
 {
@@ -89,6 +90,24 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         $firstInitial = Str::of($this->firstname ?? '')->substr(0, 1);
         $lastInitial = Str::of($this->lastname ?? '')->substr(0, 1);
         return $firstInitial . $lastInitial;
+    }
+
+    /**
+     * Get the URL to the user's profile picture or a default avatar.
+     */
+    public function profilePictureUrl(): string
+    {
+        $defaultAvatar = asset('images/default-avatar.png'); // Path to your default avatar in public/images
+
+        if ($this->additionalInfo && $this->additionalInfo->profile_picture_path) {
+            // Check if the file exists in storage before generating URL
+            if (Storage::disk('public')->exists($this->additionalInfo->profile_picture_path)) {
+                return Storage::disk('public')->url($this->additionalInfo->profile_picture_path);
+            }
+        }
+
+        // Return default if no picture set or file doesn't exist
+        return $defaultAvatar;
     }
 
 

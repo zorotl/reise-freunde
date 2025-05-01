@@ -7,12 +7,17 @@ use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 use Monarobase\CountryList\CountryListFacade as Countries;
 use App\Livewire\Traits\GeneratesUsername; // <-- Import the Trait
+use Livewire\WithFileUploads; 
+use Illuminate\Support\Facades\Storage; 
+use Intervention\Image\Laravel\Facades\Image;
+
 
 // Remove the standalone generateDefaultUsernameHelper() function from here
 
 new class extends Component {
 
     use GeneratesUsername; // <-- Use the Trait
+    use WithFileUploads;
 
     // User properties
     public string $firstname = '';
@@ -27,6 +32,9 @@ new class extends Component {
 
     // Property to hold the country list for the dropdown
     public array $countryList = [];
+
+    // Add property for file upload
+    public $photo = null; // For temporary upload
 
     /**
      * Mount the component.
@@ -61,13 +69,14 @@ new class extends Component {
     /**
      * Update the profile information.
      */
-    public function updateProfileInformation(): void
+     public function updateProfileInformation(): void
     {
         $user = Auth::user();
         if (! $user) return;
 
         $validCountryCodes = array_keys($this->countryList);
 
+        // Add photo validation rules
         $validated = $this->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
@@ -79,9 +88,10 @@ new class extends Component {
             'birthday' => ['required', 'date', 'before_or_equal:today'],
             'nationality' => ['nullable', 'string', 'size:2', Rule::in($validCountryCodes)],
             'about_me' => ['nullable', 'string', 'max:65535'],
+            'photo' => ['nullable', 'image', 'max:2048'], // Example: Nullable, image, max 2MB
         ]);
 
-        // Update User model fields
+        // Update User model fields (same as before)
         $user->fill([
             'firstname' => $validated['firstname'],
             'lastname' => $validated['lastname'],
@@ -94,21 +104,53 @@ new class extends Component {
 
         $user->save();
 
+        // Prepare data for UserAdditionalInfo update/create
+        $additionalInfoData = [
+            'username' => $validated['username'],
+            'birthday' => $validated['birthday'],
+            'nationality' => $validated['nationality'],
+            'about_me' => $validated['about_me'],
+        ];
+
+        // Handle photo upload
+        if ($this->photo) {
+            // Delete old photo if it exists
+            if ($user->additionalInfo?->profile_picture_path) {
+                Storage::disk('public')->delete($user->additionalInfo->profile_picture_path);
+            }
+
+            // Process and store the new photo
+            $image = Image::read($this->photo->getRealPath());
+            // Resize (example: fit 200x200, maintain aspect ratio, prevent upscaling)
+            $image->scaleDown(width: 200, height: 200);
+
+            // Generate a unique filename
+            $filename = $this->photo->hashName();
+            $directory = 'profile-pictures/' . $user->id;
+            $path = $directory . '/' . $filename;
+
+             // Store the processed image - Intervention Image v3+
+            Storage::disk('public')->put($path, (string) $image->encode()); // Encode returns image instance
+
+            // Add the relative path to the data array
+            $additionalInfoData['profile_picture_path'] = $path;
+        }
+
         // Update or create UserAdditionalInfo
         UserAdditionalInfo::updateOrCreate(
             ['user_id' => $user->id],
-            [
-                'username' => $validated['username'],
-                'birthday' => $validated['birthday'],
-                'nationality' => $validated['nationality'],
-                'about_me' => $validated['about_me'],
-            ]
+            $additionalInfoData
         );
 
-        // Refresh the component state (optional but good practice)
-        $this->nationality = $validated['nationality'];
+        // Reset the temporary photo property and clear validation
+        $this->reset('photo');
+        $this->resetErrorBag('photo');
 
-        $this->dispatch('profile-updated');
+        // Refresh the component state (optional but good practice)
+        $this->nationality = $validated['nationality']; // Keep this if needed
+        $this->dispatch('profile-updated'); // Existing dispatch
+        $this->dispatch('profile-picture-updated'); // Add a new event for Alpine preview reset
+
     }
 
     /**
@@ -213,6 +255,46 @@ new class extends Component {
 
             {{-- About Me --}}
             <flux:textarea wire:model="about_me" :label="__('About Me')" rows="3"></flux:textarea>
+
+            {{-- Profile Photo Upload --}}
+            <div class="col-span-6 sm:col-span-4">
+                <input type="file" id="photo" class="hidden" wire:model.live="photo" x-ref="photo" x-on:change="
+                    photoName = $refs.photo.files[0].name;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        photoPreview = e.target.result;
+                    };
+                    reader.readAsDataURL($refs.photo.files[0]);
+                " />
+
+                <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Photo')
+                    }}</label>
+
+                <div class="mt-2" x-show="! photoPreview">
+                    <img src="{{ Auth::user()->profilePictureUrl() }}" alt="{{ Auth::user()->name }}"
+                        class="rounded-full h-20 w-20 object-cover">
+                </div>
+
+                <div class="mt-2" x-show="photoPreview" style="display: none;">
+                    <span class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
+                        x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
+                    </span>
+                </div>
+
+                <button type="button"
+                    class="mt-2 me-2 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-neutral-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    x-on:click.prevent="$refs.photo.click()">
+                    {{ __('Select A New Photo') }}
+                </button>
+
+                {{-- Add button to remove photo later if needed --}}
+
+                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    {{ __('Maximum size: 2MB. Allowed types: jpg, png, gif.') }}
+                </p>
+                @error('photo') <span class="mt-2 text-sm text-red-600">{{ $message }}</span> @enderror
+            </div>
+            {{-- End Profile Photo Upload --}}
 
             {{-- Form Actions --}}
             <div class="flex items-center gap-4">
