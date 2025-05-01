@@ -81,7 +81,7 @@
     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-700 flex space-x-2">
         {{-- Edit Button --}}
         {{-- Using 'dashboard' as the origin. Adjust route name 'post.edit' if different. --}}
-        <a wire:navigate href="{{ route('post.edit', ['id' => $post->id, 'origin' => 'dashboard']) }}"
+        <a wire:navigate href="{{ route('post.edit', ['id' => $post->id, 'origin' => $show]) }}"
             class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-neutral-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             {{ __('Edit') }}
         </a>
