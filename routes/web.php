@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
     Volt::route('settings/preferences', 'settings.preferences')->name('settings.preferences');
     Volt::route('settings/privacy-settings', 'settings.privacy-settings')->name('settings.privacy-settings');
-
+    Volt::route('settings/account-deletion', 'settings.account-deletion')->name('settings.account-deletion');
 
     // Post routes (assuming they require auth)
     Route::get('/post/myown', MyPosts::class)->name('post.myown');
@@ -98,7 +98,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [ ] Fix post redirect after I was befor on the single post site
+//         - [x] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
 
 //     Overall:

@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('username')->unique()->nullable()->index();
             $table->date('birthday')->nullable()->index();
             $table->char('nationality', 2)->nullable()->index();
-            $table->string('profile_picture')->nullable(); // Store path or URL
+            $table->string('profile_picture_path')->nullable(); // Store path or URL
             $table->longText('about_me')->nullable();
             $table->json('custom_travel_styles')->nullable();
             $table->json('custom_hobbies')->nullable();

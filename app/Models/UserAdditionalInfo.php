@@ -16,7 +16,7 @@ class UserAdditionalInfo extends Model
         'username',
         'birthday',
         'nationality',
-        'profile_picture',
+        'profile_picture_path',
         'about_me',
         'is_private',
         'custom_travel_styles',
