@@ -26,19 +26,6 @@ class PostList extends Component
         $this->countryList = Countries::getList('en', 'php');
         $this->loadActiveEntries();
     }
-
-    // public function toggleActive(Post $entry)
-    // {
-    //     $entry->update(['is_active' => !$entry->is_active]);
-    //     $this->loadActiveEntries();
-    // }
-
-    // public function deleteEntry(Post $entry)
-    // {
-    //     $entry->delete(); // Soft delete
-    //     $this->loadActiveEntries();
-    // }
-
     private function loadActiveEntries()
     {
         // Ensure user relationship is loaded if needed elsewhere

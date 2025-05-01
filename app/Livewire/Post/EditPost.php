@@ -45,6 +45,8 @@ class EditPost extends Component
             return $this->redirect('/post/myown', navigate: true);
         } elseif ($this->origin == 'all') {
             return $this->redirect('/post/show', navigate: true);
+        } elseif ($this->origin == 'one') {
+            return $this->redirect('/post/' . $this->entry->id, navigate: true);
         } elseif ($this->origin == 'admin') {
             return $this->redirect('/admin/posts', navigate: true);
         } else {

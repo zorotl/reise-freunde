@@ -26,19 +26,6 @@ class MyPosts extends Component
         $this->countryList = Countries::getList('en', 'php');
         $this->loadMyEntries();
     }
-
-    // public function toggleActive(Post $entry)
-    // {
-    //     $entry->update(['is_active' => !$entry->is_active]);
-    //     $this->loadMyEntries();
-    // }
-
-    // public function deleteEntry(Post $entry)
-    // {
-    //     $entry->delete(); // Soft delete
-    //     $this->loadMyEntries();
-    // }
-
     private function loadMyEntries()
     {
         $this->entries = Post::query()

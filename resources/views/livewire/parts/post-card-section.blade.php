@@ -47,7 +47,11 @@
             {{ $post->title }}
         </h3>
         <p class="mt-1 text-sm text-gray-700 dark:text-gray-300 space-y-2">
-            {{ Str::limit($post->content, 200) }} {{-- Limit content length --}}
+            @if ($show === 'one')
+            {{ $post->content }} {{-- Full content for single post view --}}
+            @else
+            {{ Str::limit($post->content, 300) }} {{-- Limit content length --}}
+            @endif
         </p>
     </a>
 

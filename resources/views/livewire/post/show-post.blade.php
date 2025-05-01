@@ -25,7 +25,24 @@
     @elseif (!$post->is_active) bg-red-300
     @else bg-white dark:bg-neutral-700
     @endif">
-        <div class="p-6">
+
+        <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6">
+            {{-- <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">{{ __('Test Titel') }}</h2>
+            --}}
+            <div class="space-y-4">
+                {{-- @forelse ($entries as $post) --}}
+                {{-- Include the individual post card component for each post --}}
+                <livewire:parts.post-card-section :post="$post" :show="$show" wire:key="post-card-{{ $post->id }}" />
+                {{-- @empty
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ __('Your feed is empty. Follow some users or create your own post!') }}
+                </p>
+                @endforelse --}}
+                {{-- Consider adding pagination or load more later for the feed --}}
+            </div>
+        </section>
+
+        {{-- <div class="p-6">
             <h1 class="text-3xl font-semibold text-gray-900 dark:text-stone-400 mb-4">
                 @if (!$post->is_active)
                 <span class="text-red-900 font-bold">[Inactive]</span>
@@ -94,14 +111,6 @@
                 </flux:button>
                 @endif
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
-
-{{-- <script>
-    document.addEventListener('livewire:initialized', () => {
-        Livewire.on('goBack', () => {
-            window.history.back();
-        });
-    });
-</script> --}}

@@ -12,7 +12,7 @@ class ShowPost extends Component
 {
     public Post $post;
     public Carbon $now;
-    public string $show = 'all';
+    public string $show = 'one';
     public array $countryList = [];
 
     public function mount(Post $post)
