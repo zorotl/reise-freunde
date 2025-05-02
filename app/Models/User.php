@@ -3,18 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\NewFollowerNotification;
+use App\Notifications\FollowRequestNotification;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Notifications\FollowRequestNotification;
-use App\Notifications\NewFollowerNotification;
 use App\Notifications\FollowRequestAcceptedNotification;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable // Add MustVerifyEmail if you implement it later
 {
@@ -97,13 +98,10 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
      */
     public function profilePictureUrl(): string
     {
-        $defaultAvatar = asset('images/default-avatar.png'); // Path to your default avatar in public/images
+        $defaultAvatar = asset('images/default-avatar.png'); // Path to your default avatar in public/images        
 
         if ($this->additionalInfo && $this->additionalInfo->profile_picture_path) {
-            // Check if the file exists in storage before generating URL
-            if (Storage::disk('public')->exists($this->additionalInfo->profile_picture_path)) {
-                return Storage::disk('public')->url($this->additionalInfo->profile_picture_path);
-            }
+            return asset('storage/' . $this->additionalInfo->profile_picture_path);
         }
 
         // Return default if no picture set or file doesn't exist

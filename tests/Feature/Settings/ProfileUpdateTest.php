@@ -3,6 +3,8 @@
 use App\Models\User;
 use App\Models\UserAdditionalInfo;
 use Livewire\Volt\Volt;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $this->actingAs($user = User::factory()->create());
@@ -150,4 +152,97 @@ test('nationality can be updated', function () {
         ->set('nationality', 'XX') // Non-existent 2-letter code
         ->call('updateProfileInformation');
     $responseInvalidCode->assertHasErrors(['nationality' => 'in']); // Should fail 'in' validation rule
+});
+
+test('profile picture can be uploaded and updated', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $user->additionalInfo()->create(['username' => 'testuser']);
+
+    $initialFile = UploadedFile::fake()->image('avatar1.jpg', 100, 100)->size(100); // Simulate initial upload
+    $updatedFile = UploadedFile::fake()->image('avatar2.png', 150, 150)->size(150); // Simulate update
+
+    // Test initial upload
+    Volt::test('settings.profile')
+        ->set('photo', $initialFile)
+        // set other required fields...
+        ->set('firstname', $user->firstname)->set('lastname', $user->lastname)->set('email', $user->email)->set('username', 'testuser1')->set('birthday', '1990-01-01')
+        ->call('updateProfileInformation')
+        ->assertHasNoErrors(['photo']);
+
+    $user->refresh()->load('additionalInfo');
+    $firstPath = $user->additionalInfo->profile_picture_path;
+    expect($firstPath)->not->toBeNull();
+    Storage::disk('public')->assertExists($firstPath);
+    // Add assertions for image processing if necessary (e.g., dimensions)
+
+    // Test updating photo (should delete the old one)
+    Volt::test('settings.profile')
+        ->set('photo', $updatedFile)
+        // set other required fields again...
+        ->set('firstname', $user->firstname)->set('lastname', $user->lastname)->set('email', $user->email)->set('username', 'testuser2')->set('birthday', '1990-01-01')
+        ->call('updateProfileInformation')
+        ->assertHasNoErrors(['photo']);
+
+    $user->refresh()->load('additionalInfo');
+    $secondPath = $user->additionalInfo->profile_picture_path;
+    expect($secondPath)->not->toBeNull()->and($secondPath)->not->toEqual($firstPath);
+    Storage::disk('public')->assertMissing($firstPath); // Assert old file deleted
+    Storage::disk('public')->assertExists($secondPath); // Assert new file exists
+});
+
+test('profile picture validation works', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $user->additionalInfo()->create(['username' => 'testuser']);
+
+    // Test too large
+    Volt::test('settings.profile')
+        ->set('photo', UploadedFile::fake()->image('large.jpg')->size(3000)) // 3MB > 2MB limit
+        // set other required fields...
+        ->set('firstname', $user->firstname)->set('lastname', $user->lastname)->set('email', $user->email)->set('username', 'testuser_valid')->set('birthday', '1990-01-01')
+        ->call('updateProfileInformation')
+        ->assertHasErrors(['photo' => 'max']);
+
+    // Test wrong file type
+    Volt::test('settings.profile')
+        ->set('photo', UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'))
+        // set other required fields...
+        ->set('firstname', $user->firstname)->set('lastname', $user->lastname)->set('email', $user->email)->set('username', 'testuser_valid2')->set('birthday', '1990-01-01')
+        ->call('updateProfileInformation')
+        ->assertHasErrors(['photo' => 'image']);
+
+});
+
+test('user can delete their account and profile picture is removed', function () {
+    Storage::fake('public'); // Fake storage
+
+    $user = User::factory()->create();
+    $path = 'profile-pictures/' . $user->id . '/avatar_to_delete.jpg';
+    Storage::disk('public')->put($path, 'dummy-content'); // Create dummy file
+
+    $user->additionalInfo()->create([
+        'username' => 'delete_test',
+        'profile_picture_path' => $path
+    ]);
+
+    $this->actingAs($user);
+
+    $response = Volt::test('settings.delete-user-form')
+        ->set('password', 'password') // Assuming default factory password is 'password'
+        ->call('deleteUser');
+
+    $response
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    // --- Assert file deletion ---
+    Storage::disk('public')->assertMissing($path);
+    // --- End Assertion ---
+
+    expect($user->fresh()->trashed())->toBeTrue();
+    expect(auth()->check())->toBeFalse(); // Check user is logged out
 });

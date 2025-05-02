@@ -10,8 +10,11 @@
                 {{-- User Avatar Placeholder --}}
                 <span class="inline-block h-8 w-8 rounded-full overflow-hidden bg-gray-200 dark:bg-neutral-700">
                     <span
-                        class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">{{
-                        $suggested->initials() }}</span>
+                        class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">
+                        <img class="h-full w-full rounded-lg object-cover"
+                            src="{{ auth()->user()->profilePictureUrl() }}"
+                            alt="{{ auth()->user()->additionalInfo->username }}" />
+                    </span>
                 </span>
                 <div>
                     <a href="{{ route('user.profile', $suggested->id) }}"

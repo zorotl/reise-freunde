@@ -2,6 +2,7 @@
 
 use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Volt\Component;
 
 new class extends Component {
@@ -16,7 +17,13 @@ new class extends Component {
             'password' => ['required', 'string', 'current_password'],
         ]);
 
-        tap(Auth::user(), $logout(...))->delete();
+        $user = Auth::user();
+
+        if ($user->additionalInfo && $user->additionalInfo->profile_picture_path) {
+            Storage::disk('public')->delete($user->additionalInfo->profile_picture_path);
+        }
+
+        tap($user, $logout(...))->delete();
 
         $this->redirect('/', navigate: true);
     }
@@ -40,7 +47,8 @@ new class extends Component {
                 <flux:heading size="lg">{{ __('Are you sure you want to delete your account?') }}</flux:heading>
 
                 <flux:subheading>
-                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted.
+                    Please enter your password to confirm you would like to permanently delete your account.') }}
                 </flux:subheading>
             </div>
 

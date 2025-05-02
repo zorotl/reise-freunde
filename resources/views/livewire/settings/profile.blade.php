@@ -9,7 +9,8 @@ use Monarobase\CountryList\CountryListFacade as Countries;
 use App\Livewire\Traits\GeneratesUsername; // <-- Import the Trait
 use Livewire\WithFileUploads; 
 use Illuminate\Support\Facades\Storage; 
-use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 
 // Remove the standalone generateDefaultUsernameHelper() function from here
@@ -88,7 +89,7 @@ new class extends Component {
             'birthday' => ['required', 'date', 'before_or_equal:today'],
             'nationality' => ['nullable', 'string', 'size:2', Rule::in($validCountryCodes)],
             'about_me' => ['nullable', 'string', 'max:65535'],
-            'photo' => ['nullable', 'image', 'max:2048'], // Example: Nullable, image, max 2MB
+            'photo' => ['nullable', 'image', 'max:5000'], // Example: Nullable, image, max 5MB
         ]);
 
         // Update User model fields (same as before)
@@ -120,20 +121,22 @@ new class extends Component {
             }
 
             // Process and store the new photo
-            $image = Image::read($this->photo->getRealPath());
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($this->photo->getRealPath());
+            
             // Resize (example: fit 200x200, maintain aspect ratio, prevent upscaling)
             $image->scaleDown(width: 200, height: 200);
 
             // Generate a unique filename
             $filename = $this->photo->hashName();
-            $directory = 'profile-pictures/' . $user->id;
+            $directory = 'profile-pictures';
             $path = $directory . '/' . $filename;
 
              // Store the processed image - Intervention Image v3+
             Storage::disk('public')->put($path, (string) $image->encode()); // Encode returns image instance
 
             // Add the relative path to the data array
-            $additionalInfoData['profile_picture_path'] = $path;
+            $additionalInfoData['profile_picture_path'] = $path;        
         }
 
         // Update or create UserAdditionalInfo
@@ -179,7 +182,7 @@ new class extends Component {
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and personal information')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6" enctype="multipart/form-data">
             {{-- First Name, Last Name, Email, Username, Birthday Inputs (remain the same) --}}
             <flux:input wire:model="firstname" :label="__('First Name')" type="text" required autofocus
                 autocomplete="given-name" />
@@ -258,7 +261,7 @@ new class extends Component {
 
             {{-- Profile Photo Upload --}}
             <div class="col-span-6 sm:col-span-4">
-                <input type="file" id="photo" class="hidden" wire:model.live="photo" x-ref="photo" x-on:change="
+                <input type="file" id="photo" class="hidden" wire:model="photo" x-ref="photo" x-on:change="
                     photoName = $refs.photo.files[0].name;
                     const reader = new FileReader();
                     reader.onload = (e) => {
@@ -290,7 +293,7 @@ new class extends Component {
                 {{-- Add button to remove photo later if needed --}}
 
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    {{ __('Maximum size: 2MB. Allowed types: jpg, png, gif.') }}
+                    {{ __('Maximum size: 5MB. Allowed types: jpg, png, gif.') }}
                 </p>
                 @error('photo') <span class="mt-2 text-sm text-red-600">{{ $message }}</span> @enderror
             </div>
@@ -299,7 +302,7 @@ new class extends Component {
             {{-- Form Actions --}}
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit">{{ __('Save') }}</flux:button>
+                    <flux:button variant="primary" type="submit" class="w-full mt-3">{{ __('Save') }}</flux:button>
                 </div>
                 <x-action-message class="me-3" on="profile-updated">
                     {{ __('Saved.') }}

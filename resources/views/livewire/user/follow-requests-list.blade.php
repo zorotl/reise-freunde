@@ -48,8 +48,11 @@
                         <div class="flex items-center gap-4">
                             <div
                                 class="rounded-full overflow-hidden w-10 h-10 bg-gray-300 flex items-center justify-center flex-shrink-0">
-                                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $requester->initials()
-                                    }}</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">
+                                    <img class="h-full w-full rounded-lg object-cover"
+                                        src="{{ auth()->user()->profilePictureUrl() }}"
+                                        alt="{{ auth()->user()->additionalInfo->username }}" />
+                                </span>
                             </div>
                             <div>
                                 <a href="{{ route('user.profile', $requester->id) }}" wire:navigate
