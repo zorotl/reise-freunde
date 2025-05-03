@@ -100,6 +100,10 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [x] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
+//         - [ ] Fix - every site shows the same user picture instead of the one from the post/message,...
+//         - [ ] Fix - Follower/Following/Follow Requests - I can see the full name of the user instead of the username
+//         - [ ] Fix - User Search List - I can see the full name of the user instead of the username
+//         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
@@ -121,14 +125,14 @@ require __DIR__ . '/auth.php';
 //     Logged in user:
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
-//         - [ ] Use a profile picture 
+//         - [x] Use a profile picture 
 
 //         - [ ] Add a notification system
-//         - [ ] Implement a User Finding system
-//         - [ ] Implement user picture upload
+//         - [x] Implement a User Finding system
+//         - [x] Implement user picture upload
 
 //      Posts
-//         - [ ] Add picture from user to the post
+//         - [x] Add picture from user to the post
 //         - [ ] Add a comment system
 //         - [ ] Add a like system
 //         - [ ] Add a report system

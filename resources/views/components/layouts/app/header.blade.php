@@ -21,7 +21,7 @@
                 {{ __('Dashboard') }}
             </flux:navbar.item>
 
-            {{-- Renamed "All Posts" Link --}}
+            {{-- "All Posts" Link --}}
             <flux:navbar.item icon="rectangle-stack" :href="route('post.show')"
                 :current="request()->routeIs('post.show')" wire:navigate>
                 {{ __("All Posts") }}
@@ -38,6 +38,13 @@
                 :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
             </flux:navbar.item>
             @endauth
+
+            {{-- "Find User" Link --}}
+            <flux:navbar.item icon="users" :href="route('user.directory')"
+                :current="request()->routeIs('user.directory')" wire:navigate>
+                {{ __("Find User") }}
+            </flux:navbar.item>
+
         </flux:navbar>
 
         <flux:spacer />
