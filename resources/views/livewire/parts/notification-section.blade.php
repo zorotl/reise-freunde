@@ -11,9 +11,8 @@
                 <span class="inline-block h-6 w-6 rounded-full overflow-hidden bg-gray-200 dark:bg-neutral-700">
                     <span
                         class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">
-                        <img class="h-full w-full rounded-lg object-cover"
-                            src="{{ auth()->user()->profilePictureUrl() }}"
-                            alt="{{ auth()->user()->additionalInfo->username }}" />
+                        <img class="h-full w-full rounded-lg object-cover" src="{{ $requestUser->profilePictureUrl() }}"
+                            alt="{{ $requestUser->additionalInfo?->username ?? 'na' }}" />
                     </span>
                 </span>
                 <a href="{{ route('user.profile', $requestUser->id) }}"

@@ -50,19 +50,15 @@
                                 class="rounded-full overflow-hidden w-10 h-10 bg-gray-300 flex items-center justify-center flex-shrink-0">
                                 <span class="text-sm text-gray-600 dark:text-gray-400">
                                     <img class="h-full w-full rounded-lg object-cover"
-                                        src="{{ auth()->user()->profilePictureUrl() }}"
-                                        alt="{{ auth()->user()->additionalInfo->username }}" />
+                                        src="{{ $requester->profilePictureUrl() }}"
+                                        alt="{{ $requester->additionalInfo?->username }}" />
                                 </span>
                             </div>
                             <div>
                                 <a href="{{ route('user.profile', $requester->id) }}" wire:navigate
                                     class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 truncate">
-                                    {{ $requester->name }}
+                                    {{ $requester->additionalInfo?->username}}
                                 </a>
-                                @if($requester->additionalInfo?->username)
-                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ '@' .
-                                    $requester->additionalInfo->username }}</p>
-                                @endif
                             </div>
                         </div>
 

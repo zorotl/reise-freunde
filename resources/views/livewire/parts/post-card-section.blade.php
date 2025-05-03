@@ -10,17 +10,8 @@
                 {{-- User image --}}
                 <span
                     class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">
-                    {{-- CORRECTED LINES START --}}
-                    @if($post->user) {{-- Check if user relation exists --}}
-                    <img class="h-full w-full rounded-lg object-cover" src="{{ $post->user->profilePictureUrl() }}" {{--
-                        Use post author's picture --}}
-                        alt="{{ $post->user->additionalInfo?->username ?? $post->user->name }}" /> {{-- Use post
-                    author's username/name --}}
-                    @else
-                    {{-- Placeholder if user is deleted or missing --}}
-                    ??
-                    @endif
-                    {{-- CORRECTED LINES END --}}
+                    <img class="h-full w-full rounded-lg object-cover" src="{{ $post->user->profilePictureUrl() }}"
+                        alt="{{ $post->user->additionalInfo?->username ?? 'na' }}" />
                 </span>
             </span>
         </div>
@@ -28,7 +19,7 @@
             <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {{-- Link to author's profile --}}
                 <a href="{{ route('user.profile', $post->user) }}" class="hover:underline" wire:navigate>
-                    {{ $post->user->additionalInfo->username }}</a>
+                    {{ $post->user->additionalInfo?->username }}</a>
             </p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
                 {{-- Link to the single post view --}}

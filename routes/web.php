@@ -99,10 +99,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [x] Fix post redirect after I was befor on the single post site
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
-//         - [ ] Fix - every site shows the same user picture instead of the one from the post/message,...
-//         - [ ] Fix - Follower/Following/Follow Requests - I can see the full name of the user instead of the username
+//         - [x] Fix - every site shows the same user picture instead of the one from the post/message,...
+//         - [x] Fix - Follower/Following/Follow Requests - I can see the full name of the user instead of the username
 //         - [ ] Fix - User Search List - I can see the full name of the user instead of the username
 //         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 //         - [ ] Fix - MyOwn Posts - Error
@@ -127,19 +126,15 @@ require __DIR__ . '/auth.php';
 //     Logged in user:
 //         - [ ] Use is_banned 
 //         - [ ] Use is_banned_until 
-//         - [x] Use a profile picture 
-
 //         - [ ] Add a notification system
-//         - [x] Implement a User Finding system
-//         - [x] Implement user picture upload
 
 //      Posts
-//         - [x] Add picture from user to the post
 //         - [ ] Add a comment system
 //         - [ ] Add a like system
-//         - [x] Add a report system
 //         - [ ] Add from reported posts to ban the user
-//         - [x] Add a filter (Country, Region) to the post
+
+//      Inbox
+//         - [ ] Change style to be more like post list
 
 //     Frontend / not logged in user:
 //         - [ ] Make it difficult to use the app without being logged in
