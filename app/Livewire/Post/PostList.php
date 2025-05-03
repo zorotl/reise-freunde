@@ -10,6 +10,7 @@ use Monarobase\CountryList\CountryListFacade as Countries;
 use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Builder; // Import Builder
 use Livewire\Attributes\Url; // Import Url attribute
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostList extends Component
 {
@@ -44,9 +45,7 @@ class PostList extends Component
     public function mount()
     {
         $this->now = Carbon::now();
-        // Load country list for both destination and user nationality filters
         $this->countryList = Countries::getList('en', 'php');
-        // Initial load is handled by render() with pagination
     }
 
     // Reset pagination when filters change
@@ -67,7 +66,6 @@ class PostList extends Component
         }
     }
 
-    // Method to reset all filters
     public function resetFilters(): void
     {
         $this->reset([
@@ -80,73 +78,75 @@ class PostList extends Component
             'filterMaxAge'
         ]);
         $this->resetPage();
-        // Dispatch event for TomSelect to clear itself (if needed)
         $this->dispatch('reset-nationality-select');
     }
 
-
     public function render()
     {
+        // *** Using whereHas approach ***
         $query = Post::query()
-            ->with('user.additionalInfo') // Eager load user->additionalInfo
-            ->where('is_active', true)
-            ->where(function ($query) { // Filter out expired posts
-                $query->whereNull('expiry_date')
-                    ->orWhere('expiry_date', '>', $this->now);
+            ->with('user.additionalInfo') // Eager load needed data
+            ->where('posts.is_active', true) // Qualify table name
+            ->where(function ($query) {
+                $query->whereNull('posts.expiry_date') // Qualify table name
+                    ->orWhere('posts.expiry_date', '>', $this->now);
             });
 
         // Apply Destination Country Filter
         $query->when($this->filterDestinationCountry, function (Builder $q, $countryCode) {
-            $q->where('country', $countryCode);
+            $q->where('posts.country', $countryCode);
         });
 
         // Apply Destination City Filter
         $query->when($this->filterDestinationCity, function (Builder $q, $city) {
-            // Use ILIKE for case-insensitive search if using PostgreSQL, otherwise use LIKE
             $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
-            $q->where('city', $operator, '%' . $city . '%');
+            $q->where('posts.city', $operator, '%' . $city . '%');
         });
 
         // Apply From Date Filter
         $query->when($this->filterFromDate, function (Builder $q, $date) {
-            $q->whereDate('from_date', '>=', $date);
+            $q->whereDate('posts.from_date', '>=', $date);
         });
 
         // Apply To Date Filter
         $query->when($this->filterToDate, function (Builder $q, $date) {
-            $q->whereDate('to_date', '<=', $date);
+            $q->whereDate('posts.to_date', '<=', $date);
         });
 
-        // Apply User Nationality Filter
+        // Apply User Nationality Filter (using whereHas with whereRaw)
         $query->when($this->filterUserNationality, function (Builder $q, $nationality) {
             $q->whereHas('user.additionalInfo', function (Builder $subQuery) use ($nationality) {
-                $subQuery->where('nationality', $nationality);
+                // Using LOWER ensures case-insensitivity across DBs
+                $subQuery->whereRaw('LOWER(nationality) = ?', [strtolower($nationality)]);
             });
         });
 
-        // Apply Minimum Age Filter
-        $query->when($this->filterMinAge, function (Builder $q, $minAge) {
-            // Calculate latest possible birthday for someone who is at least minAge
+        // Apply Minimum Age Filter (using whereHas)
+        if ($this->filterMinAge !== null && $this->filterMinAge >= 0) {
+            $minAge = (int) $this->filterMinAge;
             $latestBirthday = now()->subYears($minAge)->endOfDay()->toDateString();
-            $q->whereHas('user.additionalInfo', function (Builder $subQuery) use ($latestBirthday) {
-                $subQuery->where('birthday', '<=', $latestBirthday);
+            $query->whereHas('user.additionalInfo', function (Builder $subQuery) use ($latestBirthday) {
+                $subQuery->whereNotNull('birthday')
+                    ->whereDate('birthday', '<=', $latestBirthday);
             });
-        });
+        }
 
-        // Apply Maximum Age Filter
-        $query->when($this->filterMaxAge, function (Builder $q, $maxAge) {
-            // Calculate earliest possible birthday for someone who is at most maxAge
-            // Need to subtract maxAge + 1 years to get the correct boundary
+        // Apply Maximum Age Filter (using whereHas)
+        if ($this->filterMaxAge !== null && $this->filterMaxAge >= 0) {
+            $maxAge = (int) $this->filterMaxAge;
             $earliestBirthday = now()->subYears($maxAge + 1)->startOfDay()->toDateString();
-            $q->whereHas('user.additionalInfo', function (Builder $subQuery) use ($earliestBirthday) {
-                $subQuery->where('birthday', '>', $earliestBirthday);
+            $query->whereHas('user.additionalInfo', function (Builder $subQuery) use ($earliestBirthday) {
+                $subQuery->whereNotNull('birthday')
+                    ->whereDate('birthday', '>', $earliestBirthday);
             });
-        });
+        }
 
-        $entries = $query->latest()->paginate(15); // Adjust per page number as needed
+        // *** END Query Logic ***
+
+        $entries = $query->latest('posts.created_at')->paginate(15);
 
         return view('livewire.post.post-list', [
-            'entries' => $entries, // Pass the paginator object directly to the view
+            'entries' => $entries,
         ]);
     }
 }

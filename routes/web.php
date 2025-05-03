@@ -105,6 +105,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix - Follower/Following/Follow Requests - I can see the full name of the user instead of the username
 //         - [ ] Fix - User Search List - I can see the full name of the user instead of the username
 //         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
+//         - [ ] Fix - MyOwn Posts - Error
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)

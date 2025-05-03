@@ -7,11 +7,20 @@
         {{-- Author Avatar Placeholder --}}
         <div class="flex-shrink-0">
             <span class="inline-block h-8 w-8 rounded-full overflow-hidden bg-gray-200 dark:bg-neutral-700">
-                {{-- Add user image later if available --}}
+                {{-- User image --}}
                 <span
                     class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">
-                    <img class="h-full w-full rounded-lg object-cover" src="{{ auth()->user()->profilePictureUrl() }}"
-                        alt="{{ auth()->user()->additionalInfo->username }}" />
+                    {{-- CORRECTED LINES START --}}
+                    @if($post->user) {{-- Check if user relation exists --}}
+                    <img class="h-full w-full rounded-lg object-cover" src="{{ $post->user->profilePictureUrl() }}" {{--
+                        Use post author's picture --}}
+                        alt="{{ $post->user->additionalInfo?->username ?? $post->user->name }}" /> {{-- Use post
+                    author's username/name --}}
+                    @else
+                    {{-- Placeholder if user is deleted or missing --}}
+                    ??
+                    @endif
+                    {{-- CORRECTED LINES END --}}
                 </span>
             </span>
         </div>

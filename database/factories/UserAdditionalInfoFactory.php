@@ -39,7 +39,7 @@ class UserAdditionalInfoFactory extends Factory
         return [
             'birthday' => $faker->date(),
             'nationality' => $nationalityCode,
-            'profile_picture_path' => $faker->optional()->imageUrl(),
+            'profile_picture_path' => null,
             'about_me' => $faker->paragraph(3),
             'is_private' => $faker->boolean(30),
             'custom_travel_styles' => $faker->optional()->randomElements(['Adventure', 'Relaxing', 'Cultural'], $faker->numberBetween(0, 3)),
