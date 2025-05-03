@@ -12,7 +12,7 @@
                     <span
                         class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300 text-xs">
                         <img class="h-full w-full rounded-lg object-cover" src="{{ $requestUser->profilePictureUrl() }}"
-                            alt="{{ $requestUser->additionalInfo?->username ?? 'na' }}" />
+                            alt="{{ $requestUser->additionalInfo?->username ?? 'profile_picture' }}" />
                     </span>
                 </span>
                 <a href="{{ route('user.profile', $requestUser->id) }}"

@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Dashboard')">
+{{-- <x-layouts.app :title="__('Dashboard')">
     <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             {{ __('Dashboard') }}
@@ -8,4 +8,4 @@
             <livewire:post.post-list />
         </div>
     </div>
-</x-layouts.app>
+</x-layouts.app> --}}

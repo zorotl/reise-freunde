@@ -2,9 +2,10 @@
 
 use App\Models\User;
 use App\Models\Hobby;
-use App\Models\TravelStyle;
 use Livewire\Livewire;
-use App\Livewire\Dashboard\SuggestedUsersSection;
+use App\Models\TravelStyle;
+use App\Models\UserAdditionalInfo;
+use App\Livewire\Parts\SuggestedUsersSection;
 use App\Livewire\Dashboard\Overview; // Import the parent component to test interactions
 
 test('suggested users section displays suggested users', function () {
@@ -26,10 +27,14 @@ test('suggested users section displays suggested users', function () {
     // To test the child component in isolation, we simulate the data structure
     // that the parent component (Overview) would pass down.
     // The Overview component adds 'shared_hobbies_count' and 'shared_travel_styles_count' using withCount.
-    $suggestedUsersCollection = collect([
-        $suggestedUser1->load('additionalInfo')->toArray() + ['shared_hobbies_count' => 1, 'shared_travel_styles_count' => 0],
-        $suggestedUser2->load('additionalInfo')->toArray() + ['shared_hobbies_count' => 0, 'shared_travel_styles_count' => 1],
-    ]);
+    $suggestedUser1->shared_hobbies_count = 1;
+    $suggestedUser1->shared_travel_styles_count = 0;
+
+    $suggestedUser2->shared_hobbies_count = 0;
+    $suggestedUser2->shared_travel_styles_count = 1;
+
+    $suggestedUsersCollection = collect([$suggestedUser1, $suggestedUser2]);
+
 
     // Act: Mount the SuggestedUsersSection component with the simulated data
     Livewire::actingAs($user)
@@ -44,7 +49,15 @@ test('suggested users section displays suggested users', function () {
 test('clicking follow user button triggers parent action and refreshes data', function () {
     // Arrange: Create a user and a suggested user
     $user = User::factory()->create();
-    $suggestedUser = User::factory()->create(['is_private' => false]); // Make suggested user public for easier testing
+    // $suggestedUser = User::factory()->create(['is_private' => false]); // Make suggested user public for easier testing
+
+
+    $suggestedUser = User::factory()->create(); // Make suggested user public for easier testing
+    UserAdditionalInfo::factory()->create([ // Hängt ein UserAdditionalInfo an mit is_private = true
+        'user_id' => $suggestedUser->id,
+        'is_private' => false,
+    ]);
+
 
     // Create shared interests so the suggested user appears in the list loaded by the parent
     $hobby = Hobby::factory()->create();
@@ -64,8 +77,12 @@ test('clicking follow user button triggers parent action and refreshes data', fu
     $user->refresh(); // Refresh the user model to get the latest relationship state
     expect($user->isFollowing($suggestedUser))->toBeTrue(); // Assuming public profile, direct follow
 
+
     // Assert that the suggested user is no longer in the suggested list after being followed
     // The loadData method in Overview should refresh the suggestedUsers property.
-    $overviewComponent->assertDontSee($suggestedUser->name); // Suggested user should be gone from suggestions
+    expect($overviewComponent->get('suggestedUsers'))->not()->toContain(
+        fn($u) => $u->id === $suggestedUser->id
+    );
+    // Suggested user should be gone from suggestions
     $overviewComponent->assertSee('Now following ' . $suggestedUser->name); // Check for flash message
 });

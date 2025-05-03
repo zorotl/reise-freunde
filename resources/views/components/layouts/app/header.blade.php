@@ -70,7 +70,7 @@
                             <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                                 <img class="h-full w-full rounded-lg object-cover"
                                     src="{{ auth()->user()->profilePictureUrl() }}"
-                                    alt="{{ auth()->user()->additionalInfo->username }}" />
+                                    alt="{{ auth()->user()->additionalInfo?->username ?? 'profile_picture' }}" />
                             </span>
 
                             <div class="grid flex-1 text-start text-sm leading-tight">

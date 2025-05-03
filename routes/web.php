@@ -97,9 +97,7 @@ require __DIR__ . '/auth.php';
 
 //     Fix the following issues:
 //         - [ ] Fix SiteTitle on all pages
-//         - [x] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [x] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
@@ -110,10 +108,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a language switcher front- and backend
 
 //     Security:
-//         - [x] Implement Laravel Gates to protect routes and admin functions
-//         - [ ] Implement Laravel Policies to protect models
-//         - [ ] Implement Laravel Socialite for social authentication ???
-//         - [x] Implement Laravel CSRF protection for forms
+//         - [ ] Test the security of the app
 
 //     Testing:
 //         - [ ] Test continuing
