@@ -1,34 +1,168 @@
+{{-- resources/views/livewire/post/post-list.blade.php --}}
 <div>
-    <div class="mb-5 flex justify-between items-center">
-        @if ($show === 'all')
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">Find your travel buddy</h2>
-        @elseif ($show === 'my')
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">My Posts</h2>
-        @endif
+    {{-- Page Header --}}
+    <div class="mb-5 flex justify-between items-center flex-wrap gap-4">
+        <div>
+            @if ($show === 'all')
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">Find your travel buddy</h2>
+            @elseif ($show === 'my')
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">My Posts</h2>
+            @endif
+        </div>
+        @auth {{-- Only show Create button if logged in --}}
         <a wire:navigate href="{{ route('post.create') }}"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Create New Entry
         </a>
+        @endauth
     </div>
 
-    @unless ($show === 'my')
-    <div>
-        <livewire:search />
+    {{-- Search and Filter Section --}}
+    @unless ($show === 'my') {{-- Don't show filters on 'My Posts' page --}}
+    <div class="mb-6 p-4 bg-gray-100 dark:bg-neutral-800 rounded-lg shadow">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {{-- Destination Country Filter --}}
+            <div>
+                <label for="filterDestinationCountry"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Destination Country') }}
+                </label>
+                <select wire:model.live="filterDestinationCountry" id="filterDestinationCountry"
+                    class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <option value="">{{ __('Any Country') }}</option>
+                    @foreach($countryList as $code => $name)
+                    <option value="{{ $code }}">{{ $name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Destination City Filter --}}
+            <div>
+                <label for="filterDestinationCity"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Destination City') }}
+                </label>
+                <input wire:model.live.debounce.500ms="filterDestinationCity" id="filterDestinationCity" type="text"
+                    placeholder="City name..."
+                    class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+
+            {{-- From Date Filter --}}
+            <div>
+                <label for="filterFromDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Travel From') }}
+                </label>
+                <input wire:model.live="filterFromDate" id="filterFromDate" type="date"
+                    class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+
+            {{-- To Date Filter --}}
+            <div>
+                <label for="filterToDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Travel To') }}
+                </label>
+                <input wire:model.live="filterToDate" id="filterToDate" type="date"
+                    class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+
+            {{-- User Nationality Filter --}}
+            <div wire:ignore x-data="{
+                tomSelectInstance: null,
+                // Use entangle for initial value and updates FROM Livewire
+                selectedNationality: @entangle('filterUserNationality'),
+                initTomSelect() {
+                    if (typeof TomSelect === 'undefined') { console.error('TomSelect not loaded'); return; }
+                    this.tomSelectInstance = new TomSelect(this.$refs.nationalitySelect, {
+                        create: false,
+                        valueField: 'code',
+                        labelField: 'name',
+                        searchField: ['name'],
+                        placeholder: '{{ __('Any Nationality...') }}',
+                        options: @js(collect($countryList)->map(fn($name, $code) => ['code' => $code, 'name' => $name])->values()->all()),
+                        onChange: (value) => {
+                            if ($wire.filterUserNationality !== value) {
+                                 $wire.set('filterUserNationality', value);
+                            }
+                        },
+                    });
+
+                    // Watch for Livewire changes (e.g., reset button)
+                    this.$watch('selectedNationality', (newValue) => {
+                        if (this.tomSelectInstance.getValue() !== newValue) {
+                            this.tomSelectInstance.setValue(newValue, true);
+                        }
+                    });
+
+                    // Set initial value
+                     if (this.selectedNationality) {
+                         this.tomSelectInstance.setValue(this.selectedNationality, true);
+                     }
+
+                     // Listen for reset event
+                     Livewire.on('reset-nationality-select', () => {
+                         if (this.tomSelectInstance) {
+                             this.tomSelectInstance.clear();
+                         }
+                     });
+                }
+            }" x-init="initTomSelect">
+                <label for="nationality-select-filter"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __("User's Nationality") }}
+                </label>
+                <select id="nationality-select-filter" x-ref="nationalitySelect"
+                    placeholder="Any Nationality..."></select>
+            </div>
+
+            {{-- User Age Filter --}}
+            <div class="flex items-end gap-2">
+                <div class="flex-1">
+                    <label for="filterMinAge" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {{ __('Min Age') }}
+                    </label>
+                    <input wire:model.live.debounce.500ms="filterMinAge" id="filterMinAge" type="number" min="0"
+                        placeholder="e.g., 18"
+                        class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="flex-1">
+                    <label for="filterMaxAge" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {{ __('Max Age') }}
+                    </label>
+                    <input wire:model.live.debounce.500ms="filterMaxAge" id="filterMaxAge" type="number" min="0"
+                        placeholder="e.g., 99"
+                        class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+            </div>
+
+            {{-- Clear Filters Button --}}
+            <div class="flex items-end col-span-1 md:col-span-2 lg:col-span-1 lg:col-start-4">
+                <button wire:click="resetFilters" type="button"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ __('Clear Filters') }}
+                </button>
+            </div>
+        </div>
     </div>
     @endunless
 
+    {{-- Results Area --}}
     <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">{{ __('Test Titel') }}</h2>
+        {{-- <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">{{ __('Posts') }}</h2> --}}
         <div class="space-y-4">
-            @forelse ($entries as $post)
-            {{-- Include the individual post card component for each post --}}
+            @if ($entries && $entries->count() > 0)
+            @foreach ($entries as $post)
+            {{-- Pass the individual post object to the PostCardSection component --}}
             <livewire:parts.post-card-section :post="$post" :show="$show" wire:key="post-card-{{ $post->id }}" />
-            @empty
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                {{ __('Your feed is empty. Follow some users or create your own post!') }}
+            @endforeach
+            {{-- Pagination Links --}}
+            <div class="mt-4">
+                {{ $entries->links() }}
+            </div>
+            @else
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                {{ __('No posts found matching your criteria.') }}
             </p>
-            @endforelse
-            {{-- Consider adding pagination or load more later for the feed --}}
+            @endif
         </div>
     </section>
 </div>
