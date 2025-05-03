@@ -2,13 +2,16 @@
 
 namespace App\Livewire\Post;
 
-use Livewire\Component;
 use App\Models\Post;
+use Livewire\Component;
 use Monarobase\CountryList\CountryListFacade as Countries;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class EditPost extends Component
 {
+    use AuthorizesRequests;
+
     public Post $entry;
     public $title;
     public $content;
@@ -24,8 +27,10 @@ class EditPost extends Component
 
     public function mount(Post $id)
     {
-        $this->origin = request('origin');
+        // Authorization check on mount
+        $this->authorize('update', $id);
 
+        $this->origin = request('origin');
         $this->entry = $id;
         $this->title = $this->entry->title;
         $this->content = $this->entry->content;
@@ -56,6 +61,9 @@ class EditPost extends Component
 
     public function update()
     {
+        // Authorization check again before update (good practice)
+        $this->authorize('update', $this->entry);
+
         $this->validate([
             'title' => 'required|max:255',
             'content' => 'required|min:50',

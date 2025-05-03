@@ -100,9 +100,6 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
-//         - [x] Fix - every site shows the same user picture instead of the one from the post/message,...
-//         - [x] Fix - Follower/Following/Follow Requests - I can see the full name of the user instead of the username
-//         - [ ] Fix - User Search List - I can see the full name of the user instead of the username
 //         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 //         - [ ] Fix - MyOwn Posts - Error
 

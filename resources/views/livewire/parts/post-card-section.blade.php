@@ -97,36 +97,35 @@
     @if (auth()->id() === $post->user_id)
     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-700 flex space-x-2">
         {{-- Edit Button --}}
-        {{-- Using 'dashboard' as the origin. Adjust route name 'post.edit' if different. --}}
         <a wire:navigate href="{{ route('post.edit', ['id' => $post->id, 'origin' => $show]) }}"
             class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-neutral-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             {{ __('Edit') }}
         </a>
 
         {{-- Activate/Deactivate Button --}}
-        {{-- Uses wire:click to trigger Livewire action --}}
+        {{-- Pass the post ID to the Livewire action --}}
         <button wire:click="toggleActive({{ $post->id }})" wire:loading.attr="disabled"
             wire:target="toggleActive({{ $post->id }})" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md shadow-sm
-                            @if ($post->is_active)
-                                border-transparent text-white bg-green-600 hover:bg-green-700 focus:ring-green-500
-                            @else
-                                border-gray-300 dark:border-neutral-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:ring-indigo-500
-                            @endif
-                            focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50">
+                        @if ($post->is_active)
+                            border-transparent text-white bg-green-600 hover:bg-green-700 focus:ring-green-500
+                        @else
+                            border-gray-300 dark:border-neutral-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:ring-indigo-500
+                        @endif
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50">
             <span wire:loading wire:target="toggleActive({{ $post->id }})" class="mr-1 -ml-0.5">
-                <flux:icon.loading class="w-3 h-3" /> {{-- Assuming FluxUI loading icon --}}
+                <flux:icon.loading class="w-3 h-3" />
             </span>
             {{ $post->is_active ? __('Deactivate') : __('Activate') }}
         </button>
 
         {{-- Delete Button --}}
-        {{-- Uses wire:click to trigger Livewire action --}}
+        {{-- Pass the post ID to the Livewire action --}}
         <button wire:click="deleteEntry({{ $post->id }})"
             wire:confirm="{{ __('Are you sure you want to delete this post?') }}" wire:loading.attr="disabled"
             wire:target="deleteEntry({{ $post->id }})"
             class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50">
             <span wire:loading wire:target="deleteEntry({{ $post->id }})" class="mr-1 -ml-0.5">
-                <flux:icon.loading class="w-3 h-3" /> {{-- Assuming FluxUI loading icon --}}
+                <flux:icon.loading class="w-3 h-3" />
             </span>
             {{ __('Delete') }}
         </button>
