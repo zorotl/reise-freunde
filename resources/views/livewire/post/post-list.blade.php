@@ -19,6 +19,7 @@
 
     {{-- Search and Filter Section --}}
     @unless ($show === 'my') {{-- Don't show filters on 'My Posts' page --}}
+    <livewire:search />
     <div class="mb-6 p-4 bg-gray-100 dark:bg-neutral-800 rounded-lg shadow">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Destination Country Filter --}}

@@ -4,7 +4,7 @@
             Adventures') }}</label>
         <input wire:model.live="query" type="text" id="search"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="{{ __('Enter keywords...') }}">
+            placeholder="{{ __('Search by title and content, otherwise use filters below...') }}">
 
         @if (strlen($query) >= 2 && !empty($results))
         <div
