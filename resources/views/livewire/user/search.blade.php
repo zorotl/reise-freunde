@@ -232,18 +232,16 @@ new class extends Component {
                                         class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200 dark:bg-neutral-700">
                                         <span
                                             class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300">
-                                            {{ $user->initials() }}
+                                            <img class="h-full w-full rounded-lg object-cover"
+                                                src="{{ $user->profilePictureUrl() }}"
+                                                alt="{{ $user->additionalInfo?->username ?? 'na' }}" />
                                         </span>
                                     </span>
                                 </div>
                                 {{-- User Info --}}
                                 <div class="min-w-0 flex-1">
                                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                        {{ $user->name }}
-                                        @if($user->additionalInfo?->username)
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ '@' .
-                                            $user->additionalInfo->username }}</span>
-                                        @endif
+                                        {{ $user->additionalInfo?->username }}
                                         @if($user->isPrivate())
                                         <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">(Private)</span>
                                         @endif
