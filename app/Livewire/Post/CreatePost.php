@@ -29,7 +29,7 @@ class CreatePost extends Component
     public function save()
     {
         $this->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|min:3|max:255',
             'content' => 'required|min:50',
             'expiryDate' => 'required|date|after:today|before_or_equal:+2 years|before_or_equal:fromDate',
             'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',

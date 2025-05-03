@@ -65,7 +65,7 @@ class EditPost extends Component
         $this->authorize('update', $this->entry);
 
         $this->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|min:3|max:255',
             'content' => 'required|min:50',
             'expiryDate' => 'required|date|after:today|before_or_equal:+2 years',
             'fromDate' => 'required|date|after:today|before_or_equal:+1 years|before:toDate',

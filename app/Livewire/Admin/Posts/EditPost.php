@@ -17,10 +17,10 @@ class EditPost extends Component
     public Post $post; // Route model binding
 
     // Form properties
-    public string $title;
-    public string $content;
+    public ?string $title = null;
+    public ?string $content = null;
     public ?string $expiryDate = null;
-    public bool $is_active = true;
+    public ?bool $is_active = true;
     public ?string $fromDate = null;
     public ?string $toDate = null;
     public ?string $country = null;
@@ -29,7 +29,7 @@ class EditPost extends Component
 
     // Validation rules (dynamic country rule handled in update method)
     protected array $baseRules = [
-        'title' => 'required|string|max:255',
+        'title' => 'required|string|min:3|max:255',
         'content' => 'required|string',
         'expiryDate' => 'required|date|after_or_equal:today',
         'is_active' => 'required|boolean',
