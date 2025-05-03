@@ -84,44 +84,6 @@
                 <livewire:search />
                 <livewire:post.recent-posts />
 
-                {{-- Travel Styles Section --}}
-                <div class="py-8">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Explore by Travel
-                        Style *** STATISCHER INHALT ***') }}</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-neutral-800 rounded-lg shadow overflow-hidden">
-                            <div class="p-4">
-                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">{{ __('Adventure Travel') }}
-                                </h3>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">{{ __('Explore thrilling
-                                    destinations and activities.') }}</p>
-                                <a href="#" class="text-indigo-500 hover:text-indigo-700 mt-2 block text-sm">{{ __('Find
-                                    Adventure Partners') }}</a>
-                            </div>
-                        </div>
-                        <div class="bg-white dark:bg-neutral-800 rounded-lg shadow overflow-hidden">
-                            <div class="p-4">
-                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">{{ __('Relaxing Getaways') }}
-                                </h3>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">{{ __('Discover peaceful
-                                    retreats and unwind.') }}</p>
-                                <a href="#" class="text-indigo-500 hover:text-indigo-700 mt-2 block text-sm">{{ __('Find
-                                    Relaxation Buddies') }}</a>
-                            </div>
-                        </div>
-                        <div class="bg-white dark:bg-neutral-800 rounded-lg shadow overflow-hidden">
-                            <div class="p-4">
-                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">{{ __('Cultural Experiences')
-                                    }}</h3>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">{{ __('Immerse yourself in
-                                    local cultures and traditions.') }}</p>
-                                <a href="#" class="text-indigo-500 hover:text-indigo-700 mt-2 block text-sm">{{ __('Find
-                                    Cultural Explorers') }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 {{-- More homepage content will go here --}}
 
             </div>
