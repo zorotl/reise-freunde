@@ -73,7 +73,8 @@ Route::prefix('admin')
         Volt::route('/messages', 'pages.admin.messages.index')->name('messages');  // Message Management Route
         Volt::route('/messages/{messageId}', 'pages.admin.messages.show')->name('messages.show');  // Route for viewing a single message in admin panel
         Volt::route('/hobbies', 'pages.admin.hobbies.index')->name('hobbies'); // Hobby Management Route
-        Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route        
+        Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route 
+        Volt::route('/reports', 'pages.admin.reports.index')->name('reports'); // Add reports route       
     });
 
 // Publicly accessible routes (or adjust middleware as needed)
@@ -135,8 +136,9 @@ require __DIR__ . '/auth.php';
 //         - [x] Add picture from user to the post
 //         - [ ] Add a comment system
 //         - [ ] Add a like system
-//         - [ ] Add a report system
-//         - [ ] Add a filter (Country, Region) to the post
+//         - [x] Add a report system
+//         - [ ] Add from reported posts to ban the user
+//         - [x] Add a filter (Country, Region) to the post
 
 //     Frontend / not logged in user:
 //         - [ ] Make it difficult to use the app without being logged in

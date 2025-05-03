@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\FollowRequestAcceptedNotification;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable // Add MustVerifyEmail if you implement it later
 {
@@ -326,5 +327,17 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
     public function receivedMessages()
     {
         return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    // Reports submitted BY this user
+    public function submittedReports(): HasMany
+    {
+        return $this->hasMany(PostReport::class, 'user_id');
+    }
+
+    // Reports processed BY this user (if admin/mod)
+    public function processedReports(): HasMany
+    {
+        return $this->hasMany(PostReport::class, 'processed_by');
     }
 }

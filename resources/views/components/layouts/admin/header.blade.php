@@ -42,6 +42,10 @@
                 wire:navigate>
                 {{ __('Posts') }}
             </flux:navbar.item>
+            <flux:navbar.item icon="flag" :href="route('admin.reports')" :current="request()->routeIs('admin.reports')"
+                wire:navigate>
+                {{ __('Reports') }}
+            </flux:navbar.item>
 
             {{-- Link to Manage Messages --}}
             <flux:navbar.item icon="envelope" :href="route('admin.messages')"
@@ -161,6 +165,10 @@
                 <flux:navlist.item icon="document" :href="route('admin.posts')"
                     :current="request()->routeIs('admin.posts')" wire:navigate>
                     {{ __('Posts') }}
+                </flux:navlist.item>
+                <flux:navlist.item icon="flag" :href="route('admin.reports')"
+                    :current="request()->routeIs('admin.reports')" wire:navigate>
+                    {{ __('Reports') }}
                 </flux:navlist.item>
 
                 {{-- Link to Manage Messages --}}

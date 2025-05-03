@@ -73,13 +73,24 @@
         </a>
 
         {{-- Button to send a message to the post author --}}
-        {{-- Assuming a route like 'mail.compose' that accepts a recipient user ID --}}
         @unless ($show === 'my' || auth()->id() === $post->user_id)
         <a href="{{ route('mail.compose', ['receiverId' => $post->user->id, 'fixReceiver' => true]) }}" wire:navigate
             class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             {{ __('Send Message') }}
         </a>
         @endunless
+
+        {{-- NEW: Report Button (show if not owner and logged in) --}}
+        @auth
+        @if (auth()->id() !== $post->user_id)
+        <button type="button"
+            wire:click="$dispatch('openReportModal', { postId: {{ $post->id }}, postTitle: '{{ addslashes($post->title) }}' })"
+            class="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-700 text-xs font-medium rounded-md text-red-700 dark:text-red-300 bg-white dark:bg-neutral-700 hover:bg-red-50 dark:hover:bg-red-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            <flux:icon.flag class="h-3 w-3 mr-1" /> {{-- Assuming a flag icon exists --}}
+            {{ __('Report') }}
+        </button>
+        @endif
+        @endauth
     </div>
 
     {{-- Management Buttons (Edit, Activate/Deactivate, Delete) - Only for Post Author --}}
