@@ -99,9 +99,9 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [ ] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
+//         - [x] !!! Currently, I can deactivte, edit and delete a post, even if I am not the owner of the post
 //         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
-//         - [ ] Fix - MyOwn Posts - Error
+//         - [x] Fix - MyOwn Posts - Error
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
