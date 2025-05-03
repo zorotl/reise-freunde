@@ -71,7 +71,7 @@ new class extends Component {
      * Update the profile information.
      */
      public function updateProfileInformation(): void
-    {
+    {                             
         $user = Auth::user();
         if (! $user) return;
 
@@ -90,7 +90,7 @@ new class extends Component {
             'nationality' => ['nullable', 'string', 'size:2', Rule::in($validCountryCodes)],
             'about_me' => ['nullable', 'string', 'max:65535'],
             'photo' => ['nullable', 'image', 'max:5000'], // Example: Nullable, image, max 5MB
-        ]);
+        ]);          
 
         // Update User model fields (same as before)
         $user->fill([
@@ -153,8 +153,26 @@ new class extends Component {
         $this->nationality = $validated['nationality']; // Keep this if needed
         $this->dispatch('profile-updated'); // Existing dispatch
         $this->dispatch('profile-picture-updated'); // Add a new event for Alpine preview reset
-
     }
+
+    public function removeProfilePhoto()
+    {
+        $user = Auth::user();
+        if (! $user) return;
+
+        if ($user->additionalInfo?->profile_picture_path) {
+            Storage::disk('public')->delete($user->additionalInfo->profile_picture_path);                    
+            
+            $additionalInfoData['profile_picture_path'] = null;
+            UserAdditionalInfo::updateOrCreate(
+                ['user_id' => $user->id],
+                $additionalInfoData
+            );
+         
+            $this->photo = null; // Reset im Livewire State
+        }
+    }
+
 
     /**
      * Send email verification.
@@ -182,7 +200,10 @@ new class extends Component {
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and personal information')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6" enctype="multipart/form-data">
+        <form wire:submit="updateProfileInformation" x-data="{ uploading: false }"
+            x-on:livewire-upload-start="uploading = true" x-on:livewire-upload-finish="uploading = false"
+            x-on:livewire-upload-error="uploading = false" x-on:livewire-upload-success="uploading = false"
+            class="my-6 w-full space-y-6">
             {{-- First Name, Last Name, Email, Username, Birthday Inputs (remain the same) --}}
             <flux:input wire:model="firstname" :label="__('First Name')" type="text" required autofocus
                 autocomplete="given-name" />
@@ -260,7 +281,7 @@ new class extends Component {
             <flux:textarea wire:model="about_me" :label="__('About Me')" rows="3"></flux:textarea>
 
             {{-- Profile Photo Upload --}}
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-6 sm:col-span-4" x-data="{ photoName: null, photoPreview: null }">
                 <input type="file" id="photo" class="hidden" wire:model="photo" x-ref="photo" x-on:change="
                     photoName = $refs.photo.files[0].name;
                     const reader = new FileReader();
@@ -289,6 +310,11 @@ new class extends Component {
                     x-on:click.prevent="$refs.photo.click()">
                     {{ __('Select A New Photo') }}
                 </button>
+                <button type="button"
+                    class="mt-2 inline-flex items-center px-3 py-2 border border-red-300 dark:border-red-600 rounded-md shadow-sm text-sm font-medium text-red-600 bg-white dark:bg-neutral-800 hover:bg-red-50 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    wire:click="removeProfilePhoto" x-show="!photoPreview">
+                    {{ __('Remove Photo') }}
+                </button>
 
                 {{-- Add button to remove photo later if needed --}}
 
@@ -302,15 +328,15 @@ new class extends Component {
             {{-- Form Actions --}}
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full mt-3">{{ __('Save') }}</flux:button>
+                    <flux:button variant="primary" type="submit" class="w-full mt-3" x-bind:disabled="uploading">
+                        <span x-show="!uploading">{{ __('Save') }}</span>
+                        <span x-show="uploading">{{ __('Uploading…') }}</span>
+                    </flux:button>
                 </div>
                 <x-action-message class="me-3" on="profile-updated">
                     {{ __('Saved.') }}
                 </x-action-message>
             </div>
         </form>
-
-        {{--
-        <livewire:settings.delete-user-form /> --}}
     </x-settings.layout>
 </section>

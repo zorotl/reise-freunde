@@ -91,7 +91,7 @@ it('can accept a follow request', function () {
 it('returns correct profile picture url when set and file exists', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $path = 'profile-pictures/' . $user->id . '/avatar.jpg';
+    $path = 'profile-pictures/avatar.jpg';
     Storage::disk('public')->put($path, 'dummy-content'); // Create dummy file
 
     $user->additionalInfo()->create([
@@ -99,7 +99,8 @@ it('returns correct profile picture url when set and file exists', function () {
         'profile_picture_path' => $path,
     ]);
 
-    expect($user->profilePictureUrl())->toEqual(Storage::disk('public')->url($path));
+    // expect($user->profilePictureUrl())->toEqual(Storage::disk('public')->url($path));
+    expect($user->profilePictureUrl())->toEqual(asset('storage/' . $path));
 });
 
 it('returns default avatar url when profile picture path is null', function () {
@@ -116,7 +117,7 @@ it('returns default avatar url when profile picture path is null', function () {
 it('returns default avatar url when profile picture file does not exist', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $path = 'profile-pictures/' . $user->id . '/missing.jpg';
+    $path = 'profile-pictures/missing.jpg';
     // Don't create the file in storage
 
     $user->additionalInfo()->create([

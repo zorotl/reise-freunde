@@ -99,7 +99,7 @@ require __DIR__ . '/auth.php';
 //         - [ ] Fix SiteTitle on all pages
 //         - [x] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
+//         - [x] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)

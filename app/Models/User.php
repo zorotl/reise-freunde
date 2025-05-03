@@ -99,13 +99,16 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
      */
     public function profilePictureUrl(): string
     {
-        $defaultAvatar = asset('images/default-avatar.png'); // Path to your default avatar in public/images        
+        $defaultAvatar = asset('images/default-avatar.png');
 
-        if ($this->additionalInfo && $this->additionalInfo->profile_picture_path) {
+        if (
+            $this->additionalInfo &&
+            $this->additionalInfo->profile_picture_path &&
+            Storage::disk('public')->exists($this->additionalInfo->profile_picture_path)
+        ) {
             return asset('storage/' . $this->additionalInfo->profile_picture_path);
         }
 
-        // Return default if no picture set or file doesn't exist
         return $defaultAvatar;
     }
 
