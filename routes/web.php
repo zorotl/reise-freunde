@@ -97,7 +97,7 @@ require __DIR__ . '/auth.php';
 
 //     Fix the following issues:
 //         - [ ] Fix SiteTitle on all pages
-//         - [ ] Fix user profile - make profile picture editable
+//         - [x] Fix user profile - make profile picture editable
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] Fix - Test the picture uplaod for the user profile, maybe it's not working always
 
@@ -110,10 +110,10 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a language switcher front- and backend
 
 //     Security:
-//         - [ ] Implement Laravel Gates to protect routes and admin functions
+//         - [x] Implement Laravel Gates to protect routes and admin functions
 //         - [ ] Implement Laravel Policies to protect models
 //         - [ ] Implement Laravel Socialite for social authentication ???
-//         - [ ] Implement Laravel CSRF protection for forms
+//         - [x] Implement Laravel CSRF protection for forms
 
 //     Testing:
 //         - [ ] Test continuing
