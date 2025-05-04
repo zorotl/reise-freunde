@@ -122,11 +122,12 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a notification system
 
 //      Posts
-//         - [ ] Add a like system
+//         - [x] Add a like system
 //         - [ ] ADMIN: Add from reported posts to ban the user
 
 //      Inbox
-//         - [ ] Change style to be more like post list
+//         - [ ] Change style to be more like post list or simply nicer than now
+//         - [ ] Add a report system for messages
 
 //     Frontend / not logged in user:
 //         - [ ] Make it difficult to use the app without being logged in
