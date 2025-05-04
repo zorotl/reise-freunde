@@ -28,28 +28,31 @@
     @endif
 
     {{-- Controls: Search and Per Page --}}
-    <div class="mb-4 me-2 flex justify-between items-center">
-        <div class="flex-1">
+    <div class="mb-4 flex flex-wrap justify-between items-center gap-4"> {{-- Added flex-wrap and gap --}}
+        <div class="flex-grow"> {{-- Search Input --}}
             <input wire:model.live="search" type="text" placeholder="{{ __('Search users...') }}"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
         </div>
-        {{-- Add Clear Filter Button if filterUserId is set --}}
-        @if ($filterUserId)
-        <button wire:click="clearFilter"
-            class="text-sm text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 focus:outline-none">
-            {{ __('Clear Filter') }}
-        </button>
-        @endif
+        <div class="flex items-center gap-2 flex-shrink-0"> {{-- Group buttons/selects --}}
+            {{-- Add Clear Filter Button if filterUserId is set --}}
+            @if ($filterUserId)
+            <button wire:click="clearFilter"
+                class="px-3 py-2 text-xs font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-100 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-900/50 focus:outline-none whitespace-nowrap">
+                {{ __('Clear Filter (:userId)', ['userId' => $filterUserId]) }}
+            </button>
+            @endif
 
-        <div>
-            <label for="perPage" class="sr-only">{{ __('Per Page') }}</label>
-            <select wire:model.live="perPage" id="perPage"
-                class="shadow border rounded ms-2 py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
+            {{-- Per Page Select --}}
+            <div>
+                <label for="perPage" class="sr-only">{{ __('Per Page') }}</label>
+                <select wire:model.live="perPage" id="perPage"
+                    class="shadow border rounded py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
         </div>
     </div>
 

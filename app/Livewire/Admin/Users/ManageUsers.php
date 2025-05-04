@@ -14,7 +14,7 @@ class ManageUsers extends Component
 {
     use WithPagination; // Use the pagination trait
 
-    #[Url(as: 'user', history: false)] // Sync with query string 'user'
+    #[Url(as: 'user', history: true)] // Sync with query string 'user'
     public $filterUserId = null; // <-- Add Url attribute
 
     // public $search = '';
@@ -44,9 +44,6 @@ class ManageUsers extends Component
         'userUpdated' => '$refresh', // Refresh the list when a user is updated
         'userDeleted' => '$refresh', // Refresh the list when a user is deleted
         'userRestored' => '$refresh', // Refresh the list when a user is restored
-        // Maybe listen for an event from messages page to set filter? Or use query string.
-        // #[On('filterUsers')] // Alternative using attribute syntax
-        // public function filterUsers($userId) { $this->filterUserId = $userId; }
     ];
 
     // Reset pagination when search changes
@@ -54,12 +51,6 @@ class ManageUsers extends Component
     {
         $this->resetPage();
     }
-
-    // You might want to reset page when filterUserId changes too, or use query string
-    // public function updatedFilterUserId()
-    // {
-    //     $this->resetPage();
-    // }
 
     // Set the sort field and direction
     public function sortBy($field)

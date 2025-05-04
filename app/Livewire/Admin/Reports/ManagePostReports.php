@@ -41,23 +41,41 @@ class ManagePostReports extends Component
         $this->sortField = $field;
     }
 
-    // Action to Accept a Report (Soft Delete Post)
+    // Action to Accept a Report (Soft Delete Post & Redirect)
     public function acceptReport(PostReport $report)
     {
         try {
+            $postAuthorId = null; // Initialize variable
+
             if ($report->post) { // Check if post still exists
+                $postAuthorId = $report->post->user_id; // Get the author ID BEFORE deleting
                 $report->post->delete(); // Soft delete the post
             }
+
+            // Update report status AFTER potential post deletion
             $report->update([
                 'status' => 'accepted',
                 'processed_by' => auth()->id(),
                 'processed_at' => now(),
             ]);
-            session()->flash('message', 'Report accepted and post soft deleted.');
-            $this->dispatch('reportProcessed');
+
+            session()->flash('message', 'Report accepted and post soft deleted. Redirecting to user...');
+
+            // Check if we got an author ID
+            if ($postAuthorId) {
+                // Redirect to the admin users page, filtering by the post author's ID
+                // Use navigate: true for SPA navigation
+                return $this->redirect(route('admin.users', ['filterUserId' => $postAuthorId]), navigate: true);
+            } else {
+                // If post was already deleted or author unknown, just refresh the reports list
+                $this->dispatch('reportProcessed');
+            }
+
         } catch (\Exception $e) {
             Log::error("Error accepting report {$report->id}: " . $e->getMessage());
             session()->flash('error', 'Failed to accept report.');
+            // Refresh even on error to show potential status changes
+            $this->dispatch('reportProcessed');
         }
     }
 
