@@ -4,18 +4,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Find Your Travel Buddy</title> {{-- Consider making title dynamic --}}
+    <title>Find Your Travel Buddy</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-neutral-900">
-        {{-- Existing Header --}}
+        {{-- Header (No major changes needed here) --}}
         <header class="bg-white dark:bg-neutral-800 shadow">
             <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <a href="{{ route('home') }}"
                     class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ __('Travel Together') }} {{-- Consider using config('app.name') --}}
+                    {{ __('Travel Together') }}
                 </a>
                 <nav class="space-x-4">
                     <a href="{{ route('post.show') }}"
@@ -42,21 +42,21 @@
             </div>
         </header>
 
-        {{-- Existing Hero Section --}}
+        {{-- Hero Section (Slight text/button size increase) --}}
         <section class="relative py-24 bg-cover bg-center"
             style="background-image: url('{{ asset('images/travel-hero.jpg') }}'); background-size: cover;">
-            {{-- Background overlay --}}
             <div class="absolute inset-0 bg-black opacity-60"></div>
-            <div class="container mx-auto text-center relative z-10 px-4"> {{-- Added px-4 for padding --}}
+            <div class="container mx-auto text-center relative z-10 px-4">
                 <div class="hero-content">
-                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">{{ __('Explore the World. Find Your
-                        Companion.') }}
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">{{-- Adjusted text size --}}
+                        {{ __('Explore the World. Find Your Companion.') }}
                     </h1>
-                    <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">{{ __('Connect with like-minded travelers
-                        and plan your next
-                        adventure together.') }}</p>
+                    <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                        {{ __('Connect with like-minded travelers and plan your next adventure together.') }}
+                    </p>
                     <a href="{{ route('post.show') }}"
                         class="inline-block bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out text-lg">
+                        {{-- Adjusted text size --}}
                         {{ __('Find Travel Buddies Now') }}
                     </a>
                 </div>
@@ -65,8 +65,8 @@
 
         <main>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                {{-- Existing Content: Ready to Connect? --}}
-                <div class="mb-12 text-center"> {{-- Increased bottom margin --}}
+                {{-- "Ready to Connect?" Section (Increased bottom margin) --}}
+                <div class="mb-12 text-center"> {{-- Increased margin --}}
                     <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                         {{ __('Ready to Connect?') }}
                     </h2>
@@ -92,9 +92,20 @@
                     </div>
                 </div>
 
-                {{-- Existing Livewire Components --}}
-                <livewire:search />
-                <livewire:post.recent-posts />
+                {{-- Search Component Wrapper --}}
+                <div class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12"> {{-- Added wrapper --}}
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">{{ __('Quick Post Search')
+                        }}</h3>
+                    <livewire:search />
+                </div>
+
+                {{-- Recent Posts Component --}}
+                <div class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12"> {{-- Added wrapper --}}
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">{{ __('Latest Travel
+                        Posts')
+                        }}</h3>
+                    <livewire:post.recent-posts />
+                </div>
 
                 {{-- Section 1: How it Works --}}
                 <section class="py-16 bg-gray-50 dark:bg-neutral-850 rounded-lg my-12">

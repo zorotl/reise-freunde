@@ -1,7 +1,8 @@
 <div>
     <div class="mb-4">
-        <label for="search" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">{{ __('Search for
-            Adventures') }}</label>
+        <label for="search" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            {{ __('Search for Adventures') }}
+        </label>
         <input wire:model.live="query" type="text" id="search"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="{{ __('Search by title and content, otherwise use filters below...') }}">
