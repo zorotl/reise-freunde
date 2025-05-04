@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\Post;
+use App\Models\PostReport;
 use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
@@ -18,6 +19,7 @@ class extends Component {
     public $messageCount;
     public $hobbyCount;
     public $travelStyleCount;
+    public $postReportCount;
 
     // New properties for recent items
     public Collection $recentUsers;
@@ -31,6 +33,7 @@ class extends Component {
         $this->messageCount = Message::count();
         $this->hobbyCount = Hobby::count();
         $this->travelStyleCount = TravelStyle::count();
+        $this->postReportCount = PostReport::count();
 
         // Fetch recent items
         $this->recentUsers = User::latest()->take(5)->get();
@@ -82,6 +85,14 @@ class extends Component {
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Travel Styles') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $travelStyleCount }}</p>
         </a>
+
+        {{-- Total Report Posts Card (link) --}}
+        <a href="{{ route('admin.reports') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
+            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
+        </a>
+
     </div>
 
     {{-- Recent Activity Sections --}}
