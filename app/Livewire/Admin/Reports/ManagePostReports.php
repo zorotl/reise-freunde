@@ -45,14 +45,13 @@ class ManagePostReports extends Component
     public function acceptReport(PostReport $report)
     {
         try {
-            $postAuthorId = null; // Initialize variable
+            $postAuthorId = null;
 
-            if ($report->post) { // Check if post still exists
-                $postAuthorId = $report->post->user_id; // Get the author ID BEFORE deleting
-                $report->post->delete(); // Soft delete the post
+            if ($report->post) {
+                $postAuthorId = $report->post->user_id;
+                $report->post->delete();
             }
 
-            // Update report status AFTER potential post deletion
             $report->update([
                 'status' => 'accepted',
                 'processed_by' => auth()->id(),
@@ -61,21 +60,19 @@ class ManagePostReports extends Component
 
             session()->flash('message', 'Report accepted and post soft deleted. Redirecting to user...');
 
-            // Check if we got an author ID
+            // Dispatch the event BEFORE redirecting
+            $this->dispatch('reportProcessed'); // <-- Make sure this happens
+
             if ($postAuthorId) {
-                // Redirect to the admin users page, filtering by the post author's ID
-                // Use navigate: true for SPA navigation
                 return $this->redirect(route('admin.users', ['filterUserId' => $postAuthorId]), navigate: true);
-            } else {
-                // If post was already deleted or author unknown, just refresh the reports list
-                $this->dispatch('reportProcessed');
             }
+            // If no author ID, the dispatch above handles the refresh
 
         } catch (\Exception $e) {
             Log::error("Error accepting report {$report->id}: " . $e->getMessage());
             session()->flash('error', 'Failed to accept report.');
-            // Refresh even on error to show potential status changes
-            $this->dispatch('reportProcessed');
+            // Dispatch even on error? Maybe, depends on desired behavior.
+            // $this->dispatch('reportProcessed');
         }
     }
 

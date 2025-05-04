@@ -20,6 +20,7 @@ class UserGrant extends Model
         'is_moderator',
         'is_banned',
         'is_banned_until',
+        'banned_reason',
     ];
 
     protected $casts = [

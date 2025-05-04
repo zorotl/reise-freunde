@@ -5,57 +5,66 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 
 class CheckBannedStatus
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->loadMissing('grant')->grant) {
-            $user = Auth::user(); // Get user instance
+        Log::info('CheckBannedStatus 1');
+        // Ensure user is authenticated AND has loaded their grant info
+        if (Auth::check() && $user = Auth::user()->loadMissing('grant')) {
+            Log::info('CheckBannedStatus 2');
+
             $userGrant = $user->grant;
             $now = Carbon::now();
 
-            // Check if the user is banned AND the ban is currently active
-            if ($userGrant->is_banned && ($userGrant->is_banned_until === null || $userGrant->is_banned_until->greaterThan($now))) {
+            $isCurrentlyBanned = $userGrant && $userGrant->is_banned &&
+                ($userGrant->is_banned_until === null || $userGrant->is_banned_until->greaterThan($now));
 
-                // Allow access to the 'banned' route itself AND the 'logout' route
-                if ($request->routeIs('banned') || $request->routeIs('logout')) { // <-- Allow logout route
+            $isBanExpired = $userGrant && $userGrant->is_banned &&
+                $userGrant->is_banned_until !== null && $userGrant->is_banned_until->lessThanOrEqualTo($now);
+
+            // Case 1: User is actively banned
+            if ($isCurrentlyBanned) {
+                Log::info('CheckBannedStatus 3');
+
+                // Allow access ONLY to 'banned' and 'logout' routes
+                if ($request->routeIs('banned') || $request->routeIs('logout')) {
                     return $next($request);
                 }
-
-                // Redirect banned users away from other pages
-                // Check if user is already on the banned page to prevent redirect loop during logout attempt
-                if (!$request->routeIs('banned')) {
-                    return redirect()->route('banned');
-                }
-
+                // Redirect all other requests to 'banned' page
+                return redirect()->route('banned');
             }
 
-            // If the user is banned BUT the ban has expired, automatically unban them
-            if ($userGrant->is_banned && $userGrant->is_banned_until !== null && $userGrant->is_banned_until->lessThanOrEqualTo($now)) {
+            // Case 2: Ban has expired - unban and continue
+            if ($isBanExpired) {
+                Log::info('CheckBannedStatus 4');
+
                 $userGrant->is_banned = false;
                 $userGrant->is_banned_until = null;
                 $userGrant->banned_reason = null;
                 $userGrant->save();
-                // The observer will log the ban history when is_banned becomes true.
-                // No automatic logging needed here when it expires.
-                return $next($request); // Proceed after unbanning
+                // If they were trying to access the banned page after expiry, redirect them away now
+                if ($request->routeIs('banned')) {
+                    return redirect()->route('dashboard');
+                }
+                // Otherwise, let them proceed to their original destination
+                return $next($request);
             }
 
-            // If user was banned but is now trying to access the banned page after expiration/unban, redirect away
-            if (!$userGrant->is_banned && $request->routeIs('banned')) {
+            // Case 3: User is NOT banned, but trying to access the 'banned' page
+            if ((!$userGrant || !$userGrant->is_banned) && $request->routeIs('banned')) {
+                Log::info('CheckBannedStatus 5');
+
+                // Redirect away from the banned page
                 return redirect()->route('dashboard');
             }
         }
 
-        // Continue for non-banned users or guests
+        // User is not logged in, or not banned and not accessing /banned -> continue
         return $next($request);
     }
 }

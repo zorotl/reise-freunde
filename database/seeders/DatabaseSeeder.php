@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MessageSeeder::class);
         $this->call(UserFollowerSeeder::class);
         $this->call(PostLikeSeeder::class);
+        $this->call(BanHistorySeeder::class);
     }
 }

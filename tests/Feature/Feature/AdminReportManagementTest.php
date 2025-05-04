@@ -8,6 +8,7 @@ use Livewire\Livewire;
 use App\Livewire\Admin\Reports\ManagePostReports;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
 
 test('admin can view pending reports', function () {
     $admin = User::factory()->create();
@@ -71,4 +72,27 @@ test('admin can reject a report', function () {
     expect($report->processed_by)->toBe($admin->id);
     expect($report->processed_at)->not->toBeNull();
     expect($post->trashed())->toBeFalse(); // Post should not be deleted
+});
+
+test('admin accepting report redirects to user management filtered by post author', function () {
+    // Arrange
+    // Create admin using the 'has' relationship method with the grant factory state
+    $admin = User::factory()->has(UserGrant::factory()->admin())->create(); // <-- FIX HERE
+    $postAuthor = User::factory()->create();
+    $post = Post::factory()->create(['user_id' => $postAuthor->id]);
+    $report = PostReport::factory()->create(['post_id' => $post->id, 'status' => 'pending']);
+
+    actingAs($admin);
+
+    // Act
+    Livewire::test(ManagePostReports::class)
+        ->call('acceptReport', $report->id) // Pass ID
+        ->assertRedirect(route('admin.users', ['filterUserId' => $postAuthor->id]));
+
+    // Assert (optional but good)
+    $post->refresh();
+    $report->refresh();
+    expect($post->trashed())->toBeTrue();
+    expect($report->status)->toBe('accepted');
+    expect($report->processed_by)->toBe($admin->id);
 });

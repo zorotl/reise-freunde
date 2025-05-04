@@ -33,7 +33,7 @@ Route::get('/post', function () {
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
 // --- Banned User Route
-Volt::route('/banned', 'pages.banned')->middleware('auth')->name('banned');    // Route for banned users
+Volt::route('/banned', 'pages.banned')->middleware('auth', 'check_banned')->name('banned');    // Route for banned users
 
 // --- Authenticated Routes (Apply Ban Check Here) ---
 Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
