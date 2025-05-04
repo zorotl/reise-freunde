@@ -4,6 +4,8 @@ namespace App\Livewire\Admin\Users;
 
 use App\Models\User;
 use App\Models\UserGrant; // Import UserGrant model
+use App\Models\BanHistory; // Import BanHistory
+use Illuminate\Support\Collection; // Import Collection
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Carbon\Carbon; // Import Carbon for date handling
@@ -21,7 +23,8 @@ class EditUserModal extends Component
     // Properties for ban management
     public $is_banned = false; // Initialize to false
     public $banned_until; // Property for the banned_until date
-    public $banned_reason; // Property for the banned_reason text
+    public $banned_reason; // Property for the banned_reason text    
+    public Collection $banHistory; // Add property for ban history
 
     protected $rules = [
         'firstname' => 'required|string|max:255',
@@ -39,7 +42,7 @@ class EditUserModal extends Component
     #[On('openEditModal')]
     public function openEditModal($userId)
     {
-        $user = User::with('grant')->find($userId);
+        $user = User::with(['grant', 'banHistory.banner'])->find($userId); // Eager load grant AND banHistory
 
         if (!$user) {
             session()->flash('error', 'User not found.');
@@ -59,9 +62,10 @@ class EditUserModal extends Component
 
         // Populate ban properties from user grant, defaulting to false/null
         $this->is_banned = $user->grant->is_banned ?? false;
-        // Format the date for the HTML date input (YYYY-MM-DD)
         $this->banned_until = $user->grant->is_banned_until ? $user->grant->is_banned_until->format('Y-m-d') : null;
         $this->banned_reason = $user->grant->banned_reason ?? null;
+        $this->banHistory = $user->banHistory ?? collect(); // Assign the collection or an empty one
+
 
         $this->show = true; // Show the modal
     }
@@ -80,7 +84,6 @@ class EditUserModal extends Component
             $this->rules['banned_until'] = 'nullable';
             $this->rules['banned_reason'] = 'nullable';
         }
-
 
         $this->validate($this->rules); // Run validation
 
@@ -106,11 +109,20 @@ class EditUserModal extends Component
         $grant->is_admin = $this->is_admin;
         $grant->is_moderator = $this->is_moderator;
         $grant->is_banned = $this->is_banned;
-
-        // Set banned_until and banned_reason only if the user is marked as banned in the modal
-        // If is_banned is false, clear banned_until and banned_reason in the database
         $grant->is_banned_until = $this->is_banned ? ($this->banned_until ? Carbon::parse($this->banned_until) : null) : null;
         $grant->banned_reason = $this->is_banned ? $this->banned_reason : null;
+
+        if ($grant->isDirty('is_banned') && $grant->is_banned === true) {
+            // The observer will handle history creation if the state CHANGES to banned
+            // But we might want to ensure reason/until is updated here regardless
+            // The Observer already logs based on the grant's state *before* saving
+            // It might be slightly better to dispatch an event here instead of relying solely on the observer
+            // if the ban details (reason/until) might change *without* the is_banned flag changing.
+            // For simplicity, we'll rely on the observer triggering when is_banned goes from false to true.
+        } elseif ($grant->isDirty('is_banned') && $grant->is_banned === false) {
+            // Handle unbanning logic if needed (observer could do this too)
+        }
+
 
         $grant->save(); // Save the changes to the user_grants record
 
@@ -118,7 +130,7 @@ class EditUserModal extends Component
 
         // Dispatch event to notify other components (like ManageUsers) to refresh their data
         $this->dispatch('userUpdated');
-        $this->closeModal(); // Close the modal after saving
+        $this->closeModal();
     }
 
     // Close the modal and reset all properties
@@ -135,7 +147,8 @@ class EditUserModal extends Component
             'is_moderator',
             'is_banned',
             'banned_until',
-            'banned_reason'
+            'banned_reason',
+            'banHistory'
         ]);
         $this->resetValidation(); // Clear any validation errors
     }

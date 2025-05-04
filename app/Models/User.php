@@ -352,4 +352,12 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         // Define the many-to-many relationship with Post through the 'post_likes' table
         return $this->belongsToMany(Post::class, 'post_likes', 'user_id', 'post_id')->withTimestamps();
     }
+
+    /**
+     * Get the ban history records for the user.
+     */
+    public function banHistory(): HasMany
+    {
+        return $this->hasMany(BanHistory::class, 'user_id')->latest('banned_at'); // Order by most recent ban first
+    }
 }

@@ -123,6 +123,28 @@
                         @endif
                     </div>
 
+                    {{-- Section: Ban History --}}
+                    @if($banHistory && $banHistory->count() > 0)
+                    <div class="mt-6 border-t border-gray-200 dark:border-neutral-700 pt-6">
+                        <h4 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-4">{{ __('Ban History') }}
+                        </h4>
+                        <div class="space-y-3 max-h-48 overflow-y-auto"> {{-- Scrollable area --}}
+                            @foreach($banHistory as $history)
+                            <div
+                                class="text-xs border border-gray-200 dark:border-neutral-600 rounded p-2 bg-gray-50 dark:bg-neutral-700/50">
+                                <p><strong>{{ __('Banned At:') }}</strong> {{ $history->banned_at->format('Y-m-d H:i')
+                                    }}</p>
+                                <p><strong>{{ __('Expires At:') }}</strong> {{ $history->expires_at ?
+                                    $history->expires_at->format('Y-m-d H:i') : 'Permanent' }}</p>
+                                <p><strong>{{ __('Reason:') }}</strong> {{ $history->reason ?: 'N/A' }}</p>
+                                <p><strong>{{ __('Banned By:') }}</strong> {{ $history->banner->name ?? 'System/Unknown'
+                                    }}</p>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     {{-- Form Actions --}}
                     <div class="mt-6 flex justify-end">
                         <button type="button"
