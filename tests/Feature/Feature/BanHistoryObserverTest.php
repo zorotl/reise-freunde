@@ -13,7 +13,8 @@ test('ban history record is created when user is banned', function () {
     // Arrange
     $userToBan = User::factory()->create();
     // Create admin using the 'has' relationship method with the grant factory state
-    $admin = User::factory()->has(UserGrant::factory()->admin())->create(); // <-- FIX HERE
+    $admin = User::factory()->create(); // Create the user
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $grant = UserGrant::factory()->create(['user_id' => $userToBan->id, 'is_banned' => false]);
 
     $banReason = 'Violation of terms';
@@ -39,7 +40,8 @@ test('ban history record is not created if is_banned does not change to true', f
     // Arrange
     $user = User::factory()->create();
     // Create admin using the 'has' relationship method with the grant factory state
-    $admin = User::factory()->has(UserGrant::factory()->admin())->create(); // <-- FIX HERE
+    $admin = User::factory()->create(); // Create the user
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $grant = UserGrant::factory()->create(['user_id' => $user->id, 'is_banned' => true]); // Start as banned
 
     actingAs($admin);
@@ -71,7 +73,8 @@ test('ban history record is not created if is_banned does not change to true', f
 test('ban history logs correctly when banned via edit modal', function () {
     // Arrange
     // Create admin using the 'has' relationship method with the grant factory state
-    $admin = User::factory()->has(UserGrant::factory()->admin())->create(); // <-- FIX HERE
+    $admin = User::factory()->create(); // Create the user
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $userToBan = User::factory()->create();
     $grant = UserGrant::factory()->create(['user_id' => $userToBan->id, 'is_banned' => false]);
     $banReason = 'Modal Ban Reason';

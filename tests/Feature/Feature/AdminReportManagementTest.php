@@ -77,7 +77,8 @@ test('admin can reject a report', function () {
 test('admin accepting report redirects to user management filtered by post author', function () {
     // Arrange
     // Create admin using the 'has' relationship method with the grant factory state
-    $admin = User::factory()->has(UserGrant::factory()->admin())->create(); // <-- FIX HERE
+    $admin = User::factory()->create(); // Create the user
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $postAuthor = User::factory()->create();
     $post = Post::factory()->create(['user_id' => $postAuthor->id]);
     $report = PostReport::factory()->create(['post_id' => $post->id, 'status' => 'pending']);

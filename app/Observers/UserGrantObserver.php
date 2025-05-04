@@ -26,12 +26,5 @@ class UserGrantObserver
                 'banned_at' => now(), // Record the time the ban was applied
             ]);
         }
-
-        // Optional: You could also log when a ban is lifted (`is_banned` changes to false)
-        // if ($userGrant->isDirty('is_banned') && $userGrant->is_banned === false) {
-        //     // Potentially update the last ban history record or create a new 'unbanned' log entry
-        // }
     }
-
-    // Add other observer methods (created, deleted, etc.) if needed, otherwise leave empty
 }

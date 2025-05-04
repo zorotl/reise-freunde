@@ -13,11 +13,8 @@ class CheckBannedStatus
 {
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info('CheckBannedStatus 1');
         // Ensure user is authenticated AND has loaded their grant info
         if (Auth::check() && $user = Auth::user()->loadMissing('grant')) {
-            Log::info('CheckBannedStatus 2');
-
             $userGrant = $user->grant;
             $now = Carbon::now();
 
@@ -29,8 +26,6 @@ class CheckBannedStatus
 
             // Case 1: User is actively banned
             if ($isCurrentlyBanned) {
-                Log::info('CheckBannedStatus 3');
-
                 // Allow access ONLY to 'banned' and 'logout' routes
                 if ($request->routeIs('banned') || $request->routeIs('logout')) {
                     return $next($request);
@@ -41,8 +36,6 @@ class CheckBannedStatus
 
             // Case 2: Ban has expired - unban and continue
             if ($isBanExpired) {
-                Log::info('CheckBannedStatus 4');
-
                 $userGrant->is_banned = false;
                 $userGrant->is_banned_until = null;
                 $userGrant->banned_reason = null;
@@ -57,8 +50,6 @@ class CheckBannedStatus
 
             // Case 3: User is NOT banned, but trying to access the 'banned' page
             if ((!$userGrant || !$userGrant->is_banned) && $request->routeIs('banned')) {
-                Log::info('CheckBannedStatus 5');
-
                 // Redirect away from the banned page
                 return redirect()->route('dashboard');
             }
