@@ -25,12 +25,12 @@ class EditPost extends Component
     public $buttonText = 'Update Post';
     public array $countryList = [];
 
-    public function mount(Post $id)
+    public function mount(Post $id, $origin = null)
     {
         // Authorization check on mount
         $this->authorize('update', $id);
 
-        $this->origin = request('origin');
+        $this->origin = $origin ?? request('origin');
         $this->entry = $id;
         $this->title = $this->entry->title;
         $this->content = $this->entry->content;
