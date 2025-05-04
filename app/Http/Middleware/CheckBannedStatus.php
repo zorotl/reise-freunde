@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use Carbon\Carbon; // Import Carbon
+use Carbon\Carbon;
 
 class CheckBannedStatus
 {
@@ -17,47 +17,45 @@ class CheckBannedStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated and has the 'grant' relationship loaded
         if (Auth::check() && Auth::user()->loadMissing('grant')->grant) {
-            $userGrant = Auth::user()->grant;
+            $user = Auth::user(); // Get user instance
+            $userGrant = $user->grant;
             $now = Carbon::now();
 
             // Check if the user is banned AND the ban is currently active
-            // (either banned indefinitely OR the ban expiration date is in the future)
             if ($userGrant->is_banned && ($userGrant->is_banned_until === null || $userGrant->is_banned_until->greaterThan($now))) {
 
-                // Allow access to the dedicated 'banned' route itself
-                if ($request->routeIs('banned')) {
-                    return $next($request);
-                }
-
-                // Prevent logout if already on banned page or trying to logout
-                if ($request->routeIs('logout')) {
-                    // Allow logout attempts to proceed
+                // Allow access to the 'banned' route itself AND the 'logout' route
+                if ($request->routeIs('banned') || $request->routeIs('logout')) { // <-- Allow logout route
                     return $next($request);
                 }
 
                 // Redirect banned users away from other pages
-                return redirect()->route('banned');
+                // Check if user is already on the banned page to prevent redirect loop during logout attempt
+                if (!$request->routeIs('banned')) {
+                    return redirect()->route('banned');
+                }
+
             }
 
             // If the user is banned BUT the ban has expired, automatically unban them
             if ($userGrant->is_banned && $userGrant->is_banned_until !== null && $userGrant->is_banned_until->lessThanOrEqualTo($now)) {
                 $userGrant->is_banned = false;
                 $userGrant->is_banned_until = null;
-                $userGrant->banned_reason = null; // Optionally clear the reason
+                $userGrant->banned_reason = null;
                 $userGrant->save();
-                // Proceed with the original request after unbanning
-                return $next($request);
+                // The observer will log the ban history when is_banned becomes true.
+                // No automatic logging needed here when it expires.
+                return $next($request); // Proceed after unbanning
             }
 
             // If user was banned but is now trying to access the banned page after expiration/unban, redirect away
             if (!$userGrant->is_banned && $request->routeIs('banned')) {
-                return redirect()->route('dashboard'); // Or wherever non-banned users should go
+                return redirect()->route('dashboard');
             }
         }
 
-        // If user is not logged in, or not banned, or ban expired, continue
+        // Continue for non-banned users or guests
         return $next($request);
     }
 }

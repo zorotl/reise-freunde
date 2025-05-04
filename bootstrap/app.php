@@ -21,11 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Apply middleware globally (adjust group if needed)
-        $middleware->web(append: [
-            // Apply after authentication session is started
-            \Illuminate\Session\Middleware\AuthenticateSession::class,
-            CheckBannedStatus::class, // <-- Apply our middleware
-        ]);
+        // $middleware->web(append: [
+        //     // Apply after authentication session is started
+        //     \Illuminate\Session\Middleware\AuthenticateSession::class,
+        //     CheckBannedStatus::class, // <-- Apply our middleware
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

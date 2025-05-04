@@ -19,20 +19,27 @@ use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
 use App\Http\Middleware\AdminOrModeratorMiddleware;
 
-
+// Publicly accessible routes
 Route::get('/', function () {
     return view('frontend.homepage');
 })->name('home');
 
 Volt::route('/users', 'user.search')->name('user.directory');
+Route::get('/post/show', PostList::class)->name('post.show');
+Route::get('/post/{post}', ShowPost::class)->name('post.single');
+Route::get('/post', function () {
+    return redirect()->route('post.show');
+})->name('post');
+Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
-Volt::route('/dashboard', 'pages.dashboard.overview') // Points to the new Volt component
-    ->middleware(['auth', 'verified']) // Keep existing middleware
-    ->name('dashboard');
-
+// --- Banned User Route
 Volt::route('/banned', 'pages.banned')->middleware('auth')->name('banned');    // Route for banned users
 
-Route::middleware(['auth'])->group(function () {
+// --- Authenticated Routes (Apply Ban Check Here) ---
+Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
+
+    Volt::route('/dashboard', 'pages.dashboard.overview')->name('dashboard');
+
     // Settings Routes
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
@@ -60,13 +67,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/follow-requests', FollowRequestsList::class)->name('user.follow-requests');
     Route::get('/user/{id}/followers', FollowersList::class)->name('user.followers'); // Keep ID for viewing others' lists
     Route::get('/user/{id}/following', FollowingList::class)->name('user.following'); // Keep ID for viewing others' lists
-});
+
+}); // End of 'auth', 'verified', 'check_banned' group
+
 
 // --- Admin/Moderator Routes ---
-// Grouped under /admin and protected by the custom middleware
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
+    ->middleware(['auth', 'check_banned', AdminOrModeratorMiddleware::class]) // Use the custom middleware alias
     ->group(function () {
         Volt::route('/', 'pages.admin.dashboard')->name('dashboard'); // Admin Dashboard    
         Volt::route('/users', 'pages.admin.users.index')->name('users');  // User Management Route
@@ -77,18 +85,11 @@ Route::prefix('admin')
         Volt::route('/hobbies', 'pages.admin.hobbies.index')->name('hobbies'); // Hobby Management Route
         Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route 
         Volt::route('/reports', 'pages.admin.reports.index')->name('reports'); // Add reports route       
-    });
+    
+    }); // End of Admin/Moderator Routes
 
-// Publicly accessible routes (or adjust middleware as needed)
-Route::get('/post/show', PostList::class)->name('post.show');
-Route::get('/post/{post}', ShowPost::class)->name('post.single');
-Route::get('/post', function () {
-    return redirect()->route('post.show');
-})->name('post');
 
-Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
-
-require __DIR__ . '/auth.php';
+require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined here
 
 
 
