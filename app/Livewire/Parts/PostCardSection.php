@@ -18,11 +18,51 @@ class PostCardSection extends Component
     public string $show;
     public Carbon $now;
     public array $countryList = [];
+    public bool $isLiked; // Track like status for the current user
+    public int $likesCount; // Track like count
 
     public function mount()
     {
         $this->now = Carbon::now();
         $this->countryList = Countries::getList('en', 'php');
+
+        // Eager load counts and check like status on mount for initial display
+        $this->post->loadCount('likes'); // Ensure likes_count is loaded
+        $this->likesCount = $this->post->likes_count;
+        $this->isLiked = $this->post->isLikedBy(Auth::user());
+    }
+
+    // Method to toggle the like status for the current authenticated user
+    public function toggleLike()
+    {
+        // Ensure the user is authenticated
+        if (!Auth::check()) {
+            // Redirect to login or show a message
+            return $this->redirect(route('login'), navigate: true);
+            // Or: session()->flash('error', 'You must be logged in to like posts.'); return;
+        }
+
+        $user = Auth::user();
+
+        // Optional: Prevent users from liking their own posts
+        // if ($this->post->user_id === $user->id) {
+        //     $this->dispatch('notify', ['message' => 'You cannot like your own post.', 'type' => 'warning']);
+        //     return;
+        // }
+
+        // Toggle the like status in the database using the relationship method
+        $user->likedPosts()->toggle($this->post->id);
+
+        // Refresh the post data to get the updated count and status
+        $this->post->refresh();
+        $this->post->loadCount('likes'); // Reload the count explicitly
+
+        // Update the component properties for immediate UI feedback
+        $this->likesCount = $this->post->likes_count;
+        $this->isLiked = $this->post->isLikedBy($user); // Re-check like status
+
+        // Optionally dispatch an event if other components need to know
+        // $this->dispatch('post-liked-updated', $this->post->id, $this->likesCount, $this->isLiked);
     }
 
     public function redirectToCorrectPage()
@@ -48,18 +88,14 @@ class PostCardSection extends Component
 
     public function toggleActive(Post $post)
     {
-        // Authorization check using the policy
-        $this->authorize('toggleActive', $post);
-
+        $this->authorize('toggleActive', $post); // Authorization check using the policy
         $post->update(['is_active' => !$post->is_active]);
         $this->redirectToCorrectPage();
     }
 
     public function deleteEntry(Post $post)
     {
-        // Authorization check using the policy
-        $this->authorize('delete', $post);
-
+        $this->authorize('delete', $post); // Authorization check using the policy
         $post->delete(); // Soft delete
         $this->redirectToCorrectPage();
     }

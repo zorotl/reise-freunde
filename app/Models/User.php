@@ -343,4 +343,13 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
     {
         return $this->hasMany(PostReport::class, 'processed_by');
     }
+
+    /**
+     * The posts that the user has liked.
+     */
+    public function likedPosts(): BelongsToMany
+    {
+        // Define the many-to-many relationship with Post through the 'post_likes' table
+        return $this->belongsToMany(Post::class, 'post_likes', 'user_id', 'post_id')->withTimestamps();
+    }
 }

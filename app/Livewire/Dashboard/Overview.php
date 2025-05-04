@@ -76,6 +76,7 @@ class Overview extends Component
                     $query->with('additionalInfo'); // Eager load user info for display
                 }
             ])
+            ->withCount('likes')
             ->where('is_active', true) // Only show active posts
             ->where(function (Builder $query) { // Only show non-expired posts
                 $query->whereNull('expiry_date')

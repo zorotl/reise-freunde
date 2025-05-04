@@ -27,6 +27,7 @@ class MyPosts extends Component
         // Fetch paginated entries directly in the render method
         $entries = Post::query()
             ->with('user.additionalInfo') // Eager load user->additionalInfo
+            ->withCount('likes')
             ->where('user_id', auth()->id())
             ->latest()
             ->paginate(10); // <-- Use paginate() instead of get(), choose items per page (e.g., 10)

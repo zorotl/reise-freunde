@@ -65,7 +65,32 @@
     @endif
 
     {{-- Buttons Section --}}
-    <div class="mt-4 flex space-x-2">
+    <div class="mt-4 flex items-center space-x-2 flex-wrap gap-y-2"> {{-- Added flex-wrap and gap-y --}}
+        {{-- Like Button & Count --}}
+        @auth {{-- Only show like button if logged in --}}
+        <button wire:click="toggleLike" wire:loading.attr="disabled" wire:target="toggleLike" class="inline-flex items-center px-3 py-1.5 border rounded-md text-xs font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150 disabled:opacity-50
+                    {{ $isLiked
+                        ? 'border-transparent text-white bg-red-500 hover:bg-red-600 focus:ring-red-500'
+                        : 'border-gray-300 dark:border-neutral-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:ring-indigo-500'
+                    }}">
+            {{-- Loading Spinner --}}
+            <span wire:loading wire:target="toggleLike" class="mr-1">
+                <flux:icon.loading class="h-3 w-3 animate-spin" />
+            </span>
+            {{-- Heart Icon (Conditional Fill) --}}
+            <flux:icon.heart class="h-4 w-4 mr-1 {{ $isLiked ? 'fill-current' : '' }}" />
+            {{-- Like Count --}}
+            <span>{{ $likesCount }}</span>
+        </button>
+        @else
+        {{-- Optional: Show like count for guests, but disable button --}}
+        <span
+            class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-neutral-600 rounded-md text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-neutral-800">
+            <flux:icon.heart class="h-4 w-4 mr-1" />
+            <span>{{ $likesCount }}</span>
+        </span>
+        @endauth
+
         {{-- Button to go to the post author's profile --}}
         <a href="{{ route('user.profile', $post->user) }}" wire:navigate
             class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-neutral-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

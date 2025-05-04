@@ -86,6 +86,7 @@ class PostList extends Component
         // *** Using whereHas approach ***
         $query = Post::query()
             ->with('user.additionalInfo') // Eager load needed data
+            ->withCount('likes')
             ->where('posts.is_active', true) // Qualify table name
             ->where(function ($query) {
                 $query->whereNull('posts.expiry_date') // Qualify table name

@@ -11,7 +11,7 @@ class RecentPosts extends Component
 
     public function mount()
     {
-        $this->posts = Post::latest()->take(3)->get(); // Fetch the 3 latest posts
+        $this->posts = Post::latest()->withCount('likes')->take(3)->get(); // Fetch the 3 latest posts
     }
 
     public function render()
