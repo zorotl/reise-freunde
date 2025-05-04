@@ -2,7 +2,10 @@
   {{-- Add a heading or breadcrumbs if needed for the admin context --}}
   <h1 class="text-xl font-semibold mb-4">
     {{ $buttonText === 'Update Post' ? __('Edit Post') : __('Create Post') }}
-    @if ($origin ?? '' === 'admin') (Admin) @endif {{-- Optional indicator --}}
+    {{-- @dd($origin) --}}
+    @if (($origin ?? '') === 'admin')
+    (Admin)
+    @endif
   </h1>
   <section class="w-full">
     <div class="flex items-start max-md:flex-col">
