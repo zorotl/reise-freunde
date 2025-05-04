@@ -4,8 +4,11 @@ use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Volt\Component;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new 
+#[Title('Settings - Delete Account')]
+class extends Component {
     public string $password = '';
 
     /**

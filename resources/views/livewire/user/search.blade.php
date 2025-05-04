@@ -8,8 +8,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Monarobase\CountryList\CountryListFacade as Countries;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Computed; // Make sure Computed is imported
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new 
+#[Title('Find Users')]
+class extends Component {
     use WithPagination;
 
     #[Url(as: 'q', history: true)]
@@ -50,17 +53,26 @@ new class extends Component {
             ->with(['additionalInfo'])
             ->whereHas('additionalInfo'); // Ensure users have additional info record
 
-        // Apply general search filter (Firstname, Lastname, Username)
+        // Apply general search filter (Username ONLY)
         if (trim($this->search)) {
             $searchTerm = '%' . trim($this->search) . '%';
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('firstname', 'like', $searchTerm)
-                  ->orWhere('lastname', 'like', $searchTerm)
-                  ->orWhereHas('additionalInfo', function ($subQuery) use ($searchTerm) {
-                      $subQuery->where('username', 'like', $searchTerm);
-                  });
-            });
+            $query->whereHas('additionalInfo', function ($subQuery) use ($searchTerm) {
+                 // Only search the username column within the related additionalInfo table
+                 $subQuery->where('username', 'like', $searchTerm);
+             });            
         }
+
+        // Apply general search filter (Firstname, Lastname, Username)
+        // if (trim($this->search)) {
+        //     $searchTerm = '%' . trim($this->search) . '%';
+        //     $query->where(function ($q) use ($searchTerm) {
+        //         $q->where('firstname', 'like', $searchTerm)
+        //           ->orWhere('lastname', 'like', $searchTerm)
+        //           ->orWhereHas('additionalInfo', function ($subQuery) use ($searchTerm) {
+        //               $subQuery->where('username', 'like', $searchTerm);
+        //           });
+        //     });
+        // }
 
         // Apply Nationality filter
         if ($this->nationality) {
@@ -119,10 +131,9 @@ new class extends Component {
             {{-- General Search (Name/Username) --}}
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {{ __('Name / Username') }}
+                    {{ __('Username') }}
                 </label>
-                <input wire:model.live.debounce.500ms="search" id="search" type="text"
-                    placeholder="Search name or username..."
+                <input wire:model.live.debounce.500ms="search" id="search" type="text" placeholder="Search username..."
                     class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
             </div>
 

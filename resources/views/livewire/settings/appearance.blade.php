@@ -1,8 +1,11 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new 
+#[Title('Settings - Appearance')]
+class extends Component {
     //
 }; ?>
 

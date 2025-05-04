@@ -11,11 +11,13 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage; 
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-
+use Livewire\Attributes\Title;
 
 // Remove the standalone generateDefaultUsernameHelper() function from here
 
-new class extends Component {
+new 
+#[Title('Settings - Profile')]
+class extends Component {
 
     use GeneratesUsername; // <-- Use the Trait
     use WithFileUploads;

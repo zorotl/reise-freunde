@@ -11,7 +11,9 @@ use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Builder; // Import Builder
 use Livewire\Attributes\Url; // Import Url attribute
 use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Attributes\Title;
 
+#[Title('All Posts')]
 class PostList extends Component
 {
     use WithPagination; // Use pagination

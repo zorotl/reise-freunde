@@ -1,11 +1,12 @@
 <?php
 
 use Livewire\Volt\Component; // Use Volt's Component helper for page definition
-use Livewire\Attributes\{layout, middleware};
+use Livewire\Attributes\{layout, middleware, title};
 
 // Apply the admin layout and middleware
 new
 #[Layout('components.layouts.admin.header')]
+#[Title('Admin - Messages')]
 #[Middleware(['auth', 'admin_or_moderator'])]
 class extends Component
 {

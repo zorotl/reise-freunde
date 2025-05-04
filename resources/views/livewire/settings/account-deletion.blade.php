@@ -2,8 +2,11 @@
 
 use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 
-new #[Layout('components.layouts.app')] // Use the main app layout
+new 
+#[Layout('components.layouts.app')] // Use the main app layout
+#[Title('Settings - Delete Account')] // Set the page title
 class extends Component {
     // You can add page title logic here if needed
     // public function mount(): void {}

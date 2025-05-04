@@ -1,11 +1,12 @@
 <?php
 
 use Livewire\Volt\Component;
-use Livewire\Attributes\{layout, middleware};
+use Livewire\Attributes\{layout, middleware, title};
 
 // Apply the admin layout and middleware
 new
 #[Layout('components.layouts.admin')] // Make sure this points to your correct admin layout
+#[Title('Admin - Reports')]
 #[Middleware(['auth', 'admin_or_moderator'])]
 class extends Component
 {

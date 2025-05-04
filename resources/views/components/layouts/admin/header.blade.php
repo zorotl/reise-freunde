@@ -1,5 +1,3 @@
-{{-- Content from your original app/header.blade.php component view --}}
-{{-- resources/views/components/layouts/admin/header.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 

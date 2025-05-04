@@ -4,8 +4,11 @@ use App\Models\UserAdditionalInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new 
+#[Title('Settings - Privacy')]
+class extends Component {
     public bool $isPrivate = false;
 
     public function mount(): void

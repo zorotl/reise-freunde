@@ -7,11 +7,12 @@ use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
 use Livewire\Volt\Component;
-use Livewire\Attributes\{layout, middleware};;
+use Livewire\Attributes\{layout, middleware, title};
 use Illuminate\Support\Collection;
 
 new 
 #[Layout('components.layouts.admin')]
+#[Title('Admin - Dashboard')]
 #[Middleware('auth', 'admin_or_moderator')]
 class extends Component {
     public $userCount;

@@ -100,6 +100,7 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 
 //     Fix the following issues:
 //         - [ ] Fix SiteTitle on all pages
+//         - [x] Fix ADMIN SiteTitle on all pages
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
 //         - [ ] Fix FindUser find User by name, not exactly what i wanted
 
@@ -120,16 +121,17 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //         - [ ] Test continuing
 
 //     Logged in user:
-//         - [ ] Use is_banned 
-//         - [ ] Use is_banned_until 
+//         - [x] Use is_banned 
+//         - [x] Use is_banned_until 
 //         - [ ] Add a notification system
 
 //      Posts
-//         - [ ] ADMIN: Add from reported posts to ban the user
+//         - [x] ADMIN: Add from reported posts to ban the user
 
 //      Inbox
 //         - [ ] Change style to be more like post list or simply nicer than now
 //         - [ ] Add a report system for messages
 
 //     Frontend / not logged in user:
-//         - [ ] Make it difficult to use the app without being logged in
+//         - [x] Make it difficult to use the app without being logged in
+//         - [ ] Finalizing the design

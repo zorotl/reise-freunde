@@ -1,10 +1,11 @@
 <?php
 
 use Livewire\Volt\Component;
-use Livewire\Attributes\{layout, middleware};
+use Livewire\Attributes\{layout, middleware, title};
 
 new
 #[Layout('components.layouts.admin.header')]
+#[Title('Admin - Travel Styles')]
 #[Middleware(['auth', 'admin_or_moderator'])]
 class extends Component
 {
