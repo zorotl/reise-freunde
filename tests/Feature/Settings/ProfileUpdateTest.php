@@ -201,7 +201,7 @@ test('profile picture validation works', function () {
 
     // Test too large
     Volt::test('settings.profile')
-        ->set('photo', UploadedFile::fake()->image('large.jpg')->size(3000)) // 3MB > 2MB limit
+        ->set('photo', UploadedFile::fake()->image('large.jpg')->size(6000)) // 6MB > 5MB limit
         // set other required fields...
         ->set('firstname', $user->firstname)->set('lastname', $user->lastname)->set('email', $user->email)->set('username', 'testuser_valid')->set('birthday', '1990-01-01')
         ->call('updateProfileInformation')
