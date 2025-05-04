@@ -30,6 +30,8 @@ Volt::route('/dashboard', 'pages.dashboard.overview') // Points to the new Volt 
     ->middleware(['auth', 'verified']) // Keep existing middleware
     ->name('dashboard');
 
+Volt::route('/banned', 'pages.banned')->middleware('auth')->name('banned');    // Route for banned users
+
 Route::middleware(['auth'])->group(function () {
     // Settings Routes
     Route::redirect('settings', 'settings/profile');
@@ -122,7 +124,6 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a notification system
 
 //      Posts
-//         - [x] Add a like system
 //         - [ ] ADMIN: Add from reported posts to ban the user
 
 //      Inbox
