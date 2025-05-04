@@ -98,6 +98,7 @@ require __DIR__ . '/auth.php';
 //     Fix the following issues:
 //         - [ ] Fix SiteTitle on all pages
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
+//         - [ ] Fix FindUser find User by name, not exactly what i wanted
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)

@@ -2,7 +2,7 @@
 
 use App\Models\User;
 use Livewire\Livewire;
-use App\Livewire\Dashboard\NetworkStats;
+use App\Livewire\Parts\NetworkStats;
 
 test('network stats component displays follower and following counts', function () {
     // Arrange: Create a user and setup followers/following relationships

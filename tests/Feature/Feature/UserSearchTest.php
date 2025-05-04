@@ -10,14 +10,22 @@ use Livewire\Livewire;
 function createUserWithDetails(array $details = []): User
 {
     $user = User::factory()->create(Arr::only($details, ['firstname', 'lastname']));
+
+    if (isset($details['additionalInfo'])) {
+        $username = $details['additionalInfo']['username'] ?? 'testuser' . $user->id;
+    } else {
+        $username = 'testuser' . $user->id;
+    }
+
     $user->additionalInfo()->create(array_merge(
         [
-            'username' => 'testuser' . $user->id,
+            'username' => $username,
             'birthday' => now()->subYears(30)->toDateString(), // Default age 30
             'nationality' => 'CH', // Default Swiss
         ],
         Arr::only($details, ['username', 'birthday', 'nationality'])
     ));
+
     return $user->load('additionalInfo');
 }
 
@@ -47,7 +55,7 @@ test('authenticated users can see search results', function () {
 
     // Test the component using its view name
     Livewire::test('user.search')
-        ->assertSee($searchUser->name);
+        ->assertSee($searchUser->additionalInfo->username);
 });
 
 test('filtering by name works', function () {
@@ -61,23 +69,23 @@ test('filtering by name works', function () {
     // --- Test filtering for 'Ali' ---
     Livewire::test('user.search')
         ->set('search', 'Ali')
-        ->assertSee($user1->name)
-        ->assertDontSee($user2->name)
-        ->assertDontSee($user3->additionalInfo->name); // Re-check this assertion
+        ->assertSee($user1->additionalInfo->username)
+        ->assertDontSee($user2->additionalInfo->username)
+        ->assertDontSee($user3->additionalInfo->username); // Re-check this assertion
 
     // --- Test filtering for 'bson' ---
     Livewire::test('user.search')
         ->set('search', 'bson') // Apply filter directly
-        ->assertDontSee($user1->name)
-        ->assertSee($user2->name)
-        ->assertDontSee($user3->additionalInfo->name);
+        ->assertDontSee($user1->additionalInfo->username)
+        ->assertSee($user2->additionalInfo->username)
+        ->assertDontSee($user3->additionalInfo->username);
 
     // --- Test filtering for 'search_me' (username) ---
     Livewire::test('user.search')
         ->set('search', 'search_me') // Apply filter directly
-        ->assertDontSee($user1->name)
-        ->assertDontSee($user2->name)
-        ->assertSee($user3->additionalInfo->name);
+        ->assertDontSee($user1->additionalInfo->username)
+        ->assertDontSee($user2->additionalInfo->username)
+        ->assertSee($user3->additionalInfo->username);
 });
 
 // Apply the change Livewire::test('user.search') to ALL subsequent tests in this file...
@@ -91,8 +99,8 @@ test('filtering by nationality works', function () {
 
     Livewire::test('user.search') // Changed here
         ->set('nationality', 'DE')
-        ->assertSee($germanUser->name)
-        ->assertDontSee($swissUser->name);
+        ->assertSee($germanUser->additionalInfo->username)
+        ->assertDontSee($swissUser->additionalInfo->username);
 });
 
 test('filtering by minimum age works', function () {
@@ -104,8 +112,8 @@ test('filtering by minimum age works', function () {
 
     Livewire::test('user.search') // Changed here
         ->set('min_age', 30)
-        ->assertSee($user35->name)
-        ->assertDontSee($user25->name);
+        ->assertSee($user35->additionalInfo->username)
+        ->assertDontSee($user25->additionalInfo->username);
 });
 
 test('filtering by maximum age works', function () {
@@ -117,8 +125,8 @@ test('filtering by maximum age works', function () {
 
     Livewire::test('user.search') // Changed here
         ->set('max_age', 30)
-        ->assertSee($user25->name)
-        ->assertDontSee($user35->name);
+        ->assertSee($user25->additionalInfo->username)
+        ->assertDontSee($user35->additionalInfo->username);
 });
 
 test('filtering by age range works', function () {
@@ -132,9 +140,9 @@ test('filtering by age range works', function () {
     Livewire::test('user.search') // Changed here
         ->set('min_age', 30)
         ->set('max_age', 40)
-        ->assertDontSee($user25->name)
-        ->assertSee($user35->name)
-        ->assertDontSee($user45->name);
+        ->assertDontSee($user25->additionalInfo->username)
+        ->assertSee($user35->additionalInfo->username)
+        ->assertDontSee($user45->additionalInfo->username);
 });
 
 test('combining filters works', function () {
@@ -149,9 +157,9 @@ test('combining filters works', function () {
         ->set('search', 'Swiss')
         ->set('nationality', 'CH')
         ->set('min_age', 30)
-        ->assertDontSee($swissUserYoung->name)
-        ->assertSee($swissUserOld->name)
-        ->assertDontSee($germanUserYoung->name);
+        ->assertDontSee($swissUserYoung->additionalInfo->username)
+        ->assertSee($swissUserOld->additionalInfo->username)
+        ->assertDontSee($germanUserYoung->additionalInfo->username);
 });
 
 test('clear filters button works', function () {
