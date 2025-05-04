@@ -105,8 +105,10 @@ require __DIR__ . '/auth.php';
 //         - [ ] Implement a verified User System
 
 //     Language (Instruction in Gemini and ChatGPT):
-//         - [ ] Install laravel localization (mcamara/laravel-localization:)
+//         - [ ] Install laravel localization (static content)
 //         - [ ] Add a language switcher front- and backend
+//         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
+//         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
 
 //     Security:
 //         - [ ] Test the security of the app
@@ -120,9 +122,8 @@ require __DIR__ . '/auth.php';
 //         - [ ] Add a notification system
 
 //      Posts
-//         - [ ] Add a comment system
 //         - [ ] Add a like system
-//         - [ ] Add from reported posts to ban the user
+//         - [ ] ADMIN: Add from reported posts to ban the user
 
 //      Inbox
 //         - [ ] Change style to be more like post list
