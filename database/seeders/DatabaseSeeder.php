@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(HobbyAndTravelStyleSeeder::class);
         $this->call(MessageSeeder::class);
         $this->call(UserFollowerSeeder::class);
+        $this->call(PostLikeSeeder::class);
     }
 }
