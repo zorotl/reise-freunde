@@ -7,7 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Title;
 
+#[Title('Compose Message')]
 class MessageCompose extends Component
 {
 

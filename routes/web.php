@@ -102,7 +102,7 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //         - [ ] Fix SiteTitle on all pages
 //         - [x] Fix ADMIN SiteTitle on all pages
 //         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
-//         - [ ] Fix FindUser find User by name, not exactly what i wanted
+//         - [x] Fix FindUser find User by name, not exactly what i wanted
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)

@@ -5,7 +5,9 @@ namespace App\Livewire\User;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination; // Use pagination
+use Livewire\Attributes\Title;
 
+#[Title('Followers')]
 class FollowersList extends Component
 {
     use WithPagination;

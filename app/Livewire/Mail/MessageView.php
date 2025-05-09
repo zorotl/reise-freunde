@@ -5,7 +5,9 @@ namespace App\Livewire\Mail;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('View Message')]
 class MessageView extends Component
 {
     public Message $message;

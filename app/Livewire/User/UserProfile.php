@@ -7,7 +7,9 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Monarobase\CountryList\CountryListFacade as Countries;
+use Livewire\Attributes\Title;
 
+#[Title('User Profile')]
 class UserProfile extends Component
 {
     public User $user;

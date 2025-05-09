@@ -6,7 +6,9 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
+#[Title('Following')]
 class FollowingList extends Component
 {
     use WithPagination;
