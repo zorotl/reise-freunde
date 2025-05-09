@@ -25,11 +25,7 @@ Route::get('/', function () {
 })->name('home');
 
 Volt::route('/users', 'user.search')->name('user.directory');
-Route::get('/post/show', PostList::class)->name('post.show');
-Route::get('/post/{post}', ShowPost::class)->name('post.single');
-Route::get('/post', function () {
-    return redirect()->route('post.show');
-})->name('post');
+
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
 // --- Banned User Route
@@ -70,6 +66,11 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
 
 }); // End of 'auth', 'verified', 'check_banned' group
 
+Route::get('/post/show', PostList::class)->name('post.show');
+Route::get('/post', function () {
+    return redirect()->route('post.show');
+})->name('post');
+Route::get('/post/{post}', ShowPost::class)->name('post.single');
 
 // --- Admin/Moderator Routes ---
 Route::prefix('admin')
