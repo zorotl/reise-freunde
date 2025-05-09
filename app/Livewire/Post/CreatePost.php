@@ -7,7 +7,9 @@ use App\Models\Post;
 use Carbon\Carbon;
 use Monarobase\CountryList\CountryListFacade as Countries;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 
+#[Title('Create Post')]
 class CreatePost extends Component
 {
     public $title;

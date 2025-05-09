@@ -7,7 +7,9 @@ use App\Models\Post;
 use Illuminate\Support\Carbon;
 use Monarobase\CountryList\CountryListFacade as Countries;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('My Posts')]
 class MyPosts extends Component
 {
     use WithPagination; // <-- Add if using pagination

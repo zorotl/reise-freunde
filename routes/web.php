@@ -49,12 +49,12 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
     Volt::route('settings/privacy-settings', 'settings.privacy-settings')->name('settings.privacy-settings');
     Volt::route('settings/account-deletion', 'settings.account-deletion')->name('settings.account-deletion');
 
-    // Post routes (assuming they require auth)
+    // Post routes
     Route::get('/post/myown', MyPosts::class)->name('post.myown');
     Route::get('/post/create', CreatePost::class)->name('post.create');
     Route::get('/post/edit/{id}', EditPost::class)->name('post.edit');
 
-    // Mail routes (assuming they require auth)
+    // Mail routes
     Route::get('/mail/inbox', Inbox::class)->name('mail.inbox');
     Route::get('/mail/outbox', Outbox::class)->name('mail.outbox');
     Route::get('/mail/messages/{message}/{fromWhere}', MessageView::class)->name('mail.messages.view');

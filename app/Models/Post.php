@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
@@ -53,22 +54,6 @@ class Post extends Model
         // If not loaded, perform an efficient query to check existence.
         return $this->likes()->where('user_id', $user->id)->exists();
     }
-
-    /**
-     * Accessor for like count.
-     * Ensures 'likes_count' attribute is available, even if not loaded via withCount.
-     * Falls back to querying if necessary (less efficient but functional).
-     */
-    // protected function likesCount(): Attribute // Alternative accessor method
-// {
-//     return Attribute::make(
-//         get: fn () => $this->attributes['likes_count'] ?? $this->likes()->count(),
-//     );
-// }
-
-    // If you prefer not using the accessor, ensure you load 'likes_count' via withCount()
-// wherever you display the count.
-
 
     public function user()
     {
