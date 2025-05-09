@@ -60,29 +60,29 @@ test('authenticated users can see search results', function () {
 
 test('filtering by name works', function () {
     $user = User::factory()->create();
-    $user1 = createUserWithDetails(['firstname' => 'Alice']);
-    $user2 = createUserWithDetails(['lastname' => 'Bobson']);
+    $user1 = createUserWithDetails(['firstname' => 'Alice', 'additionalInfo' => ['username' => 'look_me']]);
+    $user2 = createUserWithDetails(['lastname' => 'Bobson', 'additionalInfo' => ['username' => 'show_me']]);
     $user3 = createUserWithDetails(['firstname' => 'Charlie', 'lastname' => 'Hagenes', 'additionalInfo' => ['username' => 'search_me']]);
 
     actingAs($user);
 
     // --- Test filtering for 'Ali' ---
     Livewire::test('user.search')
-        ->set('search', 'Ali')
+        ->set('search', 'look')
         ->assertSee($user1->additionalInfo->username)
         ->assertDontSee($user2->additionalInfo->username)
         ->assertDontSee($user3->additionalInfo->username); // Re-check this assertion
 
     // --- Test filtering for 'bson' ---
     Livewire::test('user.search')
-        ->set('search', 'bson') // Apply filter directly
+        ->set('search', 'show') // Apply filter directly
         ->assertDontSee($user1->additionalInfo->username)
         ->assertSee($user2->additionalInfo->username)
         ->assertDontSee($user3->additionalInfo->username);
 
     // --- Test filtering for 'search_me' (username) ---
     Livewire::test('user.search')
-        ->set('search', 'search_me') // Apply filter directly
+        ->set('search', 'search') // Apply filter directly
         ->assertDontSee($user1->additionalInfo->username)
         ->assertDontSee($user2->additionalInfo->username)
         ->assertSee($user3->additionalInfo->username);
@@ -147,9 +147,9 @@ test('filtering by age range works', function () {
 
 test('combining filters works', function () {
     $user = User::factory()->create();
-    $swissUserYoung = createUserWithDetails(['firstname' => 'YoungSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(22)->toDateString()]);
-    $swissUserOld = createUserWithDetails(['firstname' => 'OldSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(40)->toDateString()]);
-    $germanUserYoung = createUserWithDetails(['firstname' => 'YoungGerman', 'nationality' => 'DE', 'birthday' => now()->subYears(23)->toDateString()]);
+    $swissUserYoung = createUserWithDetails(['firstname' => 'YoungSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(22)->toDateString(), 'additionalInfo' => ['username' => 'YoungSwiss']]);
+    $swissUserOld = createUserWithDetails(['firstname' => 'OldSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(40)->toDateString(), 'additionalInfo' => ['username' => 'OldSwiss']]);
+    $germanUserYoung = createUserWithDetails(['firstname' => 'YoungGerman', 'nationality' => 'DE', 'birthday' => now()->subYears(23)->toDateString(), 'additionalInfo' => ['username' => 'YoungGerman']]);
 
     actingAs($user);
 
