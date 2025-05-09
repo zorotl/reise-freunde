@@ -93,8 +93,14 @@ class extends Component {
             <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
             <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
         </a>
-
     </div>
+
+    {{-- Route Conflicts Widged --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <livewire:admin.widgets.route-conflicts />
+        {{-- other widgets here --}}
+    </div>
+
 
     {{-- Recent Activity Sections --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -145,6 +151,8 @@ class extends Component {
             @endforelse
         </div>
     </div>
+
+
 
     {{-- More dashboard content can be added here later --}}
 
