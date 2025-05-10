@@ -27,90 +27,9 @@
     @endif">
 
         <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6">
-            {{-- <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">{{ __('Test Titel') }}</h2>
-            --}}
             <div class="space-y-4">
-                {{-- @forelse ($entries as $post) --}}
-                {{-- Include the individual post card component for each post --}}
                 <livewire:parts.post-card-section :post="$post" :show="$show" wire:key="post-card-{{ $post->id }}" />
-                {{-- @empty
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ __('Your feed is empty. Follow some users or create your own post!') }}
-                </p>
-                @endforelse --}}
-                {{-- Consider adding pagination or load more later for the feed --}}
             </div>
         </section>
-
-        {{-- <div class="p-6">
-            <h1 class="text-3xl font-semibold text-gray-900 dark:text-stone-400 mb-4">
-                @if (!$post->is_active)
-                <span class="text-red-900 font-bold">[Inactive]</span>
-                @elseif ($post->expiry_date && $post->expiry_date->lessThan($now))
-                <span class="text-red-900 font-bold">[Expired]</span>
-                @endif
-                {{ $post->title }}
-            </h1>
-
-            <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
-                <div>
-                    <span>From {{ $post->user->additionalInfo->username }}
-                        posted {{ $post->created_at->diffForHumans() }}</span>
-                    <span class="mx-1">•</span>
-
-                    @if ($post->from_date && $post->to_date)
-                    <span>Date: {{ $post->from_date->format('d.m.Y') }} - {{ $post->to_date->format('d.m.Y')
-                        }}</span>
-                    @endif
-
-                    @if ($post->country || $post->city)
-                    <span class="mx-1">•</span>
-                    <span>Destination:
-                        {{ $this->countryList[$post->country] ?? $post->country ?? '' }}
-                        {{ $post->country && $post->city ? ' / ' : ''}}
-                        {{ $post->city ?? '' }}
-                    </span>
-                    @endif
-                </div>
-            </div>
-
-            <p class="text-gray-700 dark:text-gray-100 leading-relaxed">{{ $post->content }}</p>
-
-            <div class="space-x-2 mt-3">
-                <flux:button size="sm" variant="outline">
-                    <a wire:navigate href="/user/profile/{{ $post->user->id }}">
-                        Go to Profile
-                    </a>
-                </flux:button>
-
-                @unless (auth()->id() === $post->user_id)
-                <flux:button size="sm" variant="outline">
-                    <a wire:navigate href="{{ route('mail.compose', [
-                        'receiverId' => $post->user_id,
-                        'fixReceiver' => true
-                        ]) }}">
-                        Write a message
-                    </a>
-                </flux:button>
-                @endunless
-
-                @if (auth()->id() === $post->user_id)
-                <flux:button size="sm" variant="outline">
-                    <a wire:navigate href="{{ route('post.edit', ['id' => $post->id, 'origin' => $show]) }}">
-                        Edit
-                    </a>
-                </flux:button>
-
-                <flux:button wire:click="toggleActive({{ $post->id }})" size="sm"
-                    :variant="$post->is_active ? 'primary' : 'filled'">
-                    {{ $post->is_active ? 'Deactivate' : 'Activate' }}
-                </flux:button>
-
-                <flux:button wire:click="deleteEntry({{ $post->id }})" size="sm" variant="danger">
-                    Delete
-                </flux:button>
-                @endif
-            </div>
-        </div> --}}
     </div>
 </div>

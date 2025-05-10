@@ -207,6 +207,7 @@
     </div>
 
     @fluxScripts
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 
 </html>

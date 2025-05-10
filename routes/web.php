@@ -100,14 +100,14 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [ ] Fix user hobby und travel style - view error in the form, save ist okay
+//         - [ ] Fix 
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
 //         - [ ] Implement a verified User System
 
 //     Language (Instruction in Gemini and ChatGPT):
-//         - [ ] Install laravel localization (static content)
+//         - [ ] Install laravel localization (for static content, not for content in the database)
 //         - [ ] Add a language switcher front- and backend
 //         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
 //         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
@@ -117,9 +117,6 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 
 //     Testing:
 //         - [ ] Test continuing
-
-//     Logged in user:
-//         - [ ] Add a notification system
 
 //      Inbox
 //         - [ ] Change style to be more like post list or simply nicer than now

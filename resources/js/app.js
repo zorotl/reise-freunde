@@ -1,4 +1,3 @@
-// Add this line at the top
 import TomSelect from 'tom-select';
 
 // Make it globally accessible if needed by Alpine, or ensure build process handles it
