@@ -19,7 +19,8 @@
             <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {{-- Link to author's profile --}}
                 <a href="{{ route('user.profile', $post->user) }}" class="hover:underline" wire:navigate>
-                    {{ $post->user->additionalInfo?->username ?? 'username_not_set' }}</a>
+                    <b>{{ $post->user->additionalInfo?->username ?? 'username_not_set' }}</b>
+                </a>
             </p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
                 {{-- Link to the single post view --}}

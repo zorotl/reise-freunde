@@ -232,47 +232,8 @@ class extends Component {
             <ul role="list" class="divide-y divide-gray-200 dark:divide-neutral-700">
                 {{-- Use $users instead of $this->users --}}
                 @foreach ($users as $user)
-                <li wire:key="user-{{ $user->id }}">
-                    <a href="{{ route('user.profile', $user->id) }}"
-                        class="block hover:bg-gray-50 dark:hover:bg-neutral-750">
-                        <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                {{-- Avatar Placeholder --}}
-                                <div class="flex-shrink-0">
-                                    <span
-                                        class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200 dark:bg-neutral-700">
-                                        <span
-                                            class="flex h-full w-full items-center justify-center font-medium text-gray-600 dark:text-gray-300">
-                                            <img class="h-full w-full rounded-lg object-cover"
-                                                src="{{ $user->profilePictureUrl() }}"
-                                                alt="{{ $user->additionalInfo?->username ?? 'na' }}" />
-                                        </span>
-                                    </span>
-                                </div>
-                                {{-- User Info --}}
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                        {{ $user->additionalInfo?->username }}
-                                        @if($user->isPrivate())
-                                        <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">(Private)</span>
-                                        @endif
-                                    </p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
-                                        @if($user->additionalInfo?->birthday)
-                                        {{ $user->additionalInfo->birthday->age }} years old
-                                        @endif
-                                        @if($user->additionalInfo?->nationality)
-                                        <span class="mx-1">&middot;</span>
-                                        {{ $this->countryList[$user->additionalInfo->nationality] ??
-                                        $user->additionalInfo->nationality }}
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                            {{-- Optional: Add a follow button or other actions here --}}
-                        </div>
-                    </a>
-                </li>
+                {{-- User Card --}}
+                <x-user-card :user="$user" :show-actions="true" />
                 @endforeach
             </ul>
             {{-- Pagination Links - Use $users instead of $this->users --}}
@@ -288,10 +249,6 @@ class extends Component {
             {{ __('No users found matching your criteria.') }}
         </div>
         @else
-        {{-- Optionally show a default message or nothing when no filters are applied yet --}}
-        {{-- <div class="text-center py-10 text-gray-500 dark:text-gray-400">
-            {{ __('Use the filters above to find users.') }}
-        </div> --}}
         @endif
         @endif
     </div>

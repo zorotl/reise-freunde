@@ -8,9 +8,8 @@
                     <div
                         class="rounded-full overflow-hidden w-16 h-16 sm:w-24 sm:h-24 bg-gray-300 flex items-center justify-center flex-shrink-0">
                         <span class="text-xl text-gray-600 dark:text-gray-400">
-                            <img class="h-full w-full rounded-lg object-cover"
-                                src="{{ auth()->user()->profilePictureUrl() }}"
-                                alt="{{ auth()->user()->additionalInfo->username }}" />
+                            <img class="h-full w-full rounded-lg object-cover" src="{{ $user->profilePictureUrl() }}"
+                                alt="{{ $user->additionalInfo->username }}" />
                         </span>
                     </div>
                     {{-- Name/Username & Counts --}}
@@ -160,7 +159,7 @@
                 <div>
                     <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Age') }}</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        {{ \Carbon\Carbon::parse($user->additionalInfo->birthday)->age }}
+                        {{ \Carbon\Carbon::parse($user->additionalInfo?->birthday)->age }}
                         {{ __('years old') }}
                     </p>
                 </div>
