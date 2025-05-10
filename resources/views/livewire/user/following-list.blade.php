@@ -4,7 +4,7 @@
     </h1>
 
     {{-- Tab Switcher --}}
-    @include('components.user-tab-switcher') {{-- Optional extract if reused --}}
+    <x-user-tab-switcher />
 
     {{-- User List --}}
     @if ($following->count())

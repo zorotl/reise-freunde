@@ -10,7 +10,7 @@
     </h1>
 
     {{-- Tab Switcher --}}
-    @include('components.mail-tab-switcher')
+    <x-mail-tab-switcher />
 
     {{-- Message List --}}
     @if ($messages->count() > 0)

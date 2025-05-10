@@ -4,7 +4,7 @@
     </h1>
 
     {{-- Mail Tab Switcher --}}
-    @include('components.mail-tab-switcher')
+    <x-mail-tab-switcher />
 
     {{-- Compose Form --}}
     <div class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg overflow-hidden">

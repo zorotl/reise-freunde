@@ -4,7 +4,9 @@
     </h1>
 
     {{-- Tab Switcher --}}
-    @include('components.user-tab-switcher')
+    <x-user-tab-switcher />
+
+    {{-- Search Bar --}}
 
     {{-- Flash Messages --}}
     @if (session()->has('message'))
