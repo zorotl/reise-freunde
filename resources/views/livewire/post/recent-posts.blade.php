@@ -10,8 +10,8 @@
                     <h3 class="font-semibold text-gray-800 dark:text-gray-200">{{ $post->title }}</h3>
                     <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">{{ Str::limit($post->content, 50) }}</p>
                     <a href="{{ route('post.single', ['post' => $post->id]) }}"
-                        class="text-indigo-500 hover:text-indigo-700 mt-2 block text-sm">{{
-                        __('Read More') }}</a>
+                        class="text-indigo-500 hover:text-indigo-700 mt-2 block text-sm">
+                        {{ __('Read More') }}</a>
                 </div>
             </div>
             @empty
