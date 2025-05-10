@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Models\User;
 
 Route::middleware('guest')->group(function () {
     Volt::route('login', 'auth.login')
@@ -33,3 +34,17 @@ Route::middleware('auth')->group(function () {
 
 Route::post('logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
+
+
+
+// Routs only for tests - especially for UserFollowTest
+Route::post('/user/{user}/follow', function (User $user) {
+    abort_if(auth()->id() === $user->id, 403);
+    auth()->user()->follow($user);
+    return back();
+})->name('user.follow');
+
+Route::post('/user/{user}/unfollow', function (User $user) {
+    auth()->user()->unfollow($user);
+    return back();
+})->name('user.unfollow');

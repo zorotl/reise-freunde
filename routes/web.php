@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Message;
 use Livewire\Volt\Volt;
 use App\Livewire\Mail\Inbox;
 use App\Livewire\Mail\Outbox;
