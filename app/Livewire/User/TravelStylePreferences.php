@@ -59,8 +59,17 @@ class TravelStylePreferences extends Component
         $user->travelStyles()->sync($this->selectedTravelStyles);
         $user->hobbies()->sync($this->selectedHobbies);
 
-        // Save custom preferences
-        $userInfo = $user->additionalInfo ?? $user->additionalInfo()->create([]);
+        // Ensure the additionalInfo model exists and is correctly linked
+        $userInfo = $user->additionalInfo;
+        if (!$userInfo) {
+            $userInfo = new UserAdditionalInfo([
+                'custom_travel_styles' => [],
+                'custom_hobbies' => [],
+            ]);
+            $user->additionalInfo()->save($userInfo); // This sets the user_id properly
+        }
+
+        // Save custom free-text preferences
         $userInfo->custom_travel_styles = array_filter($this->customTravelStyle);
         $userInfo->custom_hobbies = array_filter($this->customHobby);
         $userInfo->save();

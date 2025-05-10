@@ -12,24 +12,9 @@
     </div>
 
     {{-- Custom Travel Styles --}}
-    <div x-data="{
-        input: '',
-        tags: [],
-        init() {
-            this.tags = @js($customTravelStyle);
-            $watch('tags', value => $wire.set('customTravelStyle', value));
-        },
-        addTag() {
-            if (this.input.trim() && !this.tags.includes(this.input.trim())) {
-                this.tags.push(this.input.trim());
-                this.input = '';
-            }
-        },
-        removeTag(index) {
-            this.tags.splice(index, 1);
-        }
-    }" class="mt-4">
+    <div x-data="customTagInput(@js($customTravelStyle), '{{ $this->getId() }}')" x-init="init()" class="mt-4">
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Travel Styles</label>
+
         <div class="flex flex-wrap gap-2 mb-2">
             <template x-for="(tag, index) in tags" :key="index">
                 <span class="bg-gray-200 text-sm rounded-full px-3 py-1 flex items-center">
@@ -39,12 +24,11 @@
                 </span>
             </template>
         </div>
-        <input type="text" x-model="input" x-ref="input" @keydown.enter.prevent="addTag()"
-            placeholder="Type and press Enter" class="p-2 border rounded w-full">
-        @error('customTravelStyle')
-        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
+
+        <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
+            class="p-2 border rounded w-full">
     </div>
+
 
     {{-- Predefined Hobbies --}}
     <h2 class="text-xl font-bold mt-6 mb-4">Hobbies, Sports & Fun</h2>
@@ -59,24 +43,9 @@
     </div>
 
     {{-- Custom Hobbies --}}
-    <div x-data="{
-        input: '',
-        tags: [],
-        init() {
-            this.tags = @js($customHobby);
-            $watch('tags', value => $wire.set('customHobby', value));
-        },
-        addTag() {
-            if (this.input.trim() && !this.tags.includes(this.input.trim())) {
-                this.tags.push(this.input.trim());
-                this.input = '';
-            }
-        },
-        removeTag(index) {
-            this.tags.splice(index, 1);
-        }
-    }" class="mt-4">
-        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Hobbies</label>
+    <div x-data="customTagInput(@js($customHobby), '{{ $this->getId() }}', 'customHobby')" x-init="init()" class="mt-6">
+        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Hobbies, Sports & Fun</label>
+
         <div class="flex flex-wrap gap-2 mb-2">
             <template x-for="(tag, index) in tags" :key="index">
                 <span class="bg-gray-200 text-sm rounded-full px-3 py-1 flex items-center">
@@ -86,12 +55,11 @@
                 </span>
             </template>
         </div>
-        <input type="text" x-model="input" x-ref="input" @keydown.enter.prevent="addTag()"
-            placeholder="Type and press Enter" class="p-2 border rounded w-full">
-        @error('customHobby')
-        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
+
+        <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
+            class="p-2 border rounded w-full">
     </div>
+
 
     {{-- Save Button --}}
     <button wire:click="save" class="mt-6 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded">
@@ -102,3 +70,39 @@
     <p class="text-green-600 mt-3">{{ session('success') }}</p>
     @endif
 </div>
+
+<script>
+    function customTagInput(initialTags, componentId, wireModel) {
+        return {
+            input: '',
+            tags: initialTags,
+
+            init() {
+                this.sync();
+            },
+
+            sync() {
+                if (window.Livewire) {
+                    const component = Livewire.find(componentId);
+                    if (component) {
+                        component.set(wireModel, this.tags);
+                    }
+                }
+            },
+
+            addTag() {
+                const value = this.input.trim();
+                if (value && !this.tags.includes(value)) {
+                    this.tags.push(value);
+                    this.input = '';
+                    this.sync();
+                }
+            },
+
+            removeTag(index) {
+                this.tags.splice(index, 1);
+                this.sync();
+            }
+        }
+    }
+</script>
