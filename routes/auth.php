@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\VerifyEmailController;
-use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
 use App\Models\User;
+use Livewire\Volt\Volt;
+use App\Livewire\Mail\MessageView;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::middleware('guest')->group(function () {
     Volt::route('login', 'auth.login')
@@ -37,14 +38,17 @@ Route::post('logout', App\Livewire\Actions\Logout::class)
 
 
 
-// Routs only for tests - especially for UserFollowTest
+// ***** Routs only for tests *****
+// for UserFollowTest
 Route::post('/user/{user}/follow', function (User $user) {
     abort_if(auth()->id() === $user->id, 403);
     auth()->user()->follow($user);
     return back();
 })->name('user.follow');
-
 Route::post('/user/{user}/unfollow', function (User $user) {
     auth()->user()->unfollow($user);
     return back();
 })->name('user.unfollow');
+// for MessageViewTest
+Route::get('/mail/messages/{message}/{fromWhere}', MessageView::class)
+    ->name('mail.messages.view');
