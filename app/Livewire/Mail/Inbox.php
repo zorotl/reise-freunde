@@ -6,25 +6,27 @@ use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use Livewire\WithPagination;
 
 #[Title('Mail Inbox')]
 class Inbox extends Component
 {
-    public $messages;
+    use WithPagination;
+
     public $unreadCount;
+
+    protected $paginationTheme = 'tailwind';
 
     public function mount()
     {
-        $this->loadMessages();
         $this->loadUnreadCount();
     }
 
-    public function loadMessages()
+    public function getMessagesProperty()
     {
-        $this->messages = Message::where('receiver_id', Auth::id())
+        return Message::where('receiver_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
-        $this->loadUnreadCount(); // Update unread count after loading messages
+            ->paginate(10);
     }
 
     public function loadUnreadCount()
@@ -39,12 +41,14 @@ class Inbox extends Component
         $message = Message::find($messageId);
         if ($message && $message->receiver_id === Auth::id() && !$message->read_at) {
             $message->update(['read_at' => now()]);
-            $this->loadMessages(); // Refresh the list and unread count
+            $this->loadUnreadCount(); // Only update count; messages auto-refresh via pagination
         }
     }
 
     public function render()
     {
-        return view('livewire.mail.inbox');
+        return view('livewire.mail.inbox', [
+            'messages' => $this->messages,
+        ]);
     }
 }

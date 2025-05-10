@@ -1,0 +1,25 @@
+<div class="mb-6 flex flex-wrap gap-4 border-b border-gray-200 dark:border-neutral-600">
+    <a href="{{ route('mail.inbox') }}" @class([ 'pb-2 font-medium transition' , request()->routeIs('mail.inbox')
+        ? 'text-indigo-600 border-b-2 border-indigo-600'
+        : 'text-gray-600 hover:text-indigo-500'
+        ])
+        wire:navigate>
+        {{ __('Inbox') }}
+    </a>
+
+    <a href="{{ route('mail.outbox') }}" @class([ 'pb-2 font-medium transition' , request()->routeIs('mail.outbox')
+        ? 'text-indigo-600 border-b-2 border-indigo-600'
+        : 'text-gray-600 hover:text-indigo-500'
+        ])
+        wire:navigate>
+        {{ __('Outbox') }}
+    </a>
+
+    <a href="{{ route('mail.compose') }}" @class([ 'pb-2 font-medium transition' , request()->routeIs('mail.compose')
+        ? 'text-indigo-600 border-b-2 border-indigo-600'
+        : 'text-gray-600 hover:text-indigo-500'
+        ])
+        wire:navigate>
+        {{ __('Compose') }}
+    </a>
+</div>
