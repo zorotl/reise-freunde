@@ -189,10 +189,10 @@ test('pagination works', function () {
 
     Livewire::test('user.search') // Changed here
         ->assertViewHas('users', function ($users) {
-            return $users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->count() === 15;
+            return $users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->count() === 10;
         })
         ->call('gotoPage', 2, 'page')
         ->assertViewHas('users', function ($users) {
-            return $users->count() > 0 && $users->count() <= 15;
+            return $users->count() > 0 && $users->count() <= 10;
         });
 });
