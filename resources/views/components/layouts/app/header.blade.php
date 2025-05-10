@@ -31,11 +31,11 @@
             {{-- Existing Auth Links --}}
             <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
                 wire:navigate>
-                {{ __("Inbox") }}
+                {{ __("Messages") }}
                 <livewire:post.unread-messages-count />
             </flux:navbar.item>
             <flux:navbar.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
-                :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
+                :current="request()->routeIs('user.following')" wire:navigate>{{ __("Friends") }}
             </flux:navbar.item>
             @endauth
 
