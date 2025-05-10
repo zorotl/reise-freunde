@@ -26,9 +26,10 @@ $isFollowing = auth()->user()?->isFollowing($user) ?? false;
     </div>
 
     {{-- Actions --}}
-    @if ($showActions)
+    @if ($showActions && auth()->id() !== $user->id)
     <div class="flex gap-2">
-        @if ($isFollowing)
+        {{-- Follow/Unfollow --}}
+        @if (auth()->user()->isFollowing($user))
         <button wire:click="unfollowUser({{ $user->id }})"
             class="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600">
             {{ __('Unfollow') }}
@@ -39,6 +40,12 @@ $isFollowing = auth()->user()?->isFollowing($user) ?? false;
             {{ __('Follow') }}
         </button>
         @endif
+
+        {{-- Message --}}
+        <a href="{{ route('mail.compose', ['receiverId' => $user->id, 'fixReceiver' => true]) }}" wire:navigate
+            class="px-3 py-1 text-sm rounded border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-600">
+            {{ __('Message') }}
+        </a>
     </div>
     @endif
 </div>
