@@ -17,6 +17,9 @@
                     class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     {{ __('Travel Together') }}
                 </a>
+
+                <x-language-switcher />
+
                 <nav class="space-x-4">
                     <a href="{{ route('post.show') }}"
                         class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{

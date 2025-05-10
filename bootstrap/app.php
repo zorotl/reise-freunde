@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Middleware\AdminOrModeratorMiddleware;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\CheckBannedStatus;
+use App\Http\Middleware\AdminOrModeratorMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,14 +19,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // ... existing aliases (e.g., 'auth', 'guest', etc.)
             'admin_or_moderator' => AdminOrModeratorMiddleware::class,
             'check_banned' => CheckBannedStatus::class,
+            'set_locale' => SetLocale::class,
         ]);
 
-        // Apply middleware globally (adjust group if needed)
-        // $middleware->web(append: [
-        //     // Apply after authentication session is started
-        //     \Illuminate\Session\Middleware\AuthenticateSession::class,
-        //     CheckBannedStatus::class, // <-- Apply our middleware
-        // ]);
+        $middleware->web(append: [
+            SetLocale::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

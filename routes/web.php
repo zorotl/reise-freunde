@@ -14,6 +14,7 @@ use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
 use App\Livewire\Mail\MessageCompose;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use App\Livewire\User\FollowRequestsList;
 use App\Livewire\User\TravelStylePreferences;
 use App\Http\Middleware\AdminOrModeratorMiddleware;
@@ -22,6 +23,14 @@ use App\Http\Middleware\AdminOrModeratorMiddleware;
 Route::get('/', function () {
     return view('frontend.homepage');
 })->name('home');
+
+Route::post('/set-locale', function () {
+    $locale = request('locale');
+    if (in_array($locale, ['en', 'de'])) {
+        Session::put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('set-locale');
 
 Volt::route('/users', 'user.search')->name('user.directory');
 
@@ -106,8 +115,8 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //         - [ ] Implement a verified User System
 
 //     Language (Instruction in Gemini and ChatGPT):
-//         - [ ] Install laravel localization (for static content, not for content in the database)
-//         - [ ] Add a language switcher front- and backend
+//         - [ ] Use laravel localization, install if nessecary (for static content, not for content in the database)
+//         - [ ] Add a language switcher frontend and logged in area (admin area can stay in english)
 //         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
 //         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
 
@@ -118,8 +127,8 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //         - [ ] Test continuing
 
 //      Inbox
-//         - [ ] Change style to be more like post list or simply nicer than now
-//         - [ ] Add a report system for messages
+//         - [x] Change style to be more like post list or simply nicer than now
+//         - [x] Add a report system for messages
 
 //     Frontend / not logged in user:
 //         - [ ] Finalizing the design
