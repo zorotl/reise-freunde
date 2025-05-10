@@ -1,7 +1,11 @@
 @props([
-'user', // Required: User model or object with required info
-'showActions' => false, // Optional: show follow/unfollow or message button
+'user',
+'showActions' => false,
 ])
+
+@php
+$isFollowing = auth()->user()?->isFollowing($user) ?? false;
+@endphp
 
 <div
     class="flex items-center gap-4 p-4 bg-white dark:bg-neutral-700 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-600">
@@ -17,18 +21,24 @@
         <div class="text-sm text-gray-500 dark:text-gray-300">
             {{ \Carbon\Carbon::parse($user->additionalInfo?->birthday)->age }}
             {{ __('years old from') }}
-            {{ $this->countryList[$user->additionalInfo->nationality] ?? $user->additionalInfo->nationality
-            }}
+            {{ $this->countryList[$user->additionalInfo->nationality] ?? $user->additionalInfo->nationality }}
         </div>
     </div>
 
-    {{-- Actions (optional) --}}
+    {{-- Actions --}}
     @if ($showActions)
     <div class="flex gap-2">
-        {{-- Replace with your actual Livewire actions --}}
-        <button class="px-3 py-1 text-sm rounded bg-indigo-500 text-white hover:bg-indigo-600">
-            Follow
+        @if ($isFollowing)
+        <button wire:click="unfollowUser({{ $user->id }})"
+            class="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600">
+            {{ __('Unfollow') }}
         </button>
+        @else
+        <button wire:click="followUser({{ $user->id }})"
+            class="px-3 py-1 text-sm rounded bg-indigo-500 text-white hover:bg-indigo-600">
+            {{ __('Follow') }}
+        </button>
+        @endif
     </div>
     @endif
 </div>

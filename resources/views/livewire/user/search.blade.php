@@ -62,18 +62,6 @@ class extends Component {
              });            
         }
 
-        // Apply general search filter (Firstname, Lastname, Username)
-        // if (trim($this->search)) {
-        //     $searchTerm = '%' . trim($this->search) . '%';
-        //     $query->where(function ($q) use ($searchTerm) {
-        //         $q->where('firstname', 'like', $searchTerm)
-        //           ->orWhere('lastname', 'like', $searchTerm)
-        //           ->orWhereHas('additionalInfo', function ($subQuery) use ($searchTerm) {
-        //               $subQuery->where('username', 'like', $searchTerm);
-        //           });
-        //     });
-        // }
-
         // Apply Nationality filter
         if ($this->nationality) {
             $query->whereHas('additionalInfo', function ($q) {
@@ -104,7 +92,7 @@ class extends Component {
         }
 
         // Paginate the results
-        return $query->paginate(15); // Adjust items per page as needed
+        return $query->paginate(10); // Adjust items per page as needed
     }
 
     /**
@@ -118,6 +106,18 @@ class extends Component {
         ];
     }
 
+    public function followUser(int $userId): void
+    {
+        $user = User::findOrFail($userId);
+        auth()->user()->follow($user);
+    }
+
+    public function unfollowUser(int $userId): void
+    {
+        $user = User::findOrFail($userId);
+        auth()->user()->unfollow($user);
+    }
+
 }; ?>
 
 <div class="py-8">
@@ -126,8 +126,12 @@ class extends Component {
     </h1>
 
     {{-- Filter Form --}}
-    <div class="mb-6 p-4 bg-gray-100 dark:bg-neutral-800 rounded-lg shadow">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+        class="mb-6 p-6 bg-white dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 rounded-2xl shadow-sm">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+            {{ __('Filter Users') }}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {{-- General Search (Name/Username) --}}
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -236,11 +240,15 @@ class extends Component {
                 <x-user-card :user="$user" :show-actions="true" />
                 @endforeach
             </ul>
+
             {{-- Pagination Links - Use $users instead of $this->users --}}
+            @if ($users->hasPages())
             <div
                 class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700">
                 {{ $users->links() }}
             </div>
+            @endif
+
         </div>
         @else
         {{-- Show message only if filters are applied but no results found --}}
