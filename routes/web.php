@@ -13,6 +13,7 @@ use App\Livewire\User\UserProfile;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
 use App\Livewire\Mail\MessageCompose;
+use App\Livewire\Verification\Wait;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Livewire\User\FollowRequestsList;
@@ -34,12 +35,13 @@ Route::post('/set-locale', function () {
 
 Volt::route('/users', 'user.search')->name('user.directory');
 
+Route::get('/verification/wait', Wait::class)->middleware(['auth'])->name('verification.wait');
 Route::get('/user/profile/{id}', UserProfile::class)->name('user.profile');
 
 // --- Banned User Route
 Volt::route('/banned', 'pages.banned')->middleware('auth', 'check_banned')->name('banned');    // Route for banned users
 
-// --- Authenticated Routes (Apply Ban Check Here) ---
+// --- Authenticated Routes ---
 Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
 
     Volt::route('/dashboard', 'pages.dashboard.overview')->name('dashboard');
@@ -95,6 +97,7 @@ Route::prefix('admin')
         Volt::route('/travel-styles', 'pages.admin.travel-styles.index')->name('travel-styles'); // TravelStyle Management Route 
         Volt::route('/reports', 'pages.admin.reports.index')->name('reports'); // Add reports route       
     
+        Route::get('/user-approvals', \App\Livewire\Admin\UserApproval\Index::class)->name('user-approvals');
     }); // End of Admin/Moderator Routes
 
 

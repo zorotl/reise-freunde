@@ -35,6 +35,12 @@
                 {{ __('Users') }}
             </flux:navbar.item>
 
+            {{-- Link to Manage Users --}}
+            <flux:navbar.item icon="users" :href="route('admin.user-approvals')" :current="request()->routeIs('admin.user-approvals')"
+                wire:navigate>
+                {{ __('User Approvals') }}
+            </flux:navbar.item>
+
             {{-- Link to Manage Posts --}}
             <flux:navbar.item icon="document" :href="route('admin.posts')" :current="request()->routeIs('admin.posts')"
                 wire:navigate>

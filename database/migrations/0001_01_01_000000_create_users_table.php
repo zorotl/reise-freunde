@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->string('lastname')->index();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('rejected_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
