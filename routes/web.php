@@ -129,5 +129,5 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //     Testing:
 //         - [ ] ...
 
-//     Frontend / not logged in user:
+//     Frontend / not logged-in user:
 //         - [ ] ...
