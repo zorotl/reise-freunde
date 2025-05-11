@@ -21,6 +21,7 @@ class extends Component {
     public $hobbyCount;
     public $travelStyleCount;
     public $postReportCount;
+    public int $pendingCount = 0;
 
     // New properties for recent items
     public Collection $recentUsers;
@@ -42,6 +43,10 @@ class extends Component {
         $this->recentPosts = Post::with('user')->latest()->take(5)->get();
         // Eager load sender and receiver for recent messages
         $this->recentMessages = Message::with(['sender', 'receiver'])->latest()->take(5)->get();
+        // Count pending users
+        $this->pendingCount = User::where('status', 'pending')
+        ->whereNotNull('email_verified_at')
+        ->count();
     }
 }
 ?>
@@ -58,6 +63,17 @@ class extends Component {
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Users') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $userCount }}</p>
         </a>
+
+        {{-- Pending Users Card (link) --}}
+        <a href="{{ route('admin.user-approvals') }}" wire:navigate
+        class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
+            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">
+                {{ __('Pending User Approvals') }}
+            </h2>
+            <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">
+                {{ $pendingCount }}
+            </p>
+        </a>        
 
         {{-- Total Posts Card (link) --}}
         <a href="{{ route('admin.posts') }}" wire:navigate
