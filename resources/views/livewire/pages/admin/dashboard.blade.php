@@ -6,6 +6,7 @@ use App\Models\PostReport;
 use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
+use App\Models\UserVerification;
 use Livewire\Volt\Component;
 use Livewire\Attributes\{layout, middleware, title};
 use Illuminate\Support\Collection;
@@ -22,6 +23,7 @@ class extends Component {
     public $travelStyleCount;
     public $postReportCount;
     public int $pendingCount = 0;
+    public int $pendingVerifications = 0;
 
     // New properties for recent items
     public Collection $recentUsers;
@@ -44,9 +46,9 @@ class extends Component {
         // Eager load sender and receiver for recent messages
         $this->recentMessages = Message::with(['sender', 'receiver'])->latest()->take(5)->get();
         // Count pending users
-        $this->pendingCount = User::where('status', 'pending')
-        ->whereNotNull('email_verified_at')
-        ->count();
+        $this->pendingCount = User::where('status', 'pending')->whereNotNull('email_verified_at')->count();
+        // Count pending verifications
+        $this->pendingVerifications = UserVerification::where('status', 'pending')->count();
     }
 }
 ?>
@@ -73,7 +75,18 @@ class extends Component {
             <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">
                 {{ $pendingCount }}
             </p>
-        </a>        
+        </a>  
+        
+        {{-- Pending Verifications Card (link) --}}
+        <a href="{{ route('admin.verifications') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">
+                {{ __('Submitted Verifications') }}
+            </h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {{ $pendingVerifications }}
+            </p>
+        </a>
 
         {{-- Total Posts Card (link) --}}
         <a href="{{ route('admin.posts') }}" wire:navigate

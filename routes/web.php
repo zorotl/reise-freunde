@@ -76,6 +76,11 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
 
 }); // End of 'auth', 'verified', 'check_banned' group
 
+Route::middleware(['auth', 'approved'])->group(function () {
+    Route::get('/profile/verify', \App\Livewire\Profile\Verify::class)->name('profile.verify');
+});
+
+
 Route::get('/post/show', PostList::class)->name('post.show');
 Route::get('/post', function () {
     return redirect()->route('post.show');
@@ -98,6 +103,7 @@ Route::prefix('admin')
         Volt::route('/reports', 'pages.admin.reports.index')->name('reports'); // Add reports route       
     
         Route::get('/user-approvals', \App\Livewire\Admin\UserApproval\Index::class)->name('user-approvals');
+        Route::get('/verifications', \App\Livewire\Admin\Verifications\Index::class)->name('verifications');
     }); // End of Admin/Moderator Routes
 
 

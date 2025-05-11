@@ -360,4 +360,9 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
     {
         return $this->hasMany(BanHistory::class, 'user_id')->latest('banned_at'); // Order by most recent ban first
     }
+
+    public function verification()
+    {
+        return $this->hasOne(UserVerification::class);
+    }
 }
