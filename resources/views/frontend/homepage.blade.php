@@ -101,6 +101,54 @@
                     <livewire:post.recent-posts />
                 </section>
 
+            {{-- New Section: Enhanced Trust and Safety --}}
+            <section class="py-16 bg-gray-100 dark:bg-neutral-800 rounded-lg my-12">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-3xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-10">
+                        {{ __('A Community Built on Trust') }}
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
+                        {{-- Feature 1: Manual Verification --}}
+                        <div>
+                            {{-- You can find appropriate icons from FluxUI or other libraries --}}
+                            <flux:icon.shield-check class="mx-auto h-12 w-12 text-green-500 mb-4" />
+                            <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                {{ __('Verified Profiles') }}
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                {{ __('To ensure a genuine community, all new profiles undergo a review process. This helps us prevent fake accounts and build a safer environment for everyone. You\'ll have read-only access while your profile is being verified (typically within 36 hours).') }}
+                            </p>
+                        </div>
+
+                        {{-- Feature 2: Bürgschaft/Vouching --}}
+                        <div>
+                            <flux:icon.user-group class="mx-auto h-12 w-12 text-blue-500 mb-4" /> 
+                            <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                {{ __('Real-Life Confirmations') }}
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                {{ __('Met someone from our community in person? Members can vouch for each other, adding an extra layer of trust and displaying a special badge on their profiles.') }}
+                            </p>
+                        </div>
+
+                        {{-- Feature 3: Multiple Verification Methods --}}
+                        <div>
+                            <flux:icon.identification class="mx-auto h-12 w-12 text-purple-500 mb-4" /> 
+                            <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                {{ __('Show Your Authenticity') }}
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                {{ __('Increase your credibility by verifying your identity through various methods, such as an ID document, linking social media profiles, or writing a self-verification text. Each verified method earns you a badge!') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                {{-- New Section: How It Works --}}
+
+                {{-- Section 1: How it Works (Increased gap) --}}                
+
                 {{-- Section 1: How it Works --}}
                 <section class="py-16 bg-gray-50 dark:bg-neutral-850 rounded-lg my-12">
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -111,9 +159,9 @@
                             <div>
                                 <flux:icon.user-plus class="mx-auto h-12 w-12 text-indigo-500 mb-4" />
                                 <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                    {{ __('1. Create Profile') }}</h3>
+                                    {{ __('1. Create & Verify Profile') }}</h3>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    {{ __('Sign up and tell us about your travel styles and hobbies.') }}</p>
+                                    {{ __('Sign up, verify your email, and complete your profile. Your profile will be reviewed for authenticity to ensure a safe community.') }}</p>
                             </div>
                             <div>
                                 <flux:icon.magnifying-glass class="mx-auto h-12 w-12 text-indigo-500 mb-4" />

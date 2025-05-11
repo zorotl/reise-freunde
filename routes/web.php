@@ -108,15 +108,18 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 // ToDo for the whole project:
 
 //     Fix the following issues:
-//         - [ ] Fix 
+//         - [ ] ...
+
+//     Messages:
+//         - [ ] Add a report system for messages
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
 //         - [ ] Implement a verified User System
 
-//     Language (Instruction in Gemini and ChatGPT):
-//         - [ ] Use laravel localization, install if nessecary (for static content, not for content in the database)
-//         - [ ] Add a language switcher frontend and logged in area (admin area can stay in english)
+//     Language:
+//         - [ ] Add more and more translations
+//         - [ ] Add FR and IT language, extend the language switcher
 //         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
 //         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
 
@@ -124,11 +127,7 @@ require __DIR__ . '/auth.php'; // Auth routes (login, logout etc.) are defined h
 //         - [ ] Test the security of the app
 
 //     Testing:
-//         - [ ] Test continuing
-
-//      Inbox
-//         - [x] Change style to be more like post list or simply nicer than now
-//         - [x] Add a report system for messages
+//         - [ ] ...
 
 //     Frontend / not logged in user:
-//         - [ ] Finalizing the design
+//         - [ ] ...
