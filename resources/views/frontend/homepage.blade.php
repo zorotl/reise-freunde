@@ -145,9 +145,29 @@
                 </div>
             </section>
 
-                {{-- New Section: How It Works --}}
+            <section class="bg-white py-16">
+                <div class="max-w-5xl mx-auto px-6 text-gray-800">
+                    <h2 class="text-3xl font-bold mb-6 text-center">{{ __('Trust, Safety, and Real People') }}</h2>
 
-                {{-- Section 1: How it Works (Increased gap) --}}                
+                    <p class="text-lg mb-6 text-center">
+                        {{ __("We're not like every other network. We care about real people and real connections.") }}
+                    </p>
+
+                    <ul class="space-y-4 text-lg text-center">
+                        <li>🔒 <strong>{{ __('Manual Profile Checks') }}</strong>: {{ __('Every profile is reviewed by a human before it goes live.') }}</li>
+                        <li>⏱️ <strong>{{ __('Automatic Approval') }}</strong>: {{ __('If no one can review within 36 hours, your account goes live automatically.') }}</li>
+                        <li>🪪 <strong>{{ __('Optional Identity Verification') }}</strong>: {{ __('Upload an ID or link your social accounts to earn trust badges.') }}</li>
+                        <li>👥 <strong>{{ __('Real-World Confirmations') }}</strong>: {{ __('Members can vouch for each other after real meetings.') }}</li>
+                        <li>👁️ <strong>{{ __('Read-Only Access at First') }}</strong>: {{ __("Until you're approved, you can browse — but not post.") }}</li>
+                    </ul>
+
+                    <div class="mt-8 text-center">
+                        <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition">
+                            {{ __('Join Our Trusted Community') }}
+                        </a>
+                    </div>
+                </div>
+            </section>
 
                 {{-- Section 1: How it Works --}}
                 <section class="py-16 bg-gray-50 dark:bg-neutral-850 rounded-lg my-12">
