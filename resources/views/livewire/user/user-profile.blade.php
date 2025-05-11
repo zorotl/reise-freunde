@@ -23,6 +23,7 @@
                             --}}
                             {{ $user->additionalInfo?->username ?: $user->firstname }}
                             @endif
+                            <livewire:profile.badges :user="$user" />
                         </h2>
                         {{-- Show username below name only if it's NOT the main title and exists --}}
                         @if ($this->isOwnProfile && $user->additionalInfo?->username)
