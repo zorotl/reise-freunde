@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
 
 Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/profile/verify', \App\Livewire\Profile\Verify::class)->name('profile.verify');
+    Route::get('/profile/confirmations', \App\Livewire\Profile\ConfirmationInbox::class)->middleware(['auth'])->name('profile.confirmations');
 });
 
 

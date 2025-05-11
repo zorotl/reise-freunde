@@ -25,4 +25,13 @@
         wire:navigate>
         {{ __('Follow Requests') }}
     </a>
+
+    <a href="{{ route('profile.confirmations') }}" @class([ 'pb-2 font-medium transition' ,
+        request()->routeIs('profile.confirmations')
+        ? 'text-indigo-600 border-b-2 border-indigo-600'
+        : 'text-gray-600 hover:text-indigo-500'
+        ])
+        wire:navigate>
+        {{ __('Bürgschaft Requests') }}
+    </a>
 </div>

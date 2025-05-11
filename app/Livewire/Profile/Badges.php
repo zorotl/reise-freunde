@@ -31,7 +31,16 @@ class Badges extends Component
             }
         }
 
-        // Placeholder for Bürgschaften (Phase 6)
+        // Bürgschaften
+        $confirmedCount = \App\Models\UserConfirmation::where(function ($q) {
+            $q->where('requester_id', $this->user->id)
+                ->orWhere('confirmer_id', $this->user->id);
+        })
+            ->where('status', 'accepted')->count();
+
+        if ($confirmedCount > 0) {
+            $badges[] = ['label' => 'Real-Life Confirmed', 'icon' => '👥'];
+        }
 
         return view('livewire.profile.badges', [
             'badges' => $badges,

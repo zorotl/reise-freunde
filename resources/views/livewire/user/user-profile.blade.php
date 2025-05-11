@@ -23,7 +23,7 @@
                             --}}
                             {{ $user->additionalInfo?->username ?: $user->firstname }}
                             @endif
-                            <livewire:profile.badges :user="$user" />
+                            <livewire:profile.badges :user="$user" />                                                        
                         </h2>
                         {{-- Show username below name only if it's NOT the main title and exists --}}
                         @if ($this->isOwnProfile && $user->additionalInfo?->username)
@@ -106,10 +106,15 @@
                     {{-- Message Button - Always show if can interact --}}
                     <a wire:navigate
                         href="{{ route('mail.compose', ['receiverId' => $user->id, 'fixReceiver' => true]) }}"
-                        class="ml-2 inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                        class="mx-2 inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                         {{ __('Write a message') }}
                     </a>
                     @endif
+                    @auth
+                        @if (auth()->id() !== $user->id)
+                            <livewire:profile.confirmation-request :target="$user" />
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -233,6 +238,21 @@
                 </div>
                 @endif
 
+                {{-- Confirmed Connections --}}
+                @if ($user->confirmedConnections()->count())
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold">{{ __('Confirmed by') }}:</h3>
+                        <ul class="list-disc ml-6 text-blue-700">
+                            @foreach ($user->confirmedConnections() as $confirmer)
+                                <li>
+                                    <a href="{{ route('user.profile', $confirmer) }}">
+                                        {{ $confirmer->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
             @else
             {{-- Message shown for private profiles when not allowed to view details --}}

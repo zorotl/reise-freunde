@@ -120,7 +120,16 @@
     "Auto Verified": "Auto Verified",
     "ID Verified": "ID Verified",
     "Social Linked": "Social Linked",
-
+    "Request Bürgschaft": "Request Bürgschaft",
+    "Request sent or already confirmed.": "Request sent or already confirmed.",
+    "Confirmation request sent.": "Confirmation request sent.",
+    "Incoming Confirmations": "Incoming Confirmations",
+    "wants to confirm you met in real life.": "wants to confirm you met in real life.",
+    "Accept": "Accept",
+    "Reject": "Reject",
+    "No incoming confirmations.": "No incoming confirmations.",
+    "Real-Life Confirmed": "Real-Life Confirmed",
+    "Confirmed by": "Confirmed by",
 
 
 

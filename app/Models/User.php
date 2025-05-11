@@ -365,4 +365,30 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
     {
         return $this->hasOne(UserVerification::class);
     }
+
+    public function confirmationsSent()
+    {
+        return $this->hasMany(UserConfirmation::class, 'requester_id');
+    }
+
+    public function confirmationsReceived()
+    {
+        return $this->hasMany(UserConfirmation::class, 'confirmer_id');
+    }
+
+    public function confirmedConnections()
+    {
+        return User::whereIn('id', function ($query) {
+            $query->select('confirmer_id')
+                ->from('user_confirmations')
+                ->where('requester_id', $this->id)
+                ->where('status', 'accepted');
+        })
+            ->orWhereIn('id', function ($query) {
+                $query->select('requester_id')
+                    ->from('user_confirmations')
+                    ->where('confirmer_id', $this->id)
+                    ->where('status', 'accepted');
+            })->get();
+    }
 }
