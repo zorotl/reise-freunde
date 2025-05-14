@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Confirmations;
 
 use Livewire\Component;
 use App\Models\UserConfirmation;
+use App\Models\ConfirmationLog;
 
 class Index extends Component
 {
@@ -28,6 +29,12 @@ class Index extends Component
         $confirmation->status = 'accepted';
         $confirmation->save();
 
+        ConfirmationLog::create([
+            'admin_id' => auth()->id(),
+            'confirmation_id' => $confirmation->id,
+            'action' => 'approved',
+        ]);
+
         $this->load();
     }
 
@@ -36,6 +43,12 @@ class Index extends Component
         $confirmation = UserConfirmation::findOrFail($id);
         $confirmation->status = 'rejected';
         $confirmation->save();
+
+        ConfirmationLog::create([
+            'admin_id' => auth()->id(),
+            'confirmation_id' => $confirmation->id,
+            'action' => 'rejected',
+        ]);
 
         $this->load();
     }

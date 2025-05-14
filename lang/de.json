@@ -137,7 +137,12 @@
     "Approve": "Bestätigen",
     "You already requested this confirmation and it was rejected.": "Du hast bereits eine Bürgschaft angefragt und sie wurde abgelehnt.",
     "Request already exists.": "Anfrage existiert bereits.",
-
+    "Admin Bürgschaft Logs": "Admin Bürgschaft-Log",
+    "No log entries found.": "Keine Einträge gefunden.",
+    "Admin": "Admin",
+    "Action": "Aktion",
+    "From → To": "Von → Nach",
+    "Time": "Zeitpunkt",
 
 
 

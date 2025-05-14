@@ -123,21 +123,27 @@ class extends Component {
             <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
         </a>
 
+        {{-- Real-World Confirmations --}}
         <a href="{{ route('admin.confirmations') }}" wire:navigate
             class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">
-                {{ __('Bürgschaft Confirmations') }}
+                {{ __('Real-World Confirmations') }}
             </h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {{ \App\Models\UserConfirmation::where('status', 'pending')->count() }}
             </p>
         </a>
-
     </div>
 
     {{-- Route Conflicts Widged --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <livewire:admin.widgets.route-conflicts />
+        {{-- other widgets here --}}
+    </div>
+
+    {{-- Route Conflicts Widged --}}
+    <div class="gap-4 mb-8">
+        <livewire:admin.confirmation-logs />
         {{-- other widgets here --}}
     </div>
 

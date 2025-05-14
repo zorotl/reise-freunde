@@ -137,7 +137,12 @@
     "Approve": "Approve",
     "You already requested this confirmation and it was rejected.": "You already requested this confirmation and it was rejected.",
     "Request already exists.": "Request already exists.",
-
+    "Admin Bürgschaft Logs": "Admin Bürgschaft Logs",
+    "No log entries found.": "No log entries found.",
+    "Admin": "Admin",
+    "Action": "Action",
+    "From → To": "From → To",
+    "Time": "Time",
 
 
 
