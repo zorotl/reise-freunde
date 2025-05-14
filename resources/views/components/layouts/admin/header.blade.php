@@ -21,60 +21,8 @@
             <span class="text-lg font-semibold">Admin</span> {{-- Added "Admin" badge --}}
         </a>
 
-        {{-- Admin Navbar - Add admin-specific links here later --}}
-        <flux:navbar class="-mb-px max-lg:hidden">
-            {{-- Link to Admin Dashboard --}}
-            <flux:navbar.item icon="layout-grid" :href="route('admin.dashboard')"
-                :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Users --}}
-            <flux:navbar.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.users')"
-                wire:navigate>
-                {{ __('Users') }}
-            </flux:navbar.item>
-
-            {{-- Link to User Approvals --}}
-            <flux:navbar.item icon="users" :href="route('admin.user-approvals')" :current="request()->routeIs('admin.user-approvals')"
-                wire:navigate>
-                {{ __('User Approvals') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Users --}}
-            <flux:navbar.item icon="check" :href="route('admin.verifications')" :current="request()->routeIs('admin.verifications')"
-                wire:navigate>
-                {{ __('Verifications') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Posts --}}
-            <flux:navbar.item icon="document" :href="route('admin.posts')" :current="request()->routeIs('admin.posts')"
-                wire:navigate>
-                {{ __('Posts') }}
-            </flux:navbar.item>
-            <flux:navbar.item icon="flag" :href="route('admin.reports')" :current="request()->routeIs('admin.reports')"
-                wire:navigate>
-                {{ __('Reports') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Messages --}}
-            <flux:navbar.item icon="envelope" :href="route('admin.messages')"
-                :current="request()->routeIs('admin.messages')" wire:navigate>
-                {{ __('Messages') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Hobbies --}}
-            <flux:navbar.item icon="bookmark" :href="route('admin.hobbies')"
-                :current="request()->routeIs('admin.hobbies')" wire:navigate>
-                {{ __('Hobbies') }}
-            </flux:navbar.item>
-
-            {{-- Link to Manage Travel Styles --}}
-            <flux:navbar.item icon="map" :href="route('admin.travel-styles')"
-                :current="request()->routeIs('admin.travel-styles')" wire:navigate>
-                {{ __('Travel Styles') }}
-            </flux:navbar.item>
-        </flux:navbar>
+        {{-- Admin Navbar --}}
+        <x-admin.navbar />
 
         <flux:spacer />
 
