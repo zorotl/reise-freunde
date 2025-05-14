@@ -11,4 +11,8 @@
     @if (session('success'))
         <p class="mt-2 text-green-600">{{ session('success') }}</p>
     @endif
+
+    @if (session('error'))
+        <p class="mt-2 text-red-600">{{ session('error') }}</p>
+    @endif
 </span>

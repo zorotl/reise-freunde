@@ -130,10 +130,18 @@
     "No incoming confirmations.": "Keine eingehenden Bürgschaften.",
     "Real-Life Confirmed": "Im echten Leben bestätigt",
     "Confirmed by": "Bestätigt von",
+    "You can only request up to 3 confirmations per week.": "Du kannst nur bis zu 3 Bürgschaften pro Woche anfragen.",
+    "Bürgschaft Confirmations": "Bürgschafts-Anfragen",
+    "Requested on": "Angefragt am",
+    "No pending confirmations.": "Keine ausstehenden Bürgschaften.",
+    "Approve": "Bestätigen",
 
 
 
 
+
+
+    
 
     "All rights reserved.": "Alle Rechte vorbehalten."
 }

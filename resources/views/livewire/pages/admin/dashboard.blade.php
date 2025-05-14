@@ -122,6 +122,17 @@ class extends Component {
             <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
             <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
         </a>
+
+        <a href="{{ route('admin.confirmations') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">
+                {{ __('Bürgschaft Confirmations') }}
+            </h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {{ \App\Models\UserConfirmation::where('status', 'pending')->count() }}
+            </p>
+        </a>
+
     </div>
 
     {{-- Route Conflicts Widged --}}

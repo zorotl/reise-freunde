@@ -105,6 +105,7 @@ Route::prefix('admin')
     
         Route::get('/user-approvals', \App\Livewire\Admin\UserApproval\Index::class)->name('user-approvals');
         Route::get('/verifications', \App\Livewire\Admin\Verifications\Index::class)->name('verifications');
+        Route::get('/confirmations', \App\Livewire\Admin\Confirmations\Index::class)->name('confirmations');
     }); // End of Admin/Moderator Routes
 
 
