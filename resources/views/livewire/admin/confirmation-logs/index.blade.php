@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto py-10 px-4">
+<div class="max-w-6xl mx-auto py-12 px-1">
     <h1 class="text-3xl font-bold mb-6">{{ __('Admin Bürgschaft Logs') }}</h1>
 
     @if ($logs->isEmpty())

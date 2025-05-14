@@ -5,7 +5,11 @@ namespace App\Livewire\Admin\Confirmations;
 use Livewire\Component;
 use App\Models\UserConfirmation;
 use App\Models\ConfirmationLog;
+use Livewire\Attributes\{layout, middleware, title};
 
+#[Layout('components.layouts.admin.header')]
+#[Title('Admin - User Real World Confirmation')]
+#[Middleware(['auth', 'admin_or_moderator'])]
 class Index extends Component
 {
     public $confirmations;

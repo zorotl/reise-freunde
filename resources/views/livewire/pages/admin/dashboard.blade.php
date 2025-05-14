@@ -57,6 +57,7 @@ class extends Component {
     {{-- Admin Dashboard Title --}}
     <h1 class="text-2xl font-semibold mb-6">{{ __('Admin Dashboard') }}</h1>
 
+    <h2 class="text-xl font-semibold mb-6">{{ __('User') }}</h2>
     {{-- Basic Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"> {{-- Added mb-8 for spacing below stats --}}
         {{-- Total Users Card (link) --}}
@@ -81,46 +82,11 @@ class extends Component {
         <a href="{{ route('admin.verifications') }}" wire:navigate
             class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">
-                {{ __('Submitted Verifications') }}
+                {{ __('User Verifications') }}
             </h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {{ $pendingVerifications }}
             </p>
-        </a>
-
-        {{-- Total Posts Card (link) --}}
-        <a href="{{ route('admin.posts') }}" wire:navigate
-            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Posts') }}</h2>
-            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $postCount }}</p>
-        </a>
-
-        {{-- Total Messages Card (link) --}}
-        <a href="{{ route('admin.messages') }}" wire:navigate
-            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Messages') }}</h2>
-            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $messageCount }}</p>
-        </a>
-
-        {{-- Total Hobbies Card (link) --}}
-        <a href="{{ route('admin.hobbies') }}" wire:navigate
-            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Hobbies') }}</h2>
-            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $hobbyCount }}</p>
-        </a>
-
-        {{-- Total Travel Styles Card (link) --}}
-        <a href="{{ route('admin.travel-styles') }}" wire:navigate
-            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
-            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Travel Styles') }}</h2>
-            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $travelStyleCount }}</p>
-        </a>
-
-        {{-- Total Report Posts Card (link) --}}
-        <a href="{{ route('admin.reports') }}" wire:navigate
-            class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
-            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
-            <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
         </a>
 
         {{-- Real-World Confirmations --}}
@@ -135,19 +101,58 @@ class extends Component {
         </a>
     </div>
 
+    <h2 class="text-xl font-semibold mb-6">{{ __('Posts') }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"> {{-- Added mb-8 for spacing below stats --}}
+        {{-- Total Posts Card (link) --}}
+        <a href="{{ route('admin.posts') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Posts') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $postCount }}</p>
+        </a>
+
+        {{-- Total Report Posts Card (link) --}}
+        <a href="{{ route('admin.reports') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
+            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
+        </a>
+    </div>
+
+    <h2 class="text-xl font-semibold mb-6">{{ __('Mails') }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"> 
+      {{-- Total Messages Card (link) --}}
+        <a href="{{ route('admin.messages') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Messages') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $messageCount }}</p>
+        </a>
+    </div>
+    
+    <h2 class="text-xl font-semibold mb-6">{{ __('Hobbies and Travel Styles') }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"> 
+       {{-- Total Hobbies Card (link) --}}
+        <a href="{{ route('admin.hobbies') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Hobbies') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $hobbyCount }}</p>
+        </a>
+
+        {{-- Total Travel Styles Card (link) --}}
+        <a href="{{ route('admin.travel-styles') }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Travel Styles') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $travelStyleCount }}</p>
+        </a>
+    </div>
+
+    <h2 class="text-xl font-semibold mb-6">{{ __('Monitoring') }}</h2>
     {{-- Route Conflicts Widged --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <livewire:admin.widgets.route-conflicts />
         {{-- other widgets here --}}
     </div>
 
-    {{-- Route Conflicts Widged --}}
-    <div class="gap-4 mb-8">
-        <livewire:admin.confirmation-logs />
-        {{-- other widgets here --}}
-    </div>
-
-
+    <h2 class="text-xl font-semibold mb-6">{{ __('Last Actions') }}</h2>
     {{-- Recent Activity Sections --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Recent Users --}}

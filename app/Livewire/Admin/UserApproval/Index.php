@@ -4,7 +4,11 @@ namespace App\Livewire\Admin\UserApproval;
 
 use Livewire\Component;
 use App\Models\User;
+use Livewire\Attributes\{layout, middleware, title};
 
+#[Layout('components.layouts.admin.header')]
+#[Title('Admin - User Approvals')]
+#[Middleware(['auth', 'admin_or_moderator'])]
 class Index extends Component
 {
     public $users;

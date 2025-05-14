@@ -28,4 +28,8 @@
             @endforeach
         </div>
     @endif
+
+    {{-- Admin Confirmation Log --}}
+    <livewire:admin.confirmation-logs />
+
 </div>

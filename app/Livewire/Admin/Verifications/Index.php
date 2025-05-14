@@ -5,7 +5,11 @@ namespace App\Livewire\Admin\Verifications;
 use Livewire\Component;
 use App\Models\UserVerification;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\{layout, middleware, title};
 
+#[Layout('components.layouts.admin.header')]
+#[Title('Admin - User Verifications')]
+#[Middleware(['auth', 'admin_or_moderator'])]
 class Index extends Component
 {
     public $verifications;
