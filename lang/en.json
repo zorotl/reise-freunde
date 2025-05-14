@@ -135,7 +135,8 @@
     "Requested on": "Requested on",
     "No pending confirmations.": "No pending confirmations.",
     "Approve": "Approve",
-
+    "You already requested this confirmation and it was rejected.": "You already requested this confirmation and it was rejected.",
+    "Request already exists.": "Request already exists.",
 
 
 

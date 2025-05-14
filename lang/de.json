@@ -135,13 +135,14 @@
     "Requested on": "Angefragt am",
     "No pending confirmations.": "Keine ausstehenden Bürgschaften.",
     "Approve": "Bestätigen",
+    "You already requested this confirmation and it was rejected.": "Du hast bereits eine Bürgschaft angefragt und sie wurde abgelehnt.",
+    "Request already exists.": "Anfrage existiert bereits.",
 
 
 
 
 
 
-    
 
     "All rights reserved.": "Alle Rechte vorbehalten."
 }

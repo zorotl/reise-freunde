@@ -15,20 +15,27 @@ class ConfirmationRequest extends Component
     {
         $user = auth()->user();
 
-        // Prevent sending to self
         if ($user->id === $this->target->id) {
             return;
         }
 
-        // Prevent duplicate requests
-        if (
-            UserConfirmation::where('requester_id', $user->id)
-                ->where('confirmer_id', $this->target->id)->exists()
-        ) {
+        $existing = UserConfirmation::where('requester_id', $user->id)
+            ->where('confirmer_id', $this->target->id)
+            ->first();
+
+        // Block if previously rejected
+        if ($existing && $existing->status === 'rejected') {
+            session()->flash('error', __('You already requested this confirmation and it was rejected.'));
             return;
         }
 
-        // ❗ Limit: 3 per 7 days
+        // Block if already pending or accepted
+        if ($existing) {
+            session()->flash('error', __('Request already exists.'));
+            return;
+        }
+
+        // Weekly limit (already implemented)
         $sentInLast7Days = UserConfirmation::where('requester_id', $user->id)
             ->where('created_at', '>=', now()->subDays(7))
             ->count();
