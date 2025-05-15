@@ -26,7 +26,6 @@
         </flux:navbar.item>
         <flux:navmenu>
             <flux:navmenu.item :href="route('admin.posts')">{{ __('Posts') }}</flux:navmenu.item>
-            <flux:navmenu.item :href="route('admin.reports')">{{ __('Post Reports') }}</flux:navmenu.item>
         </flux:navmenu>
     </flux:dropdown>
 
@@ -48,6 +47,16 @@
         <flux:navmenu>
             <flux:navmenu.item :href="route('admin.travel-styles')">{{ __('Travel Styles') }}</flux:navmenu.item>
             <flux:navmenu.item :href="route('admin.hobbies')">{{ __('Hobbies') }}</flux:navmenu.item>
+        </flux:navmenu>
+    </flux:dropdown>
+
+    {{-- 📰 Reports --}}
+    <flux:dropdown class="max-lg:hidden">
+        <flux:navbar.item icon="exclamation-triangle" icon:trailing="chevron-down">
+            {{ __('Reports') }}
+        </flux:navbar.item>
+        <flux:navmenu>
+            <flux:navmenu.item :href="route('admin.reports')">{{ __('Reports') }}</flux:navmenu.item>
         </flux:navmenu>
     </flux:dropdown>
 

@@ -5,6 +5,8 @@ namespace App\Livewire\Admin\Reports;
 // use App\Models\PostReport;
 use App\Models\Report;
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Message;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +20,7 @@ class ManageReports extends Component
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
     public $perPage = 15;
+    public string $reportType = 'post';
 
     protected $listeners = [
         'reportProcessed' => '$refresh', // Refresh list after processing
@@ -85,22 +88,27 @@ class ManageReports extends Component
         $this->dispatch('reportProcessed');
     }
 
-
     public function render()
     {
         $reports = Report::with(['reporter', 'reportable'])
-            ->where('reportable_type', Post::class)
-            ->when($this->statusFilter, fn($query) => $query->where('status', $this->statusFilter))
+            ->when($this->reportType === 'post', fn($q) => $q->where('reportable_type', Post::class))
+            ->when($this->reportType === 'user', fn($q) => $q->where('reportable_type', User::class))
+            ->when($this->reportType === 'message', fn($q) => $q->where('reportable_type', Message::class))
+            ->when($this->statusFilter, fn($q) => $q->where('status', $this->statusFilter))
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('reason', 'like', '%' . $this->search . '%')
-                        ->orWhereHasMorph('reportable', [Post::class], function ($postQuery) {
-                            $postQuery->where('title', 'like', '%' . $this->search . '%');
-                        })
-                        ->orWhereHas('reporter', function ($q) {
-                            $q->where('firstname', 'like', '%' . $this->search . '%')
+                        ->orWhere('comment', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('reporter', function ($subQ) {
+                            $subQ->where('firstname', 'like', '%' . $this->search . '%')
                                 ->orWhere('lastname', 'like', '%' . $this->search . '%')
                                 ->orWhere('email', 'like', '%' . $this->search . '%');
+                        })
+                        ->orWhereHasMorph('reportable', [Post::class], function ($postQ) {
+                            $postQ->where('title', 'like', '%' . $this->search . '%');
+                        })
+                        ->orWhereHasMorph('reportable', [Message::class], function ($msgQ) {
+                            $msgQ->where('body', 'like', '%' . $this->search . '%');
                         });
                 });
             })

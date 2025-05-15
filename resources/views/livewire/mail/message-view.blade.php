@@ -1,17 +1,27 @@
 <div class="py-8">
     {{-- Navigation --}}
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        {{-- LEFT: Back Button --}}
         <a wire:navigate href="{{ $fromWhere === 'outbox' ? route('mail.outbox') : route('mail.inbox') }}"
             class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
             {{ $fromWhere === 'outbox' ? __('Back to Outbox') : __('Back to Inbox') }}
         </a>
 
-        @unless ($fromWhere == 'outbox')
-        <a wire:navigate
-            href="{{ route('mail.compose', ['receiverId' => $message->sender->id, 'fixReceiver' => true]) }}"
-            class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
-            {{ __('Reply') }}
-        </a>
+        {{-- RIGHT: Reply + Report --}}
+        @unless ($fromWhere === 'outbox')
+            <div class="flex items-center gap-3">
+                <a wire:navigate
+                    href="{{ route('mail.compose', ['receiverId' => $message->sender->id, 'fixReceiver' => true]) }}"
+                    class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
+                    {{ __('Reply') }}
+                </a>
+
+                <button
+                    wire:click="$dispatch('openReportMessageModal', { messageId: {{ $message->id }}, snippet: '{{ Str::limit($message->body, 50) }}' })"
+                    class="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 border border-red-300 dark:border-red-700 rounded-md font-semibold text-xs uppercase tracking-widest shadow-sm hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-150">
+                    {{ __('Report') }}
+                </button>
+            </div>
         @endunless
     </div>
 
@@ -52,4 +62,5 @@
             </button>
         </div>
     </div>
+    <livewire:report-message-modal />
 </div>

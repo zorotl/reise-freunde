@@ -21,6 +21,15 @@
         </div>
         <div class="flex gap-4 items-center">
             <div>
+                <label for="reportType" class="sr-only">{{ __('Report Type') }}</label>
+                <select wire:model.live="reportType"
+                    class="shadow border rounded py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="post">{{ __('Post Reports') }}</option>
+                    <option value="user">{{ __('User Reports') }}</option>
+                    <option value="message">{{ __('Message Reports') }}</option>
+                </select>
+            </div>
+            <div>
                 <label for="statusFilter" class="sr-only">{{ __('Status') }}</label>
                 <select wire:model.live="statusFilter" id="statusFilter"
                     class="shadow border rounded py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
@@ -70,19 +79,27 @@
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
                 @forelse ($reports as $report)
                 <tr wire:key="report-{{ $report->id }}">
-                    {{-- Post Title --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        @if ($report->reportable)
-                        <a href="{{ route('post.single', $report->reportable->id) }}" target="_blank"
-                            class="text-blue-600 hover:underline dark:text-blue-400" title="{{ $report->reportable->title }}">
-                            {{ Str::limit($report->reportable->title, 40) }}
-                        </a>
-                        @if($report->reportable->trashed())
-                        <span class="text-red-500 text-xs block">(Post Deleted)</span>
-                        @endif
+                    {{-- Reported Target --}}
+                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                        @if ($report->reportable instanceof \App\Models\Post)
+                            <a href="{{ route('post.single', $report->reportable->id) }}" target="_blank"
+                                class="text-blue-600 hover:underline dark:text-blue-400"
+                                title="{{ $report->reportable->title }}">
+                                {{ Str::limit($report->reportable->title, 40) }}
+                            </a>
+                            @if($report->reportable->trashed())
+                                <span class="text-red-500 text-xs block">(Post Deleted)</span>
+                            @endif
+                        @elseif ($report->reportable instanceof \App\Models\User)
+                            <a href="{{ route('admin.users', ['filterUserId' => $report->reportable->id]) }}" class="text-blue-600 hover:underline dark:text-blue-400">
+                                {{ $report->reportable->name }}
+                            </a>
+                        @elseif ($report->reportable instanceof \App\Models\Message)
+                            <span title="{{ $report->reportable->body }}">
+                                "{{ Str::limit($report->reportable->body, 60) }}"
+                            </span>
                         @else
-                        <span class="text-gray-500 italic">{{ __('Post Deleted') }}</span>
+                            <span class="italic text-gray-400">{{ __('Target Deleted') }}</span>
                         @endif
                     </td>
                     {{-- Reporter --}}
