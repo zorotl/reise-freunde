@@ -2,7 +2,8 @@
 
 use App\Models\User;
 use App\Models\Post;
-use App\Models\PostReport;
+// use App\Models\PostReport;
+use App\Models\Report;
 use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
@@ -37,7 +38,7 @@ class extends Component {
         $this->messageCount = Message::count();
         $this->hobbyCount = Hobby::count();
         $this->travelStyleCount = TravelStyle::count();
-        $this->postReportCount = PostReport::count();
+        $this->postReportCount = Report::count();
 
         // Fetch recent items
         $this->recentUsers = User::latest()->take(5)->get();

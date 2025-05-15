@@ -131,7 +131,6 @@
     "Real-Life Confirmed": "Real-Life Confirmed",
     "Confirmed by": "Confirmed by",
     "You can only request up to 3 confirmations per week.": "You can only request up to 3 confirmations per week.",
-    "Bürgschaft Confirmations": "Bürgschaft Confirmations",
     "Requested on": "Requested on",
     "No pending confirmations.": "No pending confirmations.",
     "Approve": "Approve",
@@ -143,7 +142,10 @@
     "Action": "Action",
     "From → To": "From → To",
     "Time": "Time",
-
+    "Reason": "Reason",
+    "Select reason": "Select reason",
+    "Additional details (optional)": "Additional details (optional)",
+    "Provide details if needed...": "Provide details if needed...",
 
 
 

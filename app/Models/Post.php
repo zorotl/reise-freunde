@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
@@ -60,9 +62,14 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function reports(): HasMany
+    // public function reports(): HasMany
+    // {
+    //     return $this->hasMany(PostReport::class);
+    // }
+
+    public function reports()
     {
-        return $this->hasMany(PostReport::class);
+        return $this->morphMany(Report::class, 'reportable');
     }
 
     /**

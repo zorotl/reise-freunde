@@ -19,5 +19,5 @@ class extends Component
     <h1 class="text-2xl font-semibold mb-6">{{ __('Manage Post Reports') }}</h1>
 
     {{-- Include the ManagePostReports Livewire component --}}
-    <livewire:admin.reports.manage-post-reports />
+    <livewire:admin.reports.manage-reports />
 </div>

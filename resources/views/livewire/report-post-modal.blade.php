@@ -47,12 +47,26 @@
 
                     <div>
                         <label for="reason" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {{ __('Reason (Optional)') }}
+                            {{ __('Reason') }}
                         </label>
-                        <textarea wire:model="reason" id="reason" rows="3"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            placeholder="{{ __('Provide details about why you are reporting this post...') }}"></textarea>
+                        <select wire:model="reason" id="reason"
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">{{ __('Select reason') }}</option>
+                            @foreach ($availableReasons as $value)
+                                <option value="{{ $value }}">{{ __(ucwords(str_replace('_', ' ', $value))) }}</option>
+                            @endforeach
+                        </select>
                         @error('reason') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label for="comment" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ __('Additional details (optional)') }}
+                        </label>
+                        <textarea wire:model="comment" id="comment" rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            placeholder="{{ __('Provide details if needed...') }}"></textarea>
+                        @error('comment') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- Form Actions --}}

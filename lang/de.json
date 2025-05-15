@@ -131,7 +131,6 @@
     "Real-Life Confirmed": "Im echten Leben bestätigt",
     "Confirmed by": "Bestätigt von",
     "You can only request up to 3 confirmations per week.": "Du kannst nur bis zu 3 Bürgschaften pro Woche anfragen.",
-    "Bürgschaft Confirmations": "Bürgschafts-Anfragen",
     "Requested on": "Angefragt am",
     "No pending confirmations.": "Keine ausstehenden Bürgschaften.",
     "Approve": "Bestätigen",
@@ -143,7 +142,10 @@
     "Action": "Aktion",
     "From → To": "Von → Nach",
     "Time": "Zeitpunkt",
-
+    "Reason": "Grund",
+    "Select reason": "Grund auswählen",
+    "Additional details (optional)": "Weitere Details (optional)",
+    "Provide details if needed...": "Gib bei Bedarf zusätzliche Informationen an...",
 
 
 

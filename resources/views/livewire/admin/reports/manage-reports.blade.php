@@ -73,12 +73,12 @@
                     {{-- Post Title --}}
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        @if ($report->post)
-                        <a href="{{ route('post.single', $report->post_id) }}" target="_blank"
-                            class="text-blue-600 hover:underline dark:text-blue-400" title="{{ $report->post->title }}">
-                            {{ Str::limit($report->post->title, 40) }}
+                        @if ($report->reportable)
+                        <a href="{{ route('post.single', $report->reportable->id) }}" target="_blank"
+                            class="text-blue-600 hover:underline dark:text-blue-400" title="{{ $report->reportable->title }}">
+                            {{ Str::limit($report->reportable->title, 40) }}
                         </a>
-                        @if($report->post->trashed())
+                        @if($report->reportable->trashed())
                         <span class="text-red-500 text-xs block">(Post Deleted)</span>
                         @endif
                         @else
