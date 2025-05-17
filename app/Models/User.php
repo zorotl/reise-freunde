@@ -291,12 +291,12 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
 
     public function wantsEmailNotifications(): bool
     {
-        return $this->email_notifications;
+        return (bool) ($this->email_notifications ?? false);
     }
 
     public function notificationEnabled(string $type): bool
     {
-        return $this->notification_preferences[$type] ?? true;
+        return $this->notification_preferences[$type] ?? false;
     }
 
     /**

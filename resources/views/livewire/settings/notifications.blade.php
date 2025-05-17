@@ -57,6 +57,12 @@ public array $preferences = [];
                 <span>{{ __('Email me when my reports are reviewed') }}</span>
             </label>
 
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" wire:model.live="preferences.real_world_confirmation_request"
+                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" />
+                <span>{{ __('Email me when someone requests a confirmation') }}</span>
+            </label>
+
             <div class="pt-6 flex items-center gap-4">
                 <flux:button variant="primary" type="submit">{{ __('Save Preferences') }}</flux:button>
                 <x-action-message on="saved">{{ __('Saved.') }}</x-action-message>

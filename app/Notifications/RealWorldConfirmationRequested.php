@@ -26,7 +26,7 @@ class RealWorldConfirmationRequested extends Notification implements ShouldQueue
 
         if (
             method_exists($notifiable, 'notificationEnabled') &&
-            $notifiable->notificationEnabled('real_world_confirmation')
+            $notifiable->notificationEnabled('real_world_confirmation_request')
         ) {
             $channels[] = 'mail';
         }
