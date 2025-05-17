@@ -25,12 +25,14 @@
             <flux:navbar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')"
                 wire:navigate>
                 {{ __('Notifications') }}
+                @auth                    
                 @if ( auth()->user()->unreadNotifications()->count() > 0)
                     {{-- Unread Notifications Count --}}
                     <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
                         {{ auth()->user()->unreadNotifications()->count() }}
                     </span>                
                 @endif
+                @endauth
             </flux:navbar.item>           
 
             {{-- "All Posts" Link --}}

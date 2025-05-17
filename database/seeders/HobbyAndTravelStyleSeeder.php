@@ -78,9 +78,9 @@ class HobbyAndTravelStyleSeeder extends Seeder
         }
 
         // Weise jedem Benutzer zufällig einige Hobbys und Reisestile zu
-        User::all()->each(function ($user) use ($hobbyModels, $travelStyleModels) {
-            $user->hobbies()->attach($hobbyModels->random(rand(0, 5))->pluck('id'));
-            $user->travelStyles()->attach($travelStyleModels->random(rand(0, 5))->pluck('id'));
+        User::whereIn('id', range(1, 10))->get()->each(function ($user) use ($hobbyModels, $travelStyleModels) {
+            $user->hobbies()->attach($hobbyModels->random(rand(0, 3))->pluck('id'));
+            $user->travelStyles()->attach($travelStyleModels->random(rand(0, 3))->pluck('id'));
         });
     }
 }

@@ -3,9 +3,9 @@
 use App\Models\User;
 use App\Models\UserGrant;
 use App\Models\Post;
-use App\Models\PostReport;
+use App\Models\Report;
 use Livewire\Livewire;
-use App\Livewire\Admin\Reports\ManagePostReports;
+use App\Livewire\Admin\Reports\ManageReports;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -16,32 +16,33 @@ test('admin can view pending reports', function () {
 
     $reporter = User::factory()->create();
     $post = Post::factory()->create();
-    $report = PostReport::factory()->create([
-        'user_id' => $reporter->id,
-        'post_id' => $post->id,
+    $report = Report::factory()->create([
+        'reporter_id' => $reporter->id,
+        'reportable_id' => $post->id,
+        'reportable_type' => Post::class,
         'status' => 'pending',
         'reason' => 'Spam content',
     ]);
 
     actingAs($admin);
 
-    Livewire::test(ManagePostReports::class)
+    Livewire::test(ManageReports::class)
         ->assertSee($post->title) // Might need Str::limit if title is long
         ->assertSee($reporter->name)
         ->assertSee('Spam content')
-        ->assertSee('Pending');
+        ->assertSee('pending');
 });
 
 test('admin can accept a report and soft delete the post', function () {
     $admin = User::factory()->create();
     UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $post = Post::factory()->create();
-    $report = PostReport::factory()->create(['post_id' => $post->id, 'status' => 'pending']);
+    $report = Report::factory()->create(['reportable_id' => $post->id, 'reportable_type' => Post::class, 'status' => 'pending']);
 
     actingAs($admin);
 
-    Livewire::test(ManagePostReports::class)
-        ->call('acceptReport', $report)
+    Livewire::test(ManageReports::class)
+        ->call('acceptReport', $report->id) // Pass ID
         ->assertDispatched('reportProcessed'); // Assert refresh event
 
     $report->refresh();
@@ -57,12 +58,12 @@ test('admin can reject a report', function () {
     $admin = User::factory()->create();
     UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $post = Post::factory()->create();
-    $report = PostReport::factory()->create(['post_id' => $post->id, 'status' => 'pending']);
+    $report = Report::factory()->create(['reportable_id' => $post->id, 'reportable_type' => Post::class, 'status' => 'pending']);
 
     actingAs($admin);
 
-    Livewire::test(ManagePostReports::class)
-        ->call('rejectReport', $report)
+    Livewire::test(ManageReports::class)
+        ->call('rejectReport', $report->id) // Pass ID
         ->assertDispatched('reportProcessed');
 
     $report->refresh();
@@ -81,12 +82,12 @@ test('admin accepting report redirects to user management filtered by post autho
     UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
     $postAuthor = User::factory()->create();
     $post = Post::factory()->create(['user_id' => $postAuthor->id]);
-    $report = PostReport::factory()->create(['post_id' => $post->id, 'status' => 'pending']);
+    $report = Report::factory()->create(['reportable_id' => $post->id, 'reportable_type' => Post::class, 'status' => 'pending']);
 
     actingAs($admin);
 
     // Act
-    Livewire::test(ManagePostReports::class)
+    Livewire::test(ManageReports::class)
         ->call('acceptReport', $report->id) // Pass ID
         ->assertRedirect(route('admin.users', ['filterUserId' => $postAuthor->id]));
 

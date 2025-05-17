@@ -17,7 +17,7 @@ class UserFollowerSeeder extends Seeder
             User::factory(5)->create();
         }
 
-        User::all()->each(function ($user) {
+        User::whereIn('id', range(1, 10))->get()->each(function ($user) {
             // Erstelle zufällige Follow-Beziehungen (akzeptiert)
             $usersToFollow = User::where('id', '!=', $user->id)
                 ->inRandomOrder()

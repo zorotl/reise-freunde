@@ -28,9 +28,15 @@ class UserFactory extends Factory
             'lastname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'status' => 'approved',
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'status' => fake()->randomElement(['pending', 'approved']),
+            'notification_preferences' => [
+                'real_world_confirmation' => true,
+                'real_world_confirmation_request' => true,
+                'verification_reviewed' => true,
+                'report_resolved' => true,
+            ],
         ];
     }
 

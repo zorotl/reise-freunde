@@ -19,13 +19,15 @@ class UserSeeder extends Seeder
             'lastname' => 'Striednig',
             'email' => 'info@stws.ch',
             'password' => Hash::make('test1234'),
+            'status' => 'approved',
         ]);
         User::factory()->create([
             'firstname' => 'Zorotl',
             'lastname' => 'Von Zorot',
             'email' => 'zorotl@stws.ch',
             'password' => Hash::make('test1234'),
+            'status' => 'approved',
         ]);
-        User::factory(13)->create();
+        User::factory(8)->create();
     }
 }

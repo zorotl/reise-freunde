@@ -304,6 +304,11 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         return $this->verification?->status === 'accepted';
     }
 
+    public function isVerifiedByDocument(): bool
+    {
+        return $this->verification?->status === 'reviewed';
+    }
+
     public function confirmedByCount(): int
     {
         return $this->confirmationsReceived()
