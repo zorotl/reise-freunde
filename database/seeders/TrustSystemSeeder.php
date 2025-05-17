@@ -15,8 +15,7 @@ class TrustSystemSeeder extends Seeder
     {
         // Create 30 users with all info
         User::factory()
-            ->count(3)
-            ->hasAdditionalInfo()
+            ->count(2)
             ->hasVerification()->state(['status' => 'approved'])
             ->create();
 
@@ -31,9 +30,9 @@ class TrustSystemSeeder extends Seeder
             'status' => 'reviewed',
         ]);
 
-        // Create 10 Bürgschaften (RealWorldConfirmations)
+        // Create 5 Bürgschaften (RealWorldConfirmations)
         UserConfirmation::factory()
-            ->count(5)
+            ->count(4)
             ->create();
     }
 }

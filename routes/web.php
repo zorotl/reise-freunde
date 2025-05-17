@@ -21,7 +21,6 @@ Volt::route('/users', 'user.search')->name('user.directory');
 Route::get('/user/profile/{id}', \App\Livewire\User\UserProfile::class)->name('user.profile');
 Route::get('/post/show', \App\Livewire\Post\PostList::class)->name('post.show');
 Route::get('/post', fn() => redirect()->route('post.show'))->name('post');
-Route::get('/post/{post}', \App\Livewire\Post\ShowPost::class)->name('post.single');
 
 Volt::route('/banned', 'pages.banned')->middleware(['auth', 'check_banned'])->name('banned');
 Route::get('/verification/wait', \App\Livewire\Verification\Wait::class)->middleware('auth')->name('verification.wait');
@@ -64,7 +63,8 @@ Route::middleware(['auth', 'verified', 'check_banned', 'approved'])->group(funct
     Route::get('/notifications', \App\Livewire\Profile\Notifications::class)->name('notifications');
 });
 
-
+// Public, must be under the auth group because of Route Conflicts
+Route::get('/post/{post}', \App\Livewire\Post\ShowPost::class)->name('post.single');
 
 // 🛠 Admin + Moderator routes
 Route::prefix('admin')
