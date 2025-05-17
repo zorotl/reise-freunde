@@ -57,6 +57,7 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notification_preferences' => 'array',
         ];
     }
 
@@ -286,6 +287,16 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         // Detach from both potential relationships (accepted follow or pending request)
         $this->following()->detach($userToUnfollow->id);
         $this->pendingFollowingRequests()->detach($userToUnfollow->id); // This covers cancelling requests
+    }
+
+    public function wantsEmailNotifications(): bool
+    {
+        return $this->email_notifications;
+    }
+
+    public function notificationEnabled(string $type): bool
+    {
+        return $this->notification_preferences[$type] ?? true;
     }
 
     /**

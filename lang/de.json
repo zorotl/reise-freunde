@@ -150,6 +150,13 @@
     "Report Message": "Nachricht melden",
     "You have already reported this message.": "Nachricht wurde bereits gemeldet.",
     "Message reported successfully.": "Nachricht erfolgreich gemeldet.",
+    "Notification Preferences": "Benachrichtigungseinstellungen",
+    "Control which email notifications you receive.": "Steuere, welche E-Mail-Benachrichtigungen du erhältst.",
+    "Email me when someone confirms me": "E-Mail, wenn mich jemand bestätigt",
+    "Email me when my verification is reviewed": "E-Mail, wenn meine Verifizierung überprüft wird",
+    "Email me when my reports are reviewed": "E-Mail, wenn meine Meldungen bearbeitet wurden",
+    "Save Preferences": "Einstellungen speichern",
+    "Preferences saved successfully.": "Einstellungen erfolgreich gespeichert.",
 
 
 

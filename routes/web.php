@@ -7,16 +7,19 @@ use App\Livewire\Post\MyPosts;
 use App\Livewire\Post\EditPost;
 use App\Livewire\Post\PostList;
 use App\Livewire\Post\ShowPost;
+use App\Livewire\Profile\Verify;
 use App\Livewire\Post\CreatePost;
 use App\Livewire\Mail\MessageView;
 use App\Livewire\User\UserProfile;
+use App\Livewire\Verification\Wait;
 use App\Livewire\User\FollowersList;
 use App\Livewire\User\FollowingList;
 use App\Livewire\Mail\MessageCompose;
-use App\Livewire\Verification\Wait;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Profile\Notifications;
 use Illuminate\Support\Facades\Session;
 use App\Livewire\User\FollowRequestsList;
+use App\Livewire\Profile\ConfirmationInbox;
 use App\Livewire\User\TravelStylePreferences;
 use App\Http\Middleware\AdminOrModeratorMiddleware;
 
@@ -54,6 +57,7 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
     Volt::route('settings/preferences', 'settings.preferences')->name('settings.preferences');
     Volt::route('settings/privacy-settings', 'settings.privacy-settings')->name('settings.privacy-settings');
     Volt::route('settings/account-deletion', 'settings.account-deletion')->name('settings.account-deletion');
+    Volt::route('settings/notifications', 'settings.notifications')->name('settings.notifications');
 
     // Post routes
     Route::get('/post/myown', MyPosts::class)->name('post.myown');
@@ -74,11 +78,13 @@ Route::middleware(['auth', 'verified', 'check_banned'])->group(function () {
     Route::get('/user/{id}/followers', FollowersList::class)->name('user.followers'); // Keep ID for viewing others' lists
     Route::get('/user/{id}/following', FollowingList::class)->name('user.following'); // Keep ID for viewing others' lists
 
+    Route::get('/notifications', Notifications::class)->name('notifications');
+
 }); // End of 'auth', 'verified', 'check_banned' group
 
 Route::middleware(['auth', 'approved'])->group(function () {
-    Route::get('/profile/verify', \App\Livewire\Profile\Verify::class)->name('profile.verify');
-    Route::get('/profile/confirmations', \App\Livewire\Profile\ConfirmationInbox::class)->middleware(['auth'])->name('profile.confirmations');
+    Route::get('/profile/verify', Verify::class)->name('profile.verify');
+    Route::get('/profile/confirmations', ConfirmationInbox::class)->middleware(['auth'])->name('profile.confirmations');
 });
 
 

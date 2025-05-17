@@ -21,6 +21,18 @@
                 {{ __('Dashboard') }}
             </flux:navbar.item>
 
+            {{-- New Dashboard Link --}}
+            <flux:navbar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')"
+                wire:navigate>
+                {{ __('Notifications') }}
+                @if ( auth()->user()->unreadNotifications()->count() > 0)
+                    {{-- Unread Notifications Count --}}
+                    <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                        {{ auth()->user()->unreadNotifications()->count() }}
+                    </span>                
+                @endif
+            </flux:navbar.item>           
+
             {{-- "All Posts" Link --}}
             <flux:navbar.item icon="rectangle-stack" :href="route('post.show')"
                 :current="request()->routeIs('post.show')" wire:navigate>

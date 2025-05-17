@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Verifications;
 use Livewire\Component;
 use App\Models\UserVerification;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\VerificationReviewed;
 use Livewire\Attributes\{layout, middleware, title};
 
 #[Layout('components.layouts.admin.header')]
@@ -30,10 +31,10 @@ class Index extends Component
     public function approve($id)
     {
         $verification = UserVerification::findOrFail($id);
-        $verification->status = 'reviewed';
+        $verification->status = 'accepted';
         $verification->reviewed_by = Auth::id();
         $verification->save();
-
+        $verification->user->notify(new VerificationReviewed($verification->status));
         $this->loadPendingVerifications();
     }
 
@@ -43,7 +44,7 @@ class Index extends Component
         $verification->status = 'rejected';
         $verification->reviewed_by = Auth::id();
         $verification->save();
-
+        $verification->user->notify(new VerificationReviewed($verification->status));
         $this->loadPendingVerifications();
     }
 

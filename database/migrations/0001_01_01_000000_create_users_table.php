@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
             $table->string('password');
+            $table->boolean('email_notifications')->default(true);
+            $table->json('notification_preferences')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

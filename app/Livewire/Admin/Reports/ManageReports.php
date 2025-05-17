@@ -3,13 +3,14 @@
 namespace App\Livewire\Admin\Reports;
 
 // use App\Models\PostReport;
-use App\Models\Report;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Report;
 use App\Models\Message;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\ReportResolved;
 
 class ManageReports extends Component
 {
@@ -53,7 +54,7 @@ class ManageReports extends Component
 
         $authorId = null;
 
-        if ($report->reportable && $report->reportable instanceof \App\Models\Post) {
+        if ($report->reportable && $report->reportable instanceof Post) {
             $authorId = $report->reportable->user_id;
             $report->reportable->delete(); // soft-delete
         }
@@ -64,6 +65,7 @@ class ManageReports extends Component
             'processed_at' => now(),
         ]);
 
+        $report->reporter->notify(new ReportResolved($report));
         session()->flash('message', 'Report accepted and post soft deleted.');
 
         $this->dispatch('reportProcessed');
@@ -84,6 +86,7 @@ class ManageReports extends Component
             'processed_at' => now(),
         ]);
 
+        $report->reporter->notify(new ReportResolved($report));
         session()->flash('message', 'Report rejected.');
         $this->dispatch('reportProcessed');
     }

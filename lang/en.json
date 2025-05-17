@@ -150,6 +150,13 @@
     "Report Message": "Report Message",
     "You have already reported this message.": "You have already reported this message.",
     "Message reported successfully.": "Message reported successfully.",
+    "Notification Preferences": "Notification Preferences",
+    "Control which email notifications you receive.": "Control which email notifications you receive.",
+    "Email me when someone confirms me": "Email me when someone confirms me",
+    "Email me when my verification is reviewed": "Email me when my verification is reviewed",
+    "Email me when my reports are reviewed": "Email me when my reports are reviewed",
+    "Save Preferences": "Save Preferences",
+    "Preferences saved successfully.": "Preferences saved successfully.",
 
 
 

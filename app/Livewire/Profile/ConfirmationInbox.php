@@ -3,10 +3,12 @@
 namespace App\Livewire\Profile;
 
 use Livewire\Component;
-use App\Models\UserConfirmation;
 use Livewire\Attributes\Title;
+use App\Models\UserConfirmation;
+use App\Notifications\YouConfirmedSomeone;
+use App\Notifications\RealWorldConfirmationAccepted;
 
-#[Title('Confirm Bürgschaft Request')]
+#[Title('Confirm Real-World Confirmation Request')]
 class ConfirmationInbox extends Component
 {
     public $requests;
@@ -28,6 +30,8 @@ class ConfirmationInbox extends Component
 
         $c->status = 'accepted';
         $c->save();
+        $c->requester->notify(new RealWorldConfirmationAccepted(auth()->user())); // Trigger notification to requester
+        auth()->user()->notify(new YouConfirmedSomeone($c->requester));
         $this->mount(); // refresh
     }
 

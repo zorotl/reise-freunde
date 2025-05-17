@@ -50,6 +50,8 @@ class ConfirmationRequest extends Component
             'confirmer_id' => $this->target->id,
         ]);
 
+        $this->target->notify(new \App\Notifications\RealWorldConfirmationRequested($user));
+
         session()->flash('success', __('Confirmation request sent.'));
     }
 

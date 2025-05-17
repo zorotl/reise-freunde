@@ -1,6 +1,38 @@
 {{-- resources/views/livewire/notification-section.blade.php --}}
 {{-- This component displays pending follow requests. --}}
 <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6">
+    @php
+        $notifications = auth()->user()->unreadNotifications()->limit(5)->get();
+    @endphp
+
+    @if ($notifications->isEmpty())
+        <div class="text-sm text-gray-500 px-4 py-2">
+            {{ __('No new notifications.') }}
+        </div>
+    @else
+        @foreach ($notifications as $notification)
+            <div class="px-4 py-2 border-b border-gray-100 dark:border-neutral-700 text-sm">
+                <div class="font-semibold text-gray-800 dark:text-gray-200">
+                    {{ $notification->data['title'] ?? 'Notification' }}
+                </div>
+                <div class="text-gray-600 dark:text-gray-400">
+                    {{ $notification->data['body'] ?? '' }}
+                </div>
+                @if (!empty($notification->data['url']))
+                    <a href="{{ $notification->data['url'] }}"
+                    class="text-blue-500 text-sm hover:underline">
+                        {{ __('View') }}
+                    </a>
+                @endif
+            </div>
+        @endforeach
+        <div class="px-4 py-2">
+            <a href="{{ route('notifications') }}" class="text-sm text-blue-500 hover:underline">
+                {{ __('See all notifications') }}
+            </a>
+        </div>
+    @endif
+
     <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">{{ __('Notifications') }}</h2>
     @if($pendingRequests->count() > 0)
     <ul class="space-y-3">
