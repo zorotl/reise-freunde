@@ -299,6 +299,19 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         return $this->notification_preferences[$type] ?? false;
     }
 
+    public function isVerified(): bool
+    {
+        return $this->verification?->status === 'accepted';
+    }
+
+    public function confirmedByCount(): int
+    {
+        return $this->confirmationsReceived()
+            ->where('status', 'accepted')
+            ->count();
+    }
+
+
     /**
      * Relationships
      */
