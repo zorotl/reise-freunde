@@ -311,6 +311,30 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
             ->count();
     }
 
+    public function scopeVerified($query)
+    {
+        return $query->whereHas('verification', fn($q) => $q->where('status', 'accepted'));
+    }
+
+    public function scopeTrusted($query, int $min = 1)
+    {
+        return $query->whereIn('id', function ($sub) use ($min) {
+            $sub->selectRaw('user_id')
+                ->from(function ($inner) {
+                    $inner->selectRaw('requester_id as user_id')->from('user_confirmations')->where('status', 'accepted')
+                        ->unionAll(
+                            \DB::table('user_confirmations')->selectRaw('confirmer_id as user_id')->where('status', 'accepted')
+                        );
+                }, 'merged')
+                ->groupBy('user_id')
+                ->havingRaw('COUNT(*) >= ?', [$min]);
+        });
+    }
+
+
+
+
+
 
     /**
      * Relationships

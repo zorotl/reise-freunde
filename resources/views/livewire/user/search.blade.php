@@ -23,6 +23,10 @@ class extends Component {
     public ?int $min_age = null;
     #[Url(history: true)]
     public ?int $max_age = null;
+    #[Url(history: true)]
+    public bool $filterVerified = false;
+    #[Url(history: true)]
+    public bool $filterTrusted = false;
 
     public array $countryList = [];
 
@@ -89,6 +93,25 @@ class extends Component {
              $query->whereHas('additionalInfo', function ($q) use ($maxBirthDate) {
                  $q->where('birthday', '>', $maxBirthDate);
              });
+        }
+
+        // Verified filter
+        if ($this->filterVerified) {
+            $query->whereHas('verification', function ($q) {
+                $q->where('status', 'accepted');
+            });
+        }
+
+        // Trusted filter (at least 3 confirmations)
+        if ($this->filterTrusted) {
+            $query->whereIn('id', function ($sub) {
+                $sub->selectRaw('user_id')->from(function ($inner) {
+                    $inner->selectRaw('requester_id as user_id')->from('user_confirmations')->where('status', 'accepted')
+                        ->unionAll(
+                            DB::table('user_confirmations')->selectRaw('confirmer_id as user_id')->where('status', 'accepted')
+                        );
+                }, 'merged')->groupBy('user_id')->havingRaw('COUNT(*) >= 3');
+            });
         }
 
         // Paginate the results
@@ -215,6 +238,24 @@ class extends Component {
                         class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     @error('max_age') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
+            </div>
+
+            {{-- Verified Users --}}
+            <div>
+                <label for="filter_verified" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Only show verified users') }}
+                </label>
+                <input type="checkbox" id="filter_verified" wire:model.live="filterVerified"
+                    class="rounded border-gray-300 dark:border-neutral-600 text-indigo-600 focus:ring-indigo-500" />
+            </div>
+
+            {{-- Trusted Users --}}
+            <div>
+                <label for="filter_trusted" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {{ __('Only show trusted users (3+)') }}
+                </label>
+                <input type="checkbox" id="filter_trusted" wire:model.live="filterTrusted"
+                    class="rounded border-gray-300 dark:border-neutral-600 text-indigo-600 focus:ring-indigo-500" />
             </div>
 
             {{-- Clear Filters Button --}}
