@@ -51,7 +51,7 @@ class BanHistorySeeder extends Seeder
                     // expires_at will be handled by the factory logic (can be null or future)
                 ]);
             }
-            $this->command->info("Created {$numberOfBans} ban history entries for user ID: {$user->id}");
+            //$this->command->info("Created {$numberOfBans} ban history entries for user ID: {$user->id}");
         }
     }
 }

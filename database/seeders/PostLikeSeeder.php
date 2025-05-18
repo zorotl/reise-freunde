@@ -60,7 +60,7 @@ class PostLikeSeeder extends Seeder
         if (!empty($likes)) {
             // Use DB::table for direct insertion into the pivot table
             DB::table('post_likes')->insert(array_values($likes));
-            $this->command->info(count($likes) . ' post likes seeded.');
+            //$this->command->info(count($likes) . ' post likes seeded.');
         } else {
             $this->command->info('No post likes were seeded.');
         }
