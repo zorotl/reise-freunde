@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->timestamp('receiver_deleted_at')->nullable()->comment('When receiver soft-deleted the message');
             $table->timestamp('sender_archived_at')->nullable()->comment('When sender archived the message');
             $table->timestamp('receiver_archived_at')->nullable()->comment('When receiver archived the message');
+            $table->timestamp('sender_permanently_deleted_at')->nullable()->comment('Sender confirmed permanent deletion from their trash');
+            $table->timestamp('receiver_permanently_deleted_at')->nullable()->comment('Receiver confirmed permanent deletion from their trash');
             $table->timestamps();
             $table->softDeletes(); // For soft deletes
 
@@ -29,6 +31,8 @@ return new class extends Migration {
             $table->index('receiver_deleted_at');
             $table->index('sender_archived_at');
             $table->index('receiver_archived_at');
+            $table->index('sender_permanently_deleted_at');
+            $table->index('receiver_permanently_deleted_at');
         });
     }
 

@@ -57,7 +57,7 @@
             <div class="flex space-x-1 flex-shrink-0">
                 <button wire:click="unarchiveMessage({{ $message->id }})" wire:confirm="Are you sure you want to unarchive this message?"
                     class="p-1.5 text-xs text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-700" title="{{ __('Unarchive') }}">
-                    <flux:icon.arrow-uturn-up class="w-4 h-4"/>
+                    <flux:icon.arrow-uturn-left class="w-4 h-4"/>
                 </button>
                  <button wire:click="deleteFromArchive({{ $message->id }})" wire:confirm="Are you sure you want to delete this message from archive? This will mark it as deleted for you."
                     class="p-1.5 text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-700" title="{{ __('Move to Trash') }}">

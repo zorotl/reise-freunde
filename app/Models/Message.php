@@ -22,6 +22,8 @@ class Message extends Model
         'receiver_deleted_at',
         'sender_archived_at',
         'receiver_archived_at',
+        'sender_permanently_deleted_at',
+        'receiver_permanently_deleted_at',
     ];
 
     protected $casts = [
@@ -33,6 +35,8 @@ class Message extends Model
         'receiver_deleted_at' => 'datetime',
         'sender_archived_at' => 'datetime',
         'receiver_archived_at' => 'datetime',
+        'sender_permanently_deleted_at' => 'datetime',
+        'receiver_permanently_deleted_at' => 'datetime',
     ];
 
     public function sender()

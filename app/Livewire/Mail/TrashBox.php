@@ -17,8 +17,8 @@ class TrashBox extends Component
     protected $paginationTheme = 'tailwind';
 
     #[On('messageRestored')]
-    #[On('messagePermanentlyDeletedFromTrash')] // Event for permanent delete
-    #[On('userMessageActionFeedback')] // Listener for general feedback
+    #[On('messagePermanentlyDeletedFromTrash')]
+    #[On('userMessageActionFeedback')]
     public function handleFeedback($message = null, $type = 'status'): void
     {
         if ($message) {
@@ -34,87 +34,81 @@ class TrashBox extends Component
         }
         $userId = Auth::id();
 
-        // Messages that are "in the trash" for the current user
-        // These are messages where their specific delete flag is set.
-        // We also ensure they are not system-level soft-deleted by an admin unless we want to show those here.
-        // For now, let's assume admin soft-deleted messages are fully hidden from user trash.
+        // Messages in trash for the user = (their delete flag is set) AND (their permanent delete flag IS NULL)
         return Message::query()
             ->where(function ($query) use ($userId) {
-                // Messages received by the user AND "deleted" (in trash) by them
                 $query->where('receiver_id', $userId)
-                    ->whereNotNull('receiver_deleted_at');
+                    ->whereNotNull('receiver_deleted_at')
+                    ->whereNull('receiver_permanently_deleted_at'); // New condition
             })->orWhere(function ($query) use ($userId) {
-                // Messages sent by the user AND "deleted" (in trash) by them
                 $query->where('sender_id', $userId)
-                    ->whereNotNull('sender_deleted_at');
+                    ->whereNotNull('sender_deleted_at')
+                    ->whereNull('sender_permanently_deleted_at');   // New condition
             })
-            ->with(['sender.additionalInfo', 'receiver.additionalInfo']) // Eager load
-            ->orderBy('created_at', 'desc') // Or order by deletion date if preferred
+            ->with(['sender.additionalInfo', 'receiver.additionalInfo'])
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
 
     public function restoreMessage(int $messageId): void
     {
         $message = Message::find($messageId);
-        if (!$message)
+        if (!$message) {
+            $this->dispatch('userMessageActionFeedback', message: __('Message not found.'), type: 'error');
             return;
+        }
 
         $currentUserId = Auth::id();
         $restored = false;
 
         if ($message->receiver_id === $currentUserId && $message->receiver_deleted_at) {
             $message->receiver_deleted_at = null;
-            // Also unarchive if it was archived, to restore to inbox/outbox cleanly
-            if ($message->receiver_archived_at) {
-                $message->receiver_archived_at = null;
-            }
+            $message->receiver_archived_at = null; // Also unarchive
+            $message->receiver_permanently_deleted_at = null; // Clear this flag too if set
             $restored = true;
         } elseif ($message->sender_id === $currentUserId && $message->sender_deleted_at) {
             $message->sender_deleted_at = null;
-            // Also unarchive
-            if ($message->sender_archived_at) {
-                $message->sender_archived_at = null;
-            }
+            $message->sender_archived_at = null; // Also unarchive
+            $message->sender_permanently_deleted_at = null; // Clear this flag too
             $restored = true;
         }
 
         if ($restored) {
             $message->save();
             $this->dispatch('userMessageActionFeedback', message: __('Message restored.'), type: 'status');
-            $this->dispatch('messageRestored'); // To refresh this list and potentially others
+            $this->dispatch('messageRestored');
         }
     }
 
     public function deletePermanently(int $messageId): void
     {
         $message = Message::find($messageId);
-        if (!$message)
+        if (!$message) {
+            $this->dispatch('userMessageActionFeedback', message: __('Message not found.'), type: 'error');
             return;
+        }
 
         $currentUserId = Auth::id();
         $processed = false;
 
-        // To make it disappear from TrashBox (which lists based on *_deleted_at IS NOT NULL),
-        // we must set the relevant *_deleted_at to NULL. This is effectively a "restore" action
-        // if we consider "permanent delete from trash" to mean "I don't want to see this in my trash anymore".
-        if ($message->receiver_id === $currentUserId && $message->receiver_deleted_at) {
-            $message->receiver_deleted_at = null; // "Restore" it to make it disappear from trash
-            // If it was also archived, that archive flag remains, it will go to archive.
-            // Or, if we want "permanent delete from trash" to also unarchive:
-            // $message->receiver_archived_at = null;
+        // Set the new "permanently_deleted_at" flag for the current user
+        // The original "deleted_at" (trash) flag remains set.
+        if ($message->receiver_id === $currentUserId && $message->receiver_deleted_at && is_null($message->receiver_permanently_deleted_at)) {
+            $message->receiver_permanently_deleted_at = now();
             $processed = true;
-        } elseif ($message->sender_id === $currentUserId && $message->sender_deleted_at) {
-            $message->sender_deleted_at = null; // "Restore" it
-            // if ($message->sender_archived_at) {
-            //     $message->sender_archived_at = null;
-            // }
+        } elseif ($message->sender_id === $currentUserId && $message->sender_deleted_at && is_null($message->sender_permanently_deleted_at)) {
+            $message->sender_permanently_deleted_at = now();
             $processed = true;
         }
 
         if ($processed) {
             $message->save();
-            $this->dispatch('userMessageActionFeedback', message: __('Message removed from trash.'), type: 'status'); // Changed message
-            $this->dispatch('messagePermanentlyDeletedFromTrash'); // Event name is fine
+            $this->dispatch('userMessageActionFeedback', message: __('Message permanently deleted.'), type: 'status');
+            // This event will cause this component to re-render, and the query will now exclude this message.
+            $this->dispatch('messagePermanentlyDeletedFromTrash');
+        } else {
+            // E.g., trying to permanently delete something not in their trash or already marked so
+            $this->dispatch('userMessageActionFeedback', message: __('Could not perform action. Message may already be permanently deleted or not in your trash.'), type: 'error');
         }
     }
 

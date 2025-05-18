@@ -134,10 +134,24 @@
                             @else
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200">{{ __('Unread') }}</span>
                             @endif
-                            @if($message->sender_deleted_at) <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by sender: {{ $message->sender_deleted_at->format('Y-m-d H:i') }}">S:Del</span> @endif
-                            @if($message->receiver_deleted_at) <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by receiver: {{ $message->receiver_deleted_at->format('Y-m-d H:i') }}">R:Del</span> @endif
-                            @if($message->sender_archived_at) <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by sender: {{ $message->sender_archived_at->format('Y-m-d H:i') }}">S:Arch</span> @endif
-                            @if($message->receiver_archived_at) <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by receiver: {{ $message->receiver_archived_at->format('Y-m-d H:i') }}">R:Arch</span> @endif
+                            @if($message->sender_deleted_at) 
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by sender: {{ $message->sender_deleted_at->format('Y-m-d H:i') }}">S:Del</span> 
+                            @endif
+                            @if($message->receiver_deleted_at) 
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by receiver: {{ $message->receiver_deleted_at->format('Y-m-d H:i') }}">R:Del</span> 
+                            @endif
+                            @if($message->sender_archived_at) 
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by sender: {{ $message->sender_archived_at->format('Y-m-d H:i') }}">S:Arch</span> 
+                            @endif
+                            @if($message->receiver_archived_at) 
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by receiver: {{ $message->receiver_archived_at->format('Y-m-d H:i') }}">R:Arch</span> 
+                            @endif
+                            @if($message->sender_permanently_deleted_at)
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-red-200 text-red-700 dark:bg-red-700 dark:text-red-200" title="Sender perm deleted: {{ $message->sender_permanently_deleted_at->format('Y-m-d H:i') }}">S:PDel</span>
+                            @endif
+                            @if($message->receiver_permanently_deleted_at)
+                                <span class="block mt-1 px-2 text-xs rounded-full bg-red-200 text-red-700 dark:bg-red-700 dark:text-red-200" title="Receiver perm deleted: {{ $message->receiver_permanently_deleted_at->format('Y-m-d H:i') }}">R:PDel</span>
+                            @endif
                         @endif
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">

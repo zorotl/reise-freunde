@@ -110,6 +110,7 @@ require __DIR__ . '/auth.php';
 //     Fix the following issues:
 //         - [ ] message: if i response to an answer, the titel should be the same, maybe with a prefix, what you recommande and can you find the bug?
 //         - [ ] admin panel: earlyer i could report only post, if i accapt a report, the post was deleted, now it is not and the reason is, that i extendet reports to user an messages. 
+//         - [ ] Ban Sender from main page open modal, from message-view ban directly permanently...i will also the modal
 
 //     Messages:
 //         - [ ] Delete messages and Archive messages

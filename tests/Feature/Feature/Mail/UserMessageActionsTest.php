@@ -336,17 +336,24 @@ test('user can restore a message from trash (sender)', function () {
     Livewire::test(Outbox::class)->assertSee($message->subject); // Back in Outbox
 });
 
-test('user can "permanently delete" (remove from trash view) a message from trash', function () {
+test('user can "permanently delete" a message from trash', function () {
     extract(setupMessageTestEnvironment());
-    $message->update(['receiver_deleted_at' => now()]);
+    // Message is in receiver's trash (receiver_deleted_at is set, receiver_permanently_deleted_at is null)
+    $message->update(['receiver_deleted_at' => now(), 'receiver_permanently_deleted_at' => null]);
     actingAs($receiver);
 
     Livewire::test(TrashBox::class)
-        ->assertSee($message->subject)
-        ->call('deletePermanently', $message->id) // This now "restores" it to clear from trash
-        ->assertDispatched('userMessageActionFeedback', message: __('Message removed from trash.'), type: 'status')
-        ->assertDontSee($message->subject); // Should pass now
+        ->assertSee($message->subject) // Verify it's listed in trash initially
+        ->call('deletePermanently', $message->id)
+        ->assertDispatched('userMessageActionFeedback', message: __('Message permanently deleted.'), type: 'status');
 
     $message->refresh();
-    expect($message->receiver_deleted_at)->toBeNull(); // Verify it was "restored"
+    // Verify the new flag is set
+    expect($message->receiver_permanently_deleted_at)->not()->toBeNull();
+    // The original deleted_at flag should still be set
+    expect($message->receiver_deleted_at)->not()->toBeNull();
+
+    // Now, the message should NOT be seen in the TrashBox due to the updated query
+    Livewire::test(TrashBox::class)
+        ->assertDontSee($message->subject);
 });

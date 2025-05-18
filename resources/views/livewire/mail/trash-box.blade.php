@@ -61,11 +61,11 @@
             {{-- Action Buttons --}}
             <div class="flex space-x-1 flex-shrink-0">
                 <button wire:click="restoreMessage({{ $message->id }})"
-                    class="p-1.5 text-xs text-green-500 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 rounded-md hover:bg-green-100 dark:hover:bg-green-700" title="{{ __('Restore Message') }}">
+                    class="p-1.5 text-xs text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-700" title="{{ __('Restore Message') }}">
                     <flux:icon.arrow-uturn-left class="w-4 h-4"/>
                 </button>
                  <button wire:click="deletePermanently({{ $message->id }})" wire:confirm="Are you sure you want to permanently delete this message from your view? This action cannot be undone by you."
-                    class="p-1.5 text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-700" title="{{ __('Delete Permanently') }}">
+                    class="p-1.5 text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-700" title="{{ __('Delete Permanently') }}">
                     <flux:icon.trash class="w-4 h-4"/>
                 </button>
             </div>
