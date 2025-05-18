@@ -34,9 +34,10 @@ class Outbox extends Component
             return Message::query()->whereRaw('1 = 0')->paginate(10);
         }
         return Message::where('sender_id', Auth::id())
-            ->whereNull('sender_deleted_at') // Only show non-deleted by sender
-            ->whereNull('sender_archived_at') // Only show non-archived by sender
-            ->with(['receiver.additionalInfo']) // Eager load receiver and their additionalInfo
+            ->whereNull('sender_deleted_at')
+            ->whereNull('sender_archived_at')
+            ->select(['id', 'receiver_id', 'subject', 'created_at', 'read_at']) // SELECT specific columns
+            ->with(['receiver:id,firstname,lastname', 'receiver.additionalInfo:user_id,username']) // Eager load specific columns
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }

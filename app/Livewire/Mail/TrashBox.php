@@ -33,19 +33,23 @@ class TrashBox extends Component
             return Message::query()->whereRaw('1 = 0')->paginate(10);
         }
         $userId = Auth::id();
-
-        // Messages in trash for the user = (their delete flag is set) AND (their permanent delete flag IS NULL)
         return Message::query()
             ->where(function ($query) use ($userId) {
                 $query->where('receiver_id', $userId)
                     ->whereNotNull('receiver_deleted_at')
-                    ->whereNull('receiver_permanently_deleted_at'); // New condition
+                    ->whereNull('receiver_permanently_deleted_at');
             })->orWhere(function ($query) use ($userId) {
                 $query->where('sender_id', $userId)
                     ->whereNotNull('sender_deleted_at')
-                    ->whereNull('sender_permanently_deleted_at');   // New condition
+                    ->whereNull('sender_permanently_deleted_at');
             })
-            ->with(['sender.additionalInfo', 'receiver.additionalInfo'])
+            ->select(['id', 'sender_id', 'receiver_id', 'subject', 'created_at', 'read_at', 'sender_deleted_at', 'receiver_deleted_at']) // SELECT
+            ->with([
+                'sender:id,firstname,lastname',
+                'sender.additionalInfo:user_id,username',
+                'receiver:id,firstname,lastname',
+                'receiver.additionalInfo:user_id,username'
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }

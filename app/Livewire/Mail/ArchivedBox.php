@@ -35,17 +35,23 @@ class ArchivedBox extends Component
         $userId = Auth::id();
         return Message::query()
             ->where(function ($query) use ($userId) {
-                // Messages received by the user AND archived by them AND not deleted by them
                 $query->where('receiver_id', $userId)
                     ->whereNotNull('receiver_archived_at')
+                    ->whereNull('receiver_permanently_deleted_at') // From Part 1.1
                     ->whereNull('receiver_deleted_at');
             })->orWhere(function ($query) use ($userId) {
-                // Messages sent by the user AND archived by them AND not deleted by them
                 $query->where('sender_id', $userId)
                     ->whereNotNull('sender_archived_at')
+                    ->whereNull('sender_permanently_deleted_at')   // From Part 1.1
                     ->whereNull('sender_deleted_at');
             })
-            ->with(['sender.additionalInfo', 'receiver.additionalInfo']) // Eager load
+            ->select(['id', 'sender_id', 'receiver_id', 'subject', 'created_at', 'read_at', 'sender_archived_at', 'receiver_archived_at']) // SELECT
+            ->with([
+                'sender:id,firstname,lastname',
+                'sender.additionalInfo:user_id,username',
+                'receiver:id,firstname,lastname',
+                'receiver.additionalInfo:user_id,username'
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }

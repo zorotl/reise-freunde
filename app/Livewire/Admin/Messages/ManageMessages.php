@@ -122,11 +122,15 @@ class ManageMessages extends Component
     public function render()
     {
         // ... render logic remains the same ...
-        $query = Message::withTrashed()
+        $query = Message::withTrashed() // Admins see system soft-deleted messages
             ->with([
-                'sender' => fn($query) => $query->withTrashed()->with(['grant', 'additionalInfo']),
-                'receiver' => fn($query) => $query->withTrashed()->with(['grant', 'additionalInfo']),
+                // Eager load with specific columns, including trashed users
+                'sender' => fn($q) => $q->withTrashed()->select('id', 'firstname', 'lastname', 'email')->with(['grant:user_id,is_banned', 'additionalInfo:user_id,username']),
+                'receiver' => fn($q) => $q->withTrashed()->select('id', 'firstname', 'lastname', 'email')->with(['grant:user_id,is_banned', 'additionalInfo:user_id,username']),
             ])
+            // For the main message, select only necessary columns for the list view if possible.
+            // If admin needs all fields for this overview, then '*' is fine, but be mindful.
+            // Example: ->select('messages.id', 'messages.subject', 'messages.sender_id', 'messages.receiver_id', 'messages.created_at', 'messages.read_at', 'messages.deleted_at', 'messages.sender_deleted_at', ...)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('subject', 'like', '%' . $this->search . '%')

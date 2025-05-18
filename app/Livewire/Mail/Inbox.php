@@ -44,7 +44,8 @@ class Inbox extends Component
         return Message::where('receiver_id', Auth::id())
             ->whereNull('receiver_deleted_at')
             ->whereNull('receiver_archived_at')
-            ->with(['sender.additionalInfo'])
+            ->select(['id', 'sender_id', 'subject', 'created_at', 'read_at']) // SELECT only what's needed for the list
+            ->with(['sender:id,firstname,lastname', 'sender.additionalInfo:user_id,username']) // Eager load specific columns
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
