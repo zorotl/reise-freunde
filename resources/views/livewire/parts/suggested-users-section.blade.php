@@ -22,8 +22,7 @@
                     @if (isset($suggested->shared_hobbies_count) && isset($suggested->shared_travel_styles_count) &&
                     ($suggested->shared_hobbies_count + $suggested->shared_travel_styles_count > 0))
                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                        {{ $suggested->shared_hobbies_count + $suggested->shared_travel_styles_count }} shared
-                        interest(s)
+                        {{ $suggested->shared_hobbies_count + $suggested->shared_travel_styles_count }} {{__('shared interest(s)')}} 
                     </p>
                     @endif
                 </div>
@@ -41,7 +40,6 @@
         @endforeach
     </ul>
     @else
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('No suggestions right now. Add more hobbies and travel
-        styles to your profile!') }}</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('No suggestions right now. Add more hobbies and travel styles to your profile!') }}</p>
     @endif
 </section>

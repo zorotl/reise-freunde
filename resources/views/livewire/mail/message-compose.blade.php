@@ -11,7 +11,7 @@
         <form wire:submit="sendMessage" class="p-4 sm:p-6 space-y-6 relative">
             {{-- Recipient Search --}}
             <div>
-                <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{__('To')}}</label>
                 <div x-show="!$wire.receiver_id">
                     <input type="text" id="search"
                         class="mt-1 block w-full rounded-md border-gray-300 dark:border-neutral-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-700 dark:text-gray-300"

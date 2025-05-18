@@ -32,6 +32,6 @@
         : 'text-gray-600 hover:text-indigo-500'
         ])
         wire:navigate>
-        {{ __('Bürgschaft Requests') }}
+        {{ __('Real-World Requests') }}
     </a>
 </div>

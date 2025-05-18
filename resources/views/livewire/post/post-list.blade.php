@@ -4,15 +4,15 @@
     <div class="mb-5 flex justify-between items-center flex-wrap gap-4">
         <div>
             @if ($show === 'all')
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">Find your travel buddy</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">{{__('Find your travel buddy')}}</h2>
             @elseif ($show === 'my')
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">My Posts</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-stone-400">{{__('My Posts')}}</h2>
             @endif
         </div>
         @auth {{-- Only show Create button if logged in --}}
         <a wire:navigate href="{{ route('post.create') }}"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Create New Entry
+            {{__('Create New Entry')}}
         </a>
         @endauth
     </div>
@@ -20,6 +20,7 @@
     {{-- Search and Filter Section --}}
     @unless ($show === 'my') {{-- Don't show filters on 'My Posts' page --}}
     <livewire:search />
+    {{-- Filter --}}
     <div
         class="mb-6 p-6 bg-white dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 rounded-2xl shadow-sm">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">

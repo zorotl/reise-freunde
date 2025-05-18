@@ -9,8 +9,7 @@
         {{-- Pass the individual post object to the PostCardSection component --}}
         <livewire:parts.post-card-section :post="$post" :show="$show" wire:key="post-card-{{ $post->id }}" />
         @empty
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Your feed is empty. Follow some users or create your
-            own post!') }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Your feed is empty. Follow some users or create your own post!') }}</p>
         @endforelse
         {{-- Consider adding pagination or load more later for the feed --}}
     </div>

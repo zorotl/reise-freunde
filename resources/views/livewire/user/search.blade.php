@@ -225,7 +225,7 @@ class extends Component {
                         {{ __('Min Age') }}
                     </label>
                     <input wire:model.live.debounce.500ms="min_age" id="min_age" type="number" min="0"
-                        placeholder="e.g., 18"
+                        placeholder="{{__('e.g.')}} 18"
                         class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     @error('min_age') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
@@ -234,7 +234,7 @@ class extends Component {
                         {{ __('Max Age') }}
                     </label>
                     <input wire:model.live.debounce.500ms="max_age" id="max_age" type="number" min="0"
-                        placeholder="e.g., 99"
+                        placeholder="{{__('e.g.')}} 99"
                         class="w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     @error('max_age') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
