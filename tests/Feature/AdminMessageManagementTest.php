@@ -2,12 +2,12 @@
 
 use App\Models\User;
 use App\Models\UserGrant;
-use App\Models\Message; // Import Message model
-use Livewire\Livewire; // Import Livewire test helper
-use App\Livewire\Admin\Messages\ManageMessages; // Import the ManageMessages component
-use function Pest\Laravel\actingAs;
+use App\Models\Message;
+use App\Livewire\Admin\Messages\ManageMessages;
+use Livewire\Livewire;
+use Illuminate\Support\Facades\Auth; // Import Auth
+use function Pest\Laravel\actingAs; // Ensure this is used for Pest tests
 use function Pest\Laravel\get;
-use Illuminate\Database\Eloquent\Factories\Sequence; // For creating users with/without grants
 
 // --- Access tests (Passed, no changes needed) ---
 test('non admin/moderator users cannot access admin message management', function () {
@@ -44,109 +44,72 @@ test('guest users are redirected to login when trying to access admin message ma
 // --- End Access Tests ---
 
 
-test('admin can ban message sender', function () {
-    // Arrange: Create an admin user, a non-admin sender, and a receiver
-    $adminUser = User::factory()->create();
-    UserGrant::updateOrCreate(['user_id' => $adminUser->id], ['is_admin' => true]);
+test('admin can soft delete a message', function () {
+    $admin = User::factory()->create();
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+    actingAs($admin);
 
-    $sender = User::factory()->create();
-    UserGrant::firstOrCreate(['user_id' => $sender->id]); // Ensure sender has a grant record (not admin/mod)
+    $message = Message::factory()->create();
 
-    $receiver = User::factory()->create();
-    // --- FIX: Ensure receiver has a grant record ---
-    UserGrant::firstOrCreate(['user_id' => $receiver->id]);
-    // --- END FIX ---
+    Livewire::test(ManageMessages::class)
+        ->call('adminSoftDeleteMessage', $message->id)
+        ->assertDispatched('adminMessageActionFeedback', message: 'Message soft-deleted by admin.', type: 'message'); // Assert the event and its payload
 
-    // Create a message from the sender
-    $message = Message::factory()->create([
-        'sender_id' => $sender->id,
-        'receiver_id' => $receiver->id,
-        'subject' => 'Test Subject',
-        'body' => 'Test Body',
+    $this->assertSoftDeleted('messages', ['id' => $message->id]);
+});
+
+test('admin can restore a soft-deleted message', function () {
+    $admin = User::factory()->create();
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+    actingAs($admin);
+
+    $message = Message::factory()->create();
+    $message->delete(); // Soft delete it first
+
+    Livewire::test(ManageMessages::class)
+        ->call('restoreMessage', $message->id)
+        ->assertDispatched('adminMessageActionFeedback', message: 'Message restored by admin.', type: 'message'); // Assert the event
+
+    $this->assertNotSoftDeleted('messages', ['id' => $message->id]);
+});
+
+test('admin can force delete a message', function () {
+    $admin = User::factory()->create();
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+    actingAs($admin);
+
+    $message = Message::factory()->create();
+
+    Livewire::test(ManageMessages::class)
+        ->call('forceDeleteMessage', $message->id)
+        ->assertDispatched('adminMessageActionFeedback', message: 'Message permanently deleted by admin.', type: 'message'); // Assert the event
+
+    $this->assertDatabaseMissing('messages', ['id' => $message->id]);
+});
+
+// ... (admin view shows user-deleted and user-archived messages test remains the same)
+test('admin view shows user-deleted and user-archived messages', function () {
+    $admin = User::factory()->create();
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+    actingAs($admin);
+
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    Message::factory()->create([
+        'sender_id' => $user1->id,
+        'receiver_id' => $user2->id,
+        'subject' => 'Deleted by Sender',
+        'sender_deleted_at' => now(),
+    ]);
+    Message::factory()->create([
+        'sender_id' => $user1->id,
+        'receiver_id' => $user2->id,
+        'subject' => 'Archived by Receiver',
+        'receiver_archived_at' => now(),
     ]);
 
-    // Act: Act as the admin user and call the banSender method
-    actingAs($adminUser);
-
     Livewire::test(ManageMessages::class)
-        ->call('banSender', $sender->id)
-        ->assertHasNoErrors()
-        // --- FIX: Use assertDispatched instead of session ---
-        // ->assertSessionHas('message', 'Sender user banned successfully.')
-        ->assertDispatched('senderBanned');
-    // --- END FIX ---
-
-    // Assert: Verify the sender user IS BANNED (check grant), not soft deleted
-    $sender->refresh();
-    $senderGrant = $sender->grant; // Get the grant associated with the sender
-
-    // --- ADJUSTED ASSERTION: Check ban status on grant, not soft delete ---
-    // expect($sender->trashed())->toBeTrue(); // We are not soft deleting anymore
-    expect($senderGrant)->not()->toBeNull();
-    expect($senderGrant->is_banned)->toBeTrue();
-    expect($senderGrant->is_banned_until)->toBeNull(); // Ban via button is permanent (null until)
-    // --- END ADJUSTED ASSERTION ---
-
-    // Verify the message is NOT deleted
-    $message->refresh();
-    expect($message->exists())->toBeTrue();
-    expect($message->trashed())->toBeFalse();
-
-});
-
-test('admin cannot ban admin or moderator sender via this action', function () {
-    // Arrange: Create an admin user and an admin/moderator sender
-    $adminUser = User::factory()->create();
-    UserGrant::updateOrCreate(['user_id' => $adminUser->id], ['is_admin' => true]);
-
-    $adminSender = User::factory()->create();
-    UserGrant::updateOrCreate(['user_id' => $adminSender->id], ['is_admin' => true]);
-
-    $moderatorSender = User::factory()->create();
-    UserGrant::updateOrCreate(['user_id' => $moderatorSender->id], ['is_moderator' => true]);
-
-    $receiver = User::factory()->create();
-    UserGrant::firstOrCreate(['user_id' => $receiver->id]);
-
-    $messageFromAdmin = Message::factory()->create(['sender_id' => $adminSender->id, 'receiver_id' => $receiver->id]);
-    $messageFromModerator = Message::factory()->create(['sender_id' => $moderatorSender->id, 'receiver_id' => $receiver->id]);
-
-    actingAs($adminUser);
-
-    // --- FIX: Assert events NOT dispatched ---
-    Livewire::test(ManageMessages::class)
-        ->call('banSender', $adminSender->id)
-        // ->assertDispatched('openEditModal', userId: $adminSender->id) // Remove this incorrect assertion
-        ->assertNotDispatched('senderBanned'); // Assert the SUCCESS event was NOT fired
-
-    Livewire::test(ManageMessages::class)
-        ->call('banSender', $moderatorSender->id)
-        // ->assertDispatched('openEditModal', userId: $moderatorSender->id) // Remove this incorrect assertion
-        ->assertNotDispatched('senderBanned'); // Assert the SUCCESS event was NOT fired
-    // --- END FIX ---
-
-    // Assert: Verify the sender users are NOT banned
-    $adminSender->refresh();
-    expect($adminSender->grant->is_banned)->toBeFalse();
-
-    $moderatorSender->refresh();
-    expect($moderatorSender->grant->is_banned)->toBeFalse();
-});
-
-test('admin cannot ban sender if user not found', function () {
-    // Arrange: Create an admin user
-    $adminUser = User::factory()->create();
-    UserGrant::updateOrCreate(['user_id' => $adminUser->id], ['is_admin' => true]);
-
-    // Act: Act as the admin user and try to ban a non-existent user ID
-    actingAs($adminUser);
-
-    Livewire::test(ManageMessages::class)
-        ->call('banSender', 9999) // Use a non-existent ID
-        // --- FIX: Remove session assertion ---
-        // ->assertSessionHas('error', 'Sender user not found.')
-        // Optionally, assert that NO 'senderBanned' event was dispatched
-        ->assertNotDispatched('senderBanned');
-    // --- END FIX ---
-
+        ->assertSee('Deleted by Sender')
+        ->assertSee('Archived by Receiver');
 });

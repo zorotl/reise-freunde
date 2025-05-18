@@ -1,36 +1,34 @@
 <div>
     {{-- Success/Error Messages --}}
     @if (session()->has('message'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline">{{ session('message') }}</span>
-        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
-                <title>Close</title>
-                <path
-                    d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15L6.305 5.107a1.2 1.2 0 0 1 1.697-1.697l2.757 3.15 2.651-3.029a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.15 2.758 3.15a1.2 1.2 0 0 1 0 1.697z" />
-            </svg>
-        </span>
+    <div class="mb-4 rounded-md bg-green-50 p-4 dark:bg-green-900/50">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <flux:icon.check-circle class="h-5 w-5 text-green-400 dark:text-green-300" />
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-green-800 dark:text-green-200">{{ session('message') }}</p>
+            </div>
+        </div>
     </div>
     @endif
     @if (session()->has('error'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline">{{ session('error') }}</span>
-        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
-                <title>Close</title>
-                <path
-                    d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15L6.305 5.107a1.2 1.2 0 0 1 1.697-1.697l2.757 3.15 2.651-3.029a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.15 2.758 3.15a1.2 1.2 0 0 1 0 1.697z" />
-            </svg>
-        </span>
+    <div class="mb-4 rounded-md bg-red-50 p-4 dark:bg-red-900/50">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <flux:icon.x-circle class="h-5 w-5 text-red-400 dark:text-red-300" />
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-red-800 dark:text-red-200">{{ session('error') }}</p>
+            </div>
+        </div>
     </div>
     @endif
 
     {{-- Controls: Search and Per Page --}}
-    <div class="mb-4 flex justify-between items-center">
-        <div class="flex-1 me-4">
-            <input wire:model.live="search" type="text" placeholder="{{ __('Search messages...') }}"
+    <div class="mb-4 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex-grow">
+            <input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('Search messages...') }}"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline">
         </div>
         <div>
@@ -50,129 +48,111 @@
         <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
             <thead class="bg-gray-50 dark:bg-neutral-700">
                 <tr>
-                    {{-- Subject Header --}}
                     <th scope="col"
-                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
                         wire:click="sortBy('subject')">
-                        {{ __('Subject') }}
-                        @if ($sortField === 'subject')
-                        <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                        @endif
+                        {{ __('Subject') }} @if ($sortField === 'subject') <span class="ml-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span> @endif
                     </th>
-                    {{-- Sender Header --}}
                     <th scope="col"
-                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
                         wire:click="sortBy('sender_id')">
-                        {{ __('Sender') }}
-                        @if ($sortField === 'sender_id')
-                        <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                        @endif
+                        {{ __('Sender') }} @if ($sortField === 'sender_id') <span class="ml-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span> @endif
                     </th>
-                    {{-- Receiver Header --}}
                     <th scope="col"
-                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
                         wire:click="sortBy('receiver_id')">
-                        {{ __('Receiver') }}
-                        @if ($sortField === 'receiver_id')
-                        <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                        @endif
+                        {{ __('Receiver') }} @if ($sortField === 'receiver_id') <span class="ml-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span> @endif
                     </th>
-                    {{-- Sent At Header --}}
                     <th scope="col"
-                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
                         wire:click="sortBy('created_at')">
-                        {{ __('Sent At') }}
-                        @if ($sortField === 'created_at')
-                        <span class="ms-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                        @endif
+                        {{ __('Sent At') }} @if ($sortField === 'created_at') <span class="ml-1">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span> @endif
                     </th>
-                    {{-- Status Header --}}
                     <th scope="col"
-                        class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         {{ __('Status') }}
+                    </th>
+                    <th scope="col"
+                        class="px-3 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        {{ __('Actions') }}
                     </th>
                 </tr>
             </thead>
             <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-neutral-700">
                 @forelse ($messages as $message)
-                {{-- Highlight if sender is soft deleted --}}
-                <tr @if($message->sender && $message->sender->trashed()) class="bg-yellow-100 dark:bg-yellow-900/50
-                    opacity-75" @endif>
-                    {{-- Subject Cell --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
-                        {{-- Link Subject to Admin View Message Page --}}
-                        <a href="{{ route('admin.messages.show', $message->id) }}" class="text-blue-600 hover:underline"
-                            wire:navigate> {{-- Added link --}}
-                            {{ $message->subject }}
+                <tr wire:key="admin-message-{{ $message->id }}"
+                    @class([
+                        'bg-red-100 dark:bg-red-900/30 opacity-60' => $message->trashed(), // Admin soft-deleted
+                        'bg-yellow-50 dark:bg-yellow-900/20 opacity-80' => !$message->trashed() && ($message->sender_deleted_at || $message->receiver_deleted_at), // User soft-deleted
+                        'bg-blue-50 dark:bg-blue-900/20 opacity-90' => !$message->trashed() && ($message->sender_archived_at || $message->receiver_archived_at) && !($message->sender_deleted_at || $message->receiver_deleted_at), // User archived
+                    ])
+                >
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs overflow-hidden text-ellipsis">
+                        <a href="{{ route('admin.messages.show', $message->id) }}" class="text-blue-600 hover:underline dark:text-blue-400" wire:navigate>
+                            {{ Str::limit($message->subject, 40) }}
                         </a>
                     </td>
-                    {{-- Sender Cell --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         @if($message->sender)
-                        {{-- Link to Admin User Management filtered by sender --}}
-                        <a href="{{ route('admin.users', ['filterUserId' => $message->sender->id]) }}"
-                            class="text-blue-600 hover:underline" wire:navigate>
-                            {{ $message->sender->name }}
-                        </a>
-                        @if($message->sender->grant?->is_banned)
-                        <br><span class="ms-1 text-red-500">({{ __('Banned') }})</span>
+                            <a href="{{ route('admin.users', ['filterUserId' => $message->sender->id]) }}" class="text-blue-600 hover:underline dark:text-blue-400" wire:navigate>
+                                {{ $message->sender->additionalInfo->username ?? $message->sender->name }}
+                            </a>
+                            @if($message->sender->trashed()) <span class="text-xs text-red-500 dark:text-red-400">(User Deleted)</span>
+                            @elseif($message->sender->grant?->is_banned) <span class="text-xs text-orange-500 dark:text-orange-400">(User Banned)</span>
+                            @elseif(!$message->sender->isAdminOrModerator())
+                            <button wire:click="banSender({{ $message->sender->id }})"
+                                class="ml-1 px-1 py-0.5 text-xs font-semibold text-red-500 border border-red-500 rounded hover:bg-red-100 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-700/50"
+                                title="Ban {{ $message->sender->name }}">
+                                Ban
+                            </button>
+                            @endif
                         @else
-                        <br>
-                        <button wire:click="banSender({{ $message->sender->id }})"
-                            onclick="return confirm('{{ __('Are you sure you want to ban this sender?') }}')"
-                            class="px-2 py-1 text-xs font-semibold text-red-600 border border-red-600 bg-white rounded hover:bg-red-100 dark:bg-gray-900 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10">
-                            {{ __('Ban Sender') }}</button>
-                        @endif
-                        @else
-                        <br><span class="ms-1 text-red-500">({{ __('Deleted User') }})</span>
+                            <span class="italic text-gray-400 dark:text-gray-500">{{ __('Deleted User') }}</span>
                         @endif
                     </td>
-                    {{-- Receiver Cell --}}
-                    <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs overflow-hidden text-ellipsis">
                         @if($message->receiver)
-                        {{-- Link to Admin User Management filtered by receiver --}}
-                        <a href="{{ route('admin.users', ['filterUserId' => $message->receiver->id]) }}"
-                            class="text-blue-600 hover:underline" wire:navigate> {{-- Added wire:navigate and route
-                            params --}}
-                            {{ $message->receiver->name }}
-                        </a>
-                        @if($message->receiver->grant->is_banned)
-                        <br><span class="ms-1 text-red-500">({{ __('Banned') }})</span>
-                        @endif
+                            <a href="{{ route('admin.users', ['filterUserId' => $message->receiver->id]) }}" class="text-blue-600 hover:underline dark:text-blue-400" wire:navigate>
+                                {{ $message->receiver->additionalInfo->username ?? $message->receiver->name }}
+                            </a>
+                            @if($message->receiver->trashed()) <span class="text-xs text-red-500 dark:text-red-400">(User Deleted)</span>
+                            @elseif($message->receiver->grant?->is_banned) <span class="text-xs text-orange-500 dark:text-orange-400">(User Banned)</span>
+                            @endif
                         @else
-                        {{ __('Deleted User') }}
+                            <span class="italic text-gray-400 dark:text-gray-500">{{ __('Deleted User') }}</span>
                         @endif
                     </td>
-                    {{-- Sent At Cell --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {{ $message->created_at->format('Y-m-d H:i') }}
                     </td>
-                    {{-- Status Cell --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        @if($message->read_at)
-                        <span
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">{{
-                            __('Read') }}</span>
-                        <br><span class="text-xs">{{ $message->read_at->format('Y-m-d H:i') }}</span>
-                        @else
-                        <span
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">{{
-                            __('Unread') }}</span>
-                        @endif
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         @if($message->trashed())
-                        <span
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">{{
-                            __('Msg Deleted') }}</span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-200 text-red-800 dark:bg-red-700 dark:text-red-100">{{ __('Admin Deleted') }}</span>
+                        @else
+                            @if($message->read_at)
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200">{{ __('Read') }}</span>
+                            @else
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200">{{ __('Unread') }}</span>
+                            @endif
+                            @if($message->sender_deleted_at) <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by sender: {{ $message->sender_deleted_at->format('Y-m-d H:i') }}">S:Del</span> @endif
+                            @if($message->receiver_deleted_at) <span class="block mt-1 px-2 text-xs rounded-full bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300" title="Deleted by receiver: {{ $message->receiver_deleted_at->format('Y-m-d H:i') }}">R:Del</span> @endif
+                            @if($message->sender_archived_at) <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by sender: {{ $message->sender_archived_at->format('Y-m-d H:i') }}">S:Arch</span> @endif
+                            @if($message->receiver_archived_at) <span class="block mt-1 px-2 text-xs rounded-full bg-blue-100 text-blue-600 dark:bg-blue-700 dark:text-blue-300" title="Archived by receiver: {{ $message->receiver_archived_at->format('Y-m-d H:i') }}">R:Arch</span> @endif
+                        @endif
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        @if ($message->trashed())
+                            <button wire:click="restoreMessage({{ $message->id }})" class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 p-1 rounded hover:bg-green-100 dark:hover:bg-green-700/50" title="{{__('Restore Admin Delete')}}"><flux:icon.arrow-path class="w-4 h-4 inline-block"/></button>
+                            <button wire:click="forceDeleteMessage({{ $message->id }})" wire:confirm="Are you sure you want to PERMANENTLY delete this message? This action cannot be undone." class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-100 dark:hover:bg-red-700/50" title="{{__('Force Delete')}}"><flux:icon.trash class="w-4 h-4 inline-block"/></button>
+                        @else
+                            <button wire:click="adminSoftDeleteMessage({{ $message->id }})" wire:confirm="Are you sure you want to soft-delete this message (admin action)? This will hide it from regular views but can be restored." class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 p-1 rounded hover:bg-yellow-100 dark:hover:bg-yellow-700/50" title="{{__('Admin Soft Delete')}}"><flux:icon.archive-box-arrow-down class="w-4 h-4 inline-block" /></button>
+                            <button wire:click="forceDeleteMessage({{ $message->id }})" wire:confirm="Are you sure you want to PERMANENTLY delete this message? This action cannot be undone." class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-100 dark:hover:bg-red-700/50" title="{{__('Force Delete')}}"><flux:icon.trash class="w-4 h-4 inline-block"/></button>
                         @endif
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6"
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
                         {{ __('No messages found.') }}
                     </td>
                 </tr>
@@ -181,8 +161,10 @@
         </table>
     </div>
 
-    {{-- Pagination Links --}}
     <div class="mt-4">
         {{ $messages->links() }}
     </div>
+
+    {{-- Modal for editing user (ban functionality) --}}
+    <livewire:admin.users.edit-user-modal />
 </div>
