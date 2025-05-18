@@ -2,6 +2,8 @@
 
 use Livewire\Volt\Component;
 use App\Models\Message;
+use App\Models\User;
+use App\Notifications\AdminForceDeletedMessageNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log; // For logging errors
 use Livewire\Attributes\{layout, middleware, title};
@@ -110,15 +112,38 @@ class extends Component {
             return;
         }
 
-        $messageId = $this->messageInstance->id;
-        try {
-            $this->messageInstance->forceDelete();
-            $this->dispatch('messageDeleted', messageId: $messageId); // For list refresh
-            session()->flash('message', __('Message permanently deleted by admin.'));
-            $this->redirectRoute('admin.messages', navigate:true);
-        } catch (\Exception $e) {
-            Log::error('Admin force delete message error: ' . $e->getMessage(), ['message_id' => $messageId]);
-            $this->dispatch('adminMessageActionFeedback', message: __('Failed to permanently delete message.'), type: 'error');
+        if ($this->messageInstance) {
+            $messageToNotify = $this->messageInstance;
+            $originalSubject = $messageToNotify->subject;
+            $originalMessageId = $messageToNotify->id;
+            $originalSenderId = $messageToNotify->sender_id; // Get sender ID
+            $originalReceiverId = $messageToNotify->receiver_id; // Get receiver ID
+            $senderUser = $messageToNotify->sender; // Get sender model
+            $receiverUser = $messageToNotify->receiver; // Get receiver model
+            $adminPerformingAction = Auth::user();
+
+            try {
+                $this->messageInstance->forceDelete();
+                $this->dispatch('messageDeleted', messageId: $originalMessageId);
+                session()->flash('message', __('Message permanently deleted by admin.'));
+
+                if ($adminPerformingAction) {
+                    $adminName = $adminPerformingAction->firstname . ' ' . $adminPerformingAction->lastname;
+
+                    if ($senderUser && $senderUser->id !== $adminPerformingAction->id && $senderUser instanceof User) {
+                        $senderUser->notify(new AdminForceDeletedMessageNotification($originalSubject, $originalMessageId, $adminName, $originalSenderId, $originalReceiverId));
+                    }
+                    if ($receiverUser && $receiverUser->id !== $adminPerformingAction->id && $receiverUser instanceof User) {
+                        $receiverUser->notify(new AdminForceDeletedMessageNotification($originalSubject, $originalMessageId, $adminName, $originalSenderId, $originalReceiverId));
+                    }
+                }
+                $this->redirectRoute('admin.messages', navigate:true);
+            } catch (\Exception $e) {
+                Log::error('Admin force delete message error from detail view: ' . $e->getMessage(), ['message_id' => $originalMessageId]);
+                // Re-fetch message if delete failed, so the view doesn't break if redirect doesn't happen
+                $this->messageInstance = Message::withTrashed()->find($originalMessageId);
+                $this->dispatch('adminMessageActionFeedback', message: __('Failed to permanently delete message.'), type: 'error');
+            }
         }
     }
 }; ?>

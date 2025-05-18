@@ -2,15 +2,17 @@
 
 namespace App\Livewire\Admin\Messages;
 
-use App\Models\Message;
-use App\Models\User;
-use App\Models\UserGrant;
-use Livewire\Component;
-use Livewire\Attributes\Computed;
-use Livewire\WithPagination;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Message;
+use Livewire\Component;
+use App\Models\UserGrant;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
+use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AdminForceDeletedMessageNotification;
 
 class ManageMessages extends Component
 {
@@ -109,11 +111,38 @@ class ManageMessages extends Component
             $this->dispatch('adminMessageActionFeedback', message: 'Unauthorized action.', type: 'error');
             return;
         }
-        $message = Message::withTrashed()->find($messageId);
+        $message = Message::withTrashed()->with(['sender', 'receiver'])->find($messageId);
+
         if ($message) {
-            $message->forceDelete();
-            $this->dispatch('adminMessageActionFeedback', message: 'Message permanently deleted by admin.', type: 'message');
-            $this->dispatch('messageDeleted');
+            $originalSubject = $message->subject;
+            $originalMessageId = $message->id;
+            $originalSenderId = $message->sender_id; // Get sender ID
+            $originalReceiverId = $message->receiver_id; // Get receiver ID
+            $senderUser = $message->sender; // Get sender model
+            $receiverUser = $message->receiver; // Get receiver model
+            $adminPerformingAction = Auth::user();
+
+            try {
+                $message->forceDelete();
+                $this->dispatch('adminMessageActionFeedback', message: 'Message permanently deleted by admin.', type: 'message');
+                $this->dispatch('messageDeleted');
+
+                if ($adminPerformingAction) {
+                    $adminName = $adminPerformingAction->firstname . ' ' . $adminPerformingAction->lastname; // Use firstname and lastname
+
+                    // Notify sender if they exist and are not the admin performing the action
+                    if ($senderUser && $senderUser->id !== $adminPerformingAction->id) {
+                        $senderUser->notify(new AdminForceDeletedMessageNotification($originalSubject, $originalMessageId, $adminName, $originalSenderId, $originalReceiverId));
+                    }
+                    // Notify receiver if they exist and are not the admin performing the action
+                    if ($receiverUser && $receiverUser->id !== $adminPerformingAction->id) {
+                        $receiverUser->notify(new AdminForceDeletedMessageNotification($originalSubject, $originalMessageId, $adminName, $originalSenderId, $originalReceiverId));
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error("Admin force delete message error: {$e->getMessage()}", ['message_id' => $originalMessageId]);
+                $this->dispatch('adminMessageActionFeedback', message: 'Failed to permanently delete message.', type: 'error');
+            }
         } else {
             $this->dispatch('adminMessageActionFeedback', message: 'Message not found for permanent deletion.', type: 'error');
         }

@@ -1,15 +1,69 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Models\User;
 use App\Models\UserGrant;
 use App\Models\Message;
 use App\Models\UserAdditionalInfo;
+use App\Notifications\AdminForceDeletedMessageNotification;
 use Livewire\Livewire;
 use Illuminate\Support\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use App\Livewire\Admin\Messages\ManageMessages;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+
+uses(RefreshDatabase::class);
+
+// Helper function to create users for these tests
+if (!function_exists('Tests\Feature\createAdminAndUsersForNotificationTest')) {
+    function createAdminAndUsersForNotificationTest(): array
+    {
+        // Create admin
+        $adminFirstname = 'TestAdminFirst'; // Example
+        $adminLastname = 'TestAdminLast';   // Example
+        $admin = User::factory()->create([
+            'firstname' => $adminFirstname,
+            'lastname' => $adminLastname,
+            // Add other necessary fields like email, password if factory doesn't cover them well for tests
+        ]);
+        UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+        UserAdditionalInfo::factory()->create(['user_id' => $admin->id, 'username' => 'testadmin' . $admin->id]);
+
+        // Create sender
+        $senderFirstname = 'TestSenderFirst';
+        $senderLastname = 'TestSenderLast';
+        $sender = User::factory()->create([
+            'firstname' => $senderFirstname,
+            'lastname' => $senderLastname,
+        ]);
+        UserAdditionalInfo::factory()->create(['user_id' => $sender->id, 'username' => 'testsender' . $sender->id]);
+        UserGrant::factory()->create(['user_id' => $sender->id]);
+
+        // Create receiver
+        $receiverFirstname = 'TestReceiverFirst';
+        $receiverLastname = 'TestReceiverLast';
+        $receiver = User::factory()->create([
+            'firstname' => $receiverFirstname,
+            'lastname' => $receiverLastname,
+        ]);
+        UserAdditionalInfo::factory()->create(['user_id' => $receiver->id, 'username' => 'testreceiver' . $receiver->id]);
+        UserGrant::factory()->create(['user_id' => $receiver->id]);
+
+        // To get admin name for notification, we'll use the concatenated firstname and lastname
+        // Or you can modify User model to have a 'name' accessor if preferred generally.
+        // For the test, let's assume admin's "name" for notification is "firstname lastname"
+        return [
+            'admin' => $admin->fresh(), // Use fresh to get any updates from observers/etc.
+            'adminNameForNotification' => $adminFirstname . ' ' . $adminLastname,
+            'sender' => $sender->fresh(),
+            'receiver' => $receiver->fresh()
+        ];
+    }
+}
 
 // --- Access tests (Passed, no changes needed) ---
 test('non admin/moderator users cannot access admin message management', function () {
@@ -231,4 +285,121 @@ test('admin can force delete a message from its detail view page', function () {
         ->assertSessionHas('message', __('Message permanently deleted by admin.'));
 
     $this->assertDatabaseMissing('messages', ['id' => $messageId]);
+});
+
+test('users are notified when admin force deletes their message from list view', function () {
+    Notification::fake();
+    extract(createAdminAndUsersForNotificationTest()); // uses updated helper
+
+    $message = Message::factory()->create([
+        'sender_id' => $sender->id,
+        'receiver_id' => $receiver->id,
+        'subject' => 'A Message to be Force Deleted from List',
+    ]);
+
+    \Pest\Laravel\actingAs($admin);
+
+    Livewire::test(\App\Livewire\Admin\Messages\ManageMessages::class)
+        ->call('forceDeleteMessage', $message->id)
+        ->assertDispatched('adminMessageActionFeedback', message: 'Message permanently deleted by admin.', type: 'message');
+
+    $this->assertDatabaseMissing('messages', ['id' => $message->id]);
+
+    Notification::assertSentTo(
+        [$sender],
+        AdminForceDeletedMessageNotification::class,
+        function ($notification, $channels) use ($message, $adminNameForNotification, $sender, $receiver) { // Use adminNameForNotification
+            return $notification->getMessageSubject() === $message->subject &&
+                $notification->getOriginalMessageId() === $message->id &&
+                $notification->getActionPerformingAdminName() === $adminNameForNotification &&
+                $notification->getOriginalSenderId() === $sender->id && // Also check these if relevant
+                $notification->getOriginalReceiverId() === $receiver->id;
+        }
+    );
+
+    Notification::assertSentTo(
+        [$receiver],
+        AdminForceDeletedMessageNotification::class,
+        function ($notification, $channels) use ($message, $adminNameForNotification, $sender, $receiver) {
+            return $notification->getMessageSubject() === $message->subject &&
+                $notification->getOriginalMessageId() === $message->id &&
+                $notification->getActionPerformingAdminName() === $adminNameForNotification &&
+                $notification->getOriginalSenderId() === $sender->id &&
+                $notification->getOriginalReceiverId() === $receiver->id;
+        }
+    );
+});
+
+test('users are notified when admin force deletes their message from detail view', function () {
+    Notification::fake();
+    extract(createAdminAndUsersForNotificationTest());
+
+    $message = Message::factory()->create([
+        'sender_id' => $sender->id,
+        'receiver_id' => $receiver->id,
+        'subject' => 'Another Message for Deletion from Detail',
+    ]);
+    $messageId = $message->id;
+
+    \Pest\Laravel\actingAs($admin);
+
+    Livewire::test('pages.admin.messages.show', ['messageId' => $messageId])
+        ->call('forceDeleteMessage')
+        ->assertRedirect(route('admin.messages'))
+        ->assertSessionHas('message', __('Message permanently deleted by admin.'));
+
+    $this->assertDatabaseMissing('messages', ['id' => $messageId]);
+
+    Notification::assertSentTo(
+        [$sender],
+        AdminForceDeletedMessageNotification::class,
+        fn($notification) => $notification->getOriginalMessageId() === $messageId && $notification->getActionPerformingAdminName() === $adminNameForNotification
+    );
+    Notification::assertSentTo(
+        [$receiver],
+        AdminForceDeletedMessageNotification::class,
+        fn($notification) => $notification->getOriginalMessageId() === $messageId && $notification->getActionPerformingAdminName() === $adminNameForNotification
+    );
+});
+
+test('admin performing force delete does not notify self if they are a participant', function () {
+    Notification::fake();
+    extract(createAdminAndUsersForNotificationTest()); // $admin is distinct here
+
+    $messageByAdmin = Message::factory()->create([
+        'sender_id' => $admin->id, // Admin is the sender
+        'receiver_id' => $receiver->id,
+        'subject' => 'Admin Sent This Message',
+    ]);
+
+    \Pest\Laravel\actingAs($admin);
+
+    Livewire::test(\App\Livewire\Admin\Messages\ManageMessages::class)
+        ->call('forceDeleteMessage', $messageByAdmin->id);
+
+    Notification::assertNotSentTo([$admin], AdminForceDeletedMessageNotification::class);
+    Notification::assertSentTo(
+        [$receiver],
+        AdminForceDeletedMessageNotification::class,
+        fn($notification) => $notification->getOriginalMessageId() === $messageByAdmin->id && $notification->getActionPerformingAdminName() === $adminNameForNotification
+    );
+
+    // Test from detail view part
+    Notification::fake();
+    $messageByAdminForDetail = Message::factory()->create([
+        'sender_id' => $admin->id,
+        'receiver_id' => $receiver->id,
+        'subject' => 'Admin Sent For Detail Delete',
+    ]);
+    $messageIdForDetail = $messageByAdminForDetail->id;
+
+    Livewire::test('pages.admin.messages.show', ['messageId' => $messageIdForDetail])
+        ->call('forceDeleteMessage');
+
+    Notification::assertNotSentTo([$admin], AdminForceDeletedMessageNotification::class);
+    Notification::assertSentTo(
+        [$receiver],
+        AdminForceDeletedMessageNotification::class,
+        fn($notification) => $notification->getOriginalMessageId() === $messageIdForDetail && $notification->getActionPerformingAdminName() === $adminNameForNotification
+    );
 });
