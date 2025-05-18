@@ -106,6 +106,7 @@ require __DIR__ . '/auth.php';
 // - übersetzungsfiles
 // - unter 3 erstellt er den code, unter 4 die zusammenfassung der änderungen...irgendwie brauch ich das so nicht
 // - prüfen ob es sinnvoll ist, seeder und factorys fürs testing und für die dev version zu ergänzen oder ändern
+// - nach 1. verstehe meine anfrage, sollten rückfragen gestellt werden, erst dann mit 2 weitermachen
 
 //     Fix the following issues:
 //         - [ ] message: if i response to an answer, the titel should be the same, maybe with a prefix, what you recommande and can you find the bug?

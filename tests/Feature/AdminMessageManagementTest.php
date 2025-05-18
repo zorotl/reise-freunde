@@ -3,10 +3,12 @@
 use App\Models\User;
 use App\Models\UserGrant;
 use App\Models\Message;
-use App\Livewire\Admin\Messages\ManageMessages;
+use App\Models\UserAdditionalInfo;
 use Livewire\Livewire;
-use Illuminate\Support\Facades\Auth; // Import Auth
-use function Pest\Laravel\actingAs; // Ensure this is used for Pest tests
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Livewire\Admin\Messages\ManageMessages;
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
 
 // --- Access tests (Passed, no changes needed) ---
@@ -112,4 +114,83 @@ test('admin view shows user-deleted and user-archived messages', function () {
     Livewire::test(ManageMessages::class)
         ->assertSee('Deleted by Sender')
         ->assertSee('Archived by Receiver');
+});
+
+test('admin can view detailed message state', function () {
+    $admin = User::factory()->create();
+    UserGrant::factory()->admin()->create(['user_id' => $admin->id]);
+    actingAs($admin);
+
+    $sender = User::factory()->create(['firstname' => 'TestSender']);
+    UserAdditionalInfo::factory()->create(['user_id' => $sender->id, 'username' => 'testsender_username']);
+    UserGrant::factory()->create(['user_id' => $sender->id]);
+
+    $receiver = User::factory()->create(['firstname' => 'TestReceiver']);
+    UserAdditionalInfo::factory()->create(['user_id' => $receiver->id, 'username' => 'testreceiver_username']);
+    UserGrant::factory()->create(['user_id' => $receiver->id]);
+
+    $now = Carbon::now(); // Use a consistent $now for all timestamps in this test
+    $message = Message::factory()->create([
+        'sender_id' => $sender->id,
+        'receiver_id' => $receiver->id,
+        'subject' => 'Detailed Status Test Subject',
+        'body' => 'Message body for detailed view.',
+        'created_at' => $now->copy()->subDays(5),
+        'read_at' => $now->copy()->subDays(4),
+        'sender_archived_at' => $now->copy()->subDays(3),
+        'receiver_deleted_at' => $now->copy()->subDays(2),
+        'sender_permanently_deleted_at' => $now->copy()->subDays(1),
+        'receiver_permanently_deleted_at' => null, // Example: receiver hasn't perm deleted
+        'deleted_at' => $now->copy()->subHour(), // Admin soft deleted
+    ]);
+
+    $senderArchivedFormatted = $now->copy()->subDays(3)->format('Y-m-d H:i:s T');
+    $senderPermDeletedFormatted = $now->copy()->subDays(1)->format('Y-m-d H:i:s T');
+    $receiverDeletedFormatted = $now->copy()->subDays(2)->format('Y-m-d H:i:s T');
+    $adminSoftDeletedFormatted = $now->copy()->subHour()->format('Y-m-d H:i:s T');
+
+    get(route('admin.messages.show', ['messageId' => $message->id]))
+        ->assertOk()
+        ->assertSee('Message Details', false) // Escape false for all HTML content checks
+        ->assertSee('Detailed Status Test Subject', false)
+        ->assertSee('testsender_username', false)
+        ->assertSee('testreceiver_username', false)
+        ->assertSee('Message body for detailed view.', false) // Body might have HTML, be careful or assert parts
+
+        // Sender Status Checks with $escape = false
+        ->assertSeeInOrder([
+            __('Sender Status'), // This is plain text, default escape is fine
+            __('Archived:'),
+            '<span class="font-semibold">' . $senderArchivedFormatted . '</span>'
+        ], false) // false for the order that includes HTML
+        ->assertSeeInOrder([
+            __('In Trash (Deleted):'),
+            '<span class="font-semibold">' . __('N/A') . '</span>' // Sender didn't delete this one
+        ], false)
+        ->assertSeeInOrder([
+            __('Permanently Deleted from Trash:'),
+            '<span class="font-semibold">' . $senderPermDeletedFormatted . '</span>'
+        ], false)
+
+        // Receiver Status Checks with $escape = false
+        ->assertSeeInOrder([
+            __('Receiver Status'),
+            __('Archived:'),
+            '<span class="font-semibold">' . __('N/A') . '</span>' // Receiver didn't archive
+        ], false)
+        ->assertSeeInOrder([
+            __('In Trash (Deleted):'),
+            '<span class="font-semibold">' . $receiverDeletedFormatted . '</span>'
+        ], false)
+        ->assertSeeInOrder([
+            __('Permanently Deleted from Trash:'),
+            '<span class="font-semibold">' . __('N/A') . '</span>' // Receiver didn't perm delete
+        ], false)
+
+        // Admin System Status Checks with $escape = false
+        ->assertSeeInOrder([
+            __('Admin System Status'),
+            __('Soft Deleted by Admin:'),
+            '<span class="font-semibold">' . $adminSoftDeletedFormatted . '</span>'
+        ], false);
 });
