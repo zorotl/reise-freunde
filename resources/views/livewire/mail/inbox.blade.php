@@ -49,7 +49,7 @@
                     <flux:icon.archive-box class="w-4 h-4"/>
                 </button>
                 <button wire:click="deleteMessage({{ $message->id }})" wire:confirm="Are you sure you want to delete this message?"
-                    class="p-1.5 text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-700" title="{{ __('Delete') }}">
+                    class="p-1.5 text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300 rounded-md hover:bg-red-100 dark:hover:bg-red-700" title="{{ __('Move to Trash') }}">
                     <flux:icon.trash class="w-4 h-4"/>
                 </button>
             </div>

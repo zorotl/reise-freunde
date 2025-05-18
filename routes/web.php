@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified', 'check_banned', 'approved'])->group(funct
     Route::get('/mail/inbox', \App\Livewire\Mail\Inbox::class)->name('mail.inbox');
     Route::get('/mail/outbox', \App\Livewire\Mail\Outbox::class)->name('mail.outbox');
     Route::get('/mail/archive', \App\Livewire\Mail\ArchivedBox::class)->name('mail.archive');
+    Route::get('/mail/trash', \App\Livewire\Mail\TrashBox::class)->name('mail.trash');
     Route::get('/mail/messages/{message}/{fromWhere?}', \App\Livewire\Mail\MessageView::class)->name('mail.messages.view');
     Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', \App\Livewire\Mail\MessageCompose::class)->name('mail.compose');
 
@@ -99,8 +100,16 @@ require __DIR__ . '/auth.php';
 
 // ToDo for the whole project:
 
+// Für Projekt in Gemini:
+// - kurz und bündig bezüglich Erklärungen, ganz besonders bei bug-fixing...da erklärt er sich aktuell dumm und dämlich
+// - CLI Command statt konsole
+// - übersetzungsfiles
+// - unter 3 erstellt er den code, unter 4 die zusammenfassung der änderungen...irgendwie brauch ich das so nicht
+// - prüfen ob es sinnvoll ist, seeder und factorys fürs testing und für die dev version zu ergänzen oder ändern
+
 //     Fix the following issues:
-//         - [ ] ...
+//         - [ ] message: if i response to an answer, the titel should be the same, maybe with a prefix, what you recommande and can you find the bug?
+//         - [ ] admin panel: earlyer i could report only post, if i accapt a report, the post was deleted, now it is not and the reason is, that i extendet reports to user an messages. 
 
 //     Messages:
 //         - [ ] Delete messages and Archive messages

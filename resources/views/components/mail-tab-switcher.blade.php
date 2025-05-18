@@ -23,6 +23,14 @@
         {{ __('Archive') }}
     </a>
 
+    <a href="{{ route('mail.trash') }}" @class([ 'pb-2 font-medium transition' , request()->routeIs('mail.trash')
+        ? 'text-red-600 border-b-2 border-red-600 dark:text-red-400 dark:border-red-400'  // Different color for trash maybe
+        : 'text-gray-600 hover:text-red-500 dark:text-gray-300 dark:hover:text-red-400'
+        ])
+        wire:navigate>
+        {{ __('Trash') }}
+    </a>
+
     <a href="{{ route('mail.compose') }}" @class([ 'pb-2 font-medium transition' , request()->routeIs('mail.compose')
         ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
         : 'text-gray-600 hover:text-indigo-500 dark:text-gray-300 dark:hover:text-indigo-400'

@@ -3,15 +3,16 @@
 namespace Tests\Feature\Mail;
 
 use App\Models\User;
-use App\Models\UserAdditionalInfo;
-use App\Models\UserGrant;
+use Livewire\Livewire;
 use App\Models\Message;
+use App\Models\UserGrant;
 use App\Livewire\Mail\Inbox;
 use App\Livewire\Mail\Outbox;
+use App\Livewire\Mail\TrashBox;
 use App\Livewire\Mail\ArchivedBox;
 use App\Livewire\Mail\MessageView;
+use App\Models\UserAdditionalInfo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 use function Pest\Laravel\actingAs; // Correctly imported for Pest
 
 uses(RefreshDatabase::class);
@@ -257,4 +258,95 @@ test('message view does not mark message as read for sender', function () {
 
     $message->refresh();
     expect($message->read_at)->toBeNull();
+});
+
+// --- TrashBox Actions ---
+test('message moved to trash appears in trash box for receiver', function () {
+    extract(setupMessageTestEnvironment());
+    actingAs($receiver);
+
+    // User "deletes" (moves to trash) from Inbox
+    Livewire::test(Inbox::class)
+        ->call('deleteMessage', $message->id);
+
+    $message->refresh();
+    expect($message->receiver_deleted_at)->not()->toBeNull();
+
+    // Now check TrashBox
+    Livewire::test(TrashBox::class)
+        ->assertSee($message->subject);
+});
+
+test('message moved to trash appears in trash box for sender', function () {
+    extract(setupMessageTestEnvironment());
+    actingAs($sender);
+
+    // User "deletes" (moves to trash) from Outbox
+    Livewire::test(Outbox::class)
+        ->call('deleteMessage', $message->id);
+
+    $message->refresh();
+    expect($message->sender_deleted_at)->not()->toBeNull();
+
+    // Now check TrashBox
+    Livewire::test(TrashBox::class)
+        ->assertSee($message->subject);
+});
+
+test('user can restore a message from trash (receiver)', function () {
+    extract(setupMessageTestEnvironment());
+    // Put message in trash for receiver
+    $message->update(['receiver_deleted_at' => now(), 'receiver_archived_at' => now()]); // Also simulate it was archived before trashing
+    actingAs($receiver);
+
+    Livewire::test(TrashBox::class)
+        ->assertSee($message->subject)
+        ->call('restoreMessage', $message->id)
+        ->assertDispatched('userMessageActionFeedback', message: __('Message restored.'), type: 'status');
+
+    $message->refresh();
+    expect($message->receiver_deleted_at)->toBeNull();
+    // Check if it was also unarchived as per our restore logic
+    expect($message->receiver_archived_at)->toBeNull();
+
+    // Verify it's no longer in trash
+    Livewire::test(TrashBox::class)
+        ->assertDontSee($message->subject);
+
+    // Verify it's back in inbox (since unarchived)
+    Livewire::test(Inbox::class)
+        ->assertSee($message->subject);
+});
+
+test('user can restore a message from trash (sender)', function () {
+    extract(setupMessageTestEnvironment());
+    $message->update(['sender_deleted_at' => now(), 'sender_archived_at' => now()]);
+    actingAs($sender);
+
+    Livewire::test(TrashBox::class)
+        ->assertSee($message->subject)
+        ->call('restoreMessage', $message->id)
+        ->assertDispatched('userMessageActionFeedback', message: __('Message restored.'), type: 'status');
+
+    $message->refresh();
+    expect($message->sender_deleted_at)->toBeNull();
+    expect($message->sender_archived_at)->toBeNull(); // Check unarchived
+
+    Livewire::test(TrashBox::class)->assertDontSee($message->subject);
+    Livewire::test(Outbox::class)->assertSee($message->subject); // Back in Outbox
+});
+
+test('user can "permanently delete" (remove from trash view) a message from trash', function () {
+    extract(setupMessageTestEnvironment());
+    $message->update(['receiver_deleted_at' => now()]);
+    actingAs($receiver);
+
+    Livewire::test(TrashBox::class)
+        ->assertSee($message->subject)
+        ->call('deletePermanently', $message->id) // This now "restores" it to clear from trash
+        ->assertDispatched('userMessageActionFeedback', message: __('Message removed from trash.'), type: 'status')
+        ->assertDontSee($message->subject); // Should pass now
+
+    $message->refresh();
+    expect($message->receiver_deleted_at)->toBeNull(); // Verify it was "restored"
 });
