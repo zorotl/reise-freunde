@@ -28,15 +28,17 @@ class MessageCompose extends Component
     public function mount(?int $receiverId = null, ?bool $fixReceiver = false)
     {
         if ($receiverId) {
-            $recipient = User::find($receiverId);
+            // Eager load additionalInfo when finding the recipient
+            $recipient = User::with('additionalInfo')->find($receiverId); // Added with('additionalInfo')
             if ($recipient) {
                 $this->receiver_id = $recipient->id;
-                // It's good practice to fetch the name from additionalInfo if that's where usernames are stored.
-                // Assuming 'username' is in 'additionalInfo' and 'name' is the fallback.
-                $this->selectedRecipientName = $recipient->additionalInfo?->username ?? $recipient->name;
-                $this->fixReceiver = (bool) $fixReceiver; // Ensure boolean
+                // Consistent display name logic: username or fallback to concatenated firstname and lastname
+                $this->selectedRecipientName = $recipient->additionalInfo?->username ?: ($recipient->firstname . ' ' . $recipient->lastname);
+                $this->fixReceiver = (bool) $fixReceiver;
             }
         }
+        // Ensure fixReceiver is boolean even if receiverId is not provided
+        $this->fixReceiver = (bool) $fixReceiver;
     }
 
     public function updatedSearch(string $value): void
