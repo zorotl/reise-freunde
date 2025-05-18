@@ -47,7 +47,8 @@ Route::middleware(['auth', 'verified', 'check_banned', 'approved'])->group(funct
     Route::get('/mail', fn() => redirect()->route('mail.inbox'))->name('mail');
     Route::get('/mail/inbox', \App\Livewire\Mail\Inbox::class)->name('mail.inbox');
     Route::get('/mail/outbox', \App\Livewire\Mail\Outbox::class)->name('mail.outbox');
-    Route::get('/mail/messages/{message}/{fromWhere}', \App\Livewire\Mail\MessageView::class)->name('mail.messages.view');
+    Route::get('/mail/archive', \App\Livewire\Mail\ArchivedBox::class)->name('mail.archive');
+    Route::get('/mail/messages/{message}/{fromWhere?}', \App\Livewire\Mail\MessageView::class)->name('mail.messages.view');
     Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', \App\Livewire\Mail\MessageCompose::class)->name('mail.compose');
 
     // Follower system
