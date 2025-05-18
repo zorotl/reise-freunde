@@ -23,6 +23,7 @@ class MessageCompose extends Component
     public string $search = '';
     public array $searchResults = [];
     public string $selectedRecipientName = '';
+    public bool $showResults = false; // Added to control dropdown visibility explicitly
 
     public function mount(?int $receiverId = null, ?bool $fixReceiver = false)
     {
@@ -30,42 +31,76 @@ class MessageCompose extends Component
             $recipient = User::find($receiverId);
             if ($recipient) {
                 $this->receiver_id = $recipient->id;
-                $this->selectedRecipientName = $recipient->name;
+                // It's good practice to fetch the name from additionalInfo if that's where usernames are stored.
+                // Assuming 'username' is in 'additionalInfo' and 'name' is the fallback.
+                $this->selectedRecipientName = $recipient->additionalInfo?->username ?? $recipient->name;
+                $this->fixReceiver = (bool) $fixReceiver; // Ensure boolean
             }
         }
-        $this->fixReceiver = $fixReceiver;
     }
 
-    public function updatedSearch($value)
+    public function updatedSearch(string $value): void
     {
         if (strlen($value) >= 2) {
-            $this->searchResults = User::where('name', 'like', '%' . $value . '%')
-                ->where('id', '!=', Auth::id())
+            $this->searchResults = User::query()
+                // Search in 'name' (firstname + lastname) and 'username' in additional_infos table
+                ->where(function ($query) use ($value) {
+                    $query->where('firstname', 'like', '%' . $value . '%')
+                        ->orWhere('lastname', 'like', '%' . $value . '%')
+                        ->orWhereHas('additionalInfo', function ($subQuery) use ($value) {
+                            $subQuery->where('username', 'like', '%' . $value . '%');
+                        });
+                })
+                ->where('id', '!=', Auth::id()) // Exclude self
+                ->whereDoesntHave('grant', function ($query) { // Exclude banned users
+                    $query->where('is_banned', true);
+                })
+                ->select('id', 'firstname', 'lastname') // Select necessary fields
+                ->with('additionalInfo:user_id,username') // Eager load username from additionalInfo
+                ->take(10) // Limit results
                 ->get()
-                ->toArray(); // Convert the Collection to an array            
+                // Transform results to include a display name (username or full name)
+                ->map(function (User $user) {
+                    return [
+                        'id' => $user->id,
+                        // Prioritize username, fallback to firstname + lastname
+                        'display_name' => $user->additionalInfo?->username ?: ($user->firstname . ' ' . $user->lastname),
+                    ];
+                })
+                ->toArray();
+            $this->showResults = true;
         } else {
             $this->searchResults = [];
+            $this->showResults = false;
         }
         $this->receiver_id = null; // Reset selected recipient when searching
+        $this->selectedRecipientName = ''; // Clear selected name
     }
 
-    public function selectRecipient(User $user)
+    public function selectRecipient(int $userId, string $displayName): void
     {
-        $this->receiver_id = $user->id;
-        $this->selectedRecipientName = $user->name;
-        $this->search = '';
-        $this->searchResults = [];
+        $user = User::find($userId);
+        if ($user) {
+            $this->receiver_id = $user->id;
+            $this->selectedRecipientName = $displayName; // Use the display name from search results
+            $this->search = ''; // Clear search input
+            $this->searchResults = [];
+            $this->showResults = false; // Hide results
+        }
     }
 
-    public function deselectRecipient()
+    public function deselectRecipient(): void
     {
-        $this->receiver_id = null;
-        $this->selectedRecipientName = '';
-        $this->search = ''; // Optionally clear the search
-        $this->showResults = false; // Optionally hide results
+        if (!$this->fixReceiver) { // Only allow deselect if receiver is not fixed
+            $this->receiver_id = null;
+            $this->selectedRecipientName = '';
+            $this->search = '';
+            $this->searchResults = [];
+            $this->showResults = false;
+        }
     }
 
-    public function sendMessage()
+    public function sendMessage(): void
     {
         $this->validate();
 
@@ -82,8 +117,15 @@ class MessageCompose extends Component
         ]);
 
         session()->flash('message', 'Message sent!');
-        $this->reset(['receiver_id', 'subject', 'body', 'selectedRecipientName']);
-        $this->dispatch('close-modal'); // Assuming you still use a modal for compose
+
+        if ($this->fixReceiver) {
+            // If receiver is fixed, only reset subject and body
+            $this->reset(['subject', 'body']);
+        } else {
+            // Otherwise, reset everything related to the recipient as well
+            $this->reset(['receiver_id', 'subject', 'body', 'selectedRecipientName', 'search', 'searchResults', 'showResults']);
+        }
+        // $this->dispatch('close-modal'); // Assuming you still use a modal for compose
     }
 
     public function render()

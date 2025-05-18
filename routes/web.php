@@ -102,14 +102,13 @@ require __DIR__ . '/auth.php';
 //         - [ ] ...
 
 //     Messages:
-//         - [x] Add a report system for messages
+//         - [ ] Delete messages and Archive messages
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
-//         - [x] Implement a verified User System
+
 
 //     Language:
-//         - [x] Add more and more translations
 //         - [ ] Add FR and IT language, extend the language switcher
 //         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
 //         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
