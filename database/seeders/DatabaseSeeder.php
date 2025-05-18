@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PostSeeder::class);
         $this->call(HobbyAndTravelStyleSeeder::class);
         $this->call(MessageSeeder::class);
+        $this->call(LargeMessageSeeder::class);
         $this->call(UserFollowerSeeder::class);
         $this->call(PostLikeSeeder::class);
         $this->call(BanHistorySeeder::class);
