@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\On; // Import On attribute
+use Livewire\Attributes\On;
 
 #[Title('Mail Outbox')]
 class Outbox extends Component
@@ -16,22 +16,26 @@ class Outbox extends Component
 
     protected $paginationTheme = 'tailwind';
 
-    // Listen for events to refresh the component
     #[On('messageArchived')]
     #[On('messageDeleted')]
-    public function refreshComponent(): void
+    #[On('userMessageActionFeedback')] // Listener for feedback
+    public function handleFeedback($message = null, $type = 'status'): void
     {
-        $this->resetPage();
+        if ($message) {
+            session()->flash($type, $message);
+        }
+        $this->resetPage(); // Refresh the current page of results
     }
 
     public function getMessagesProperty()
     {
         if (!Auth::check()) {
-            return Message::query()->paginate(10);
+            // Return an empty paginator or handle as per your app's logic for guests
+            return Message::query()->whereRaw('1 = 0')->paginate(10);
         }
         return Message::where('sender_id', Auth::id())
-            ->whereNull('sender_deleted_at') // Only show non-deleted for sender
-            ->whereNull('sender_archived_at') // Only show non-archived for sender
+            ->whereNull('sender_deleted_at') // Only show non-deleted by sender
+            ->whereNull('sender_archived_at') // Only show non-archived by sender
             ->with(['receiver.additionalInfo']) // Eager load receiver and their additionalInfo
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -43,8 +47,8 @@ class Outbox extends Component
         if ($message && $message->sender_id === Auth::id()) {
             $message->sender_archived_at = now();
             $message->save();
-            $this->dispatch('messageArchived');
-            session()->flash('status', __('Message archived.'));
+            $this->dispatch('userMessageActionFeedback', message: __('Message archived.'), type: 'status');
+            $this->dispatch('messageArchived'); // For other components or self-refresh
         }
     }
 
@@ -54,15 +58,15 @@ class Outbox extends Component
         if ($message && $message->sender_id === Auth::id()) {
             $message->sender_deleted_at = now();
             $message->save();
-            $this->dispatch('messageDeleted');
-            session()->flash('status', __('Message deleted.'));
+            $this->dispatch('userMessageActionFeedback', message: __('Message deleted.'), type: 'status');
+            $this->dispatch('messageDeleted'); // For other components or self-refresh
         }
     }
 
     public function render()
     {
         return view('livewire.mail.outbox', [
-            'messages' => $this->messages, // Access the computed property
+            'messages' => $this->messages,
         ]);
     }
 }

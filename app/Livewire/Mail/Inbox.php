@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\WithPagination;
-use Livewire\Attributes\On; // Import On attribute
+use Livewire\Attributes\On;
 
 #[Title('Mail Inbox')]
 class Inbox extends Component
@@ -15,16 +15,19 @@ class Inbox extends Component
     use WithPagination;
 
     public $unreadCount;
-    protected $paginationTheme = 'tailwind'; // Or your preferred theme
+    protected $paginationTheme = 'tailwind';
 
-    // Listen for events to refresh the component
-    #[On('messageArchived')]
-    #[On('messageDeleted')]
-    #[On('messageRead')] // If you dispatch this from MessageView
-    public function refreshComponent(): void
+    #[On('messageArchived')] // For self-refresh if needed
+    #[On('messageDeleted')]  // For self-refresh if needed
+    #[On('messageRead')]
+    #[On('userMessageActionFeedback')] // Listener to re-flash for UI
+    public function handleFeedback($message = null, $type = 'status'): void
     {
+        if ($message) {
+            session()->flash($type, $message);
+        }
         $this->loadUnreadCount();
-        $this->resetPage(); // To ensure pagination is correct after list changes
+        $this->resetPage();
     }
 
     public function mount()
@@ -34,19 +37,21 @@ class Inbox extends Component
 
     public function getMessagesProperty()
     {
+        // ... (existing logic) ...
         if (!Auth::check()) {
-            return Message::query()->paginate(10); // Return empty paginator for guests
+            return Message::query()->paginate(10);
         }
         return Message::where('receiver_id', Auth::id())
-            ->whereNull('receiver_deleted_at') // Only show non-deleted by receiver
-            ->whereNull('receiver_archived_at') // Only show non-archived by receiver
-            ->with(['sender.additionalInfo']) // Eager load sender and their additionalInfo
+            ->whereNull('receiver_deleted_at')
+            ->whereNull('receiver_archived_at')
+            ->with(['sender.additionalInfo'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
 
     public function loadUnreadCount()
     {
+        // ... (existing logic) ...
         if (Auth::check()) {
             $this->unreadCount = Message::where('receiver_id', Auth::id())
                 ->whereNull('read_at')
@@ -64,8 +69,8 @@ class Inbox extends Component
         if ($message && $message->receiver_id === Auth::id()) {
             $message->receiver_archived_at = now();
             $message->save();
-            $this->dispatch('messageArchived'); // Dispatch event
-            session()->flash('status', __('Message archived.'));
+            $this->dispatch('userMessageActionFeedback', message: __('Message archived.'), type: 'status');
+            $this->dispatch('messageArchived'); // For other components or self-refresh if not using the feedback listener for that
         }
     }
 
@@ -75,15 +80,15 @@ class Inbox extends Component
         if ($message && $message->receiver_id === Auth::id()) {
             $message->receiver_deleted_at = now();
             $message->save();
-            $this->dispatch('messageDeleted'); // Dispatch event
-            session()->flash('status', __('Message deleted.'));
+            $this->dispatch('userMessageActionFeedback', message: __('Message deleted.'), type: 'status');
+            $this->dispatch('messageDeleted');
         }
     }
 
     public function render()
     {
         return view('livewire.mail.inbox', [
-            'messages' => $this->messages, // Access the computed property
+            'messages' => $this->messages,
         ]);
     }
 }

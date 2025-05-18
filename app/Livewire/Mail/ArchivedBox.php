@@ -16,18 +16,21 @@ class ArchivedBox extends Component
 
     protected $paginationTheme = 'tailwind';
 
-    // Listen for events to refresh the component
     #[On('messageUnarchived')]
     #[On('messageDeletedFromArchive')]
-    public function refreshComponent(): void
+    #[On('userMessageActionFeedback')] // Listener for feedback
+    public function handleFeedback($message = null, $type = 'status'): void
     {
+        if ($message) {
+            session()->flash($type, $message);
+        }
         $this->resetPage();
     }
 
     public function getMessagesProperty()
     {
         if (!Auth::check()) {
-            return Message::query()->paginate(10);
+            return Message::query()->whereRaw('1 = 0')->paginate(10);
         }
         $userId = Auth::id();
         return Message::query()
@@ -52,18 +55,19 @@ class ArchivedBox extends Component
         $message = Message::find($messageId);
         if ($message) {
             $unarchived = false;
-            if ($message->receiver_id === Auth::id() && $message->receiver_archived_at) {
+            $currentUserId = Auth::id();
+            if ($message->receiver_id === $currentUserId && $message->receiver_archived_at) {
                 $message->receiver_archived_at = null;
                 $unarchived = true;
-            } elseif ($message->sender_id === Auth::id() && $message->sender_archived_at) {
+            } elseif ($message->sender_id === $currentUserId && $message->sender_archived_at) {
                 $message->sender_archived_at = null;
                 $unarchived = true;
             }
 
             if ($unarchived) {
                 $message->save();
+                $this->dispatch('userMessageActionFeedback', message: __('Message unarchived.'), type: 'status');
                 $this->dispatch('messageUnarchived');
-                session()->flash('status', __('Message unarchived.'));
             }
         }
     }
@@ -73,20 +77,23 @@ class ArchivedBox extends Component
         $message = Message::find($messageId);
         if ($message) {
             $deleted = false;
-            if ($message->receiver_id === Auth::id() && $message->receiver_archived_at) {
+            $currentUserId = Auth::id();
+            if ($message->receiver_id === $currentUserId && $message->receiver_archived_at) {
                 $message->receiver_deleted_at = now();
-                // Optionally also unarchive: $message->receiver_archived_at = null;
+                // Optionally also unarchive if you want it to disappear completely from archive view upon delete:
+                // $message->receiver_archived_at = null;
                 $deleted = true;
-            } elseif ($message->sender_id === Auth::id() && $message->sender_archived_at) {
+            } elseif ($message->sender_id === $currentUserId && $message->sender_archived_at) {
                 $message->sender_deleted_at = now();
-                // Optionally also unarchive: $message->sender_archived_at = null;
+                // Optionally also unarchive:
+                // $message->sender_archived_at = null;
                 $deleted = true;
             }
 
             if ($deleted) {
                 $message->save();
-                $this->dispatch('messageDeletedFromArchive'); // Specific event
-                session()->flash('status', __('Message deleted from archive.'));
+                $this->dispatch('userMessageActionFeedback', message: __('Message deleted from archive.'), type: 'status');
+                $this->dispatch('messageDeletedFromArchive');
             }
         }
     }
@@ -94,7 +101,7 @@ class ArchivedBox extends Component
     public function render()
     {
         return view('livewire.mail.archived-box', [
-            'messages' => $this->messages, // Access the computed property
+            'messages' => $this->messages,
         ]);
     }
 }
