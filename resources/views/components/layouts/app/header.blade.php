@@ -15,13 +15,13 @@
         </a>
 
         <flux:navbar class="-mb-px max-lg:hidden">
-            {{-- New Dashboard Link --}}
+            {{-- New Dashboard --}}
             <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                 wire:navigate>
                 {{ __('Dashboard') }}
             </flux:navbar.item>
 
-            {{-- New Dashboard Link --}}
+            {{-- New Dashboard --}}
             <flux:navbar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')"
                 wire:navigate>
                 {{ __('Notifications') }}
@@ -35,42 +35,34 @@
                 @endauth
             </flux:navbar.item>           
 
-            {{-- "All Posts" Link --}}
+            {{-- "All Posts" --}}
             <flux:navbar.item icon="rectangle-stack" :href="route('post.show')"
                 :current="request()->routeIs('post.show')" wire:navigate>
                 {{ __("All Posts") }}
             </flux:navbar.item>
 
-            @auth
-            {{-- Existing Auth Links --}}
+            {{-- Messages --}}
             <flux:navbar.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')"
                 wire:navigate>
                 {{ __("Messages") }}
                 <livewire:post.unread-messages-count />
             </flux:navbar.item>
+
+            {{-- Friends --}}
+            @auth
             <flux:navbar.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
                 :current="request()->routeIs('user.following')" wire:navigate>{{ __("Friends") }}
             </flux:navbar.item>
             @endauth
 
-            {{-- "Find User" Link --}}
+            {{-- "Find User" --}}
             <flux:navbar.item icon="users" :href="route('user.directory')"
                 :current="request()->routeIs('user.directory')" wire:navigate>
                 {{ __("Find User") }}
             </flux:navbar.item>
-
         </flux:navbar>
 
         <flux:spacer />
-
-        {{-- Search Icon --}}
-        <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-            <x-language-switcher />
-            <flux:tooltip :content="__('Search')" position="bottom">
-                <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#"
-                    :label="__('Search')" /> {{-- Update search link if needed --}}
-            </flux:tooltip>
-        </flux:navbar>
 
         {{-- User Menu Dropdown --}}
         @auth
@@ -145,7 +137,7 @@
         {{-- Show Login/Register if user is not authenticated --}}
         <div class="flex items-center space-x-2">
             <a href="{{ route('login') }}"
-                class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                class="inline-flex items-center justify-center px-3 py-1.5 border border-gray-400 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-400 dark:hover:bg-gray-700"
                 wire:navigate>
                 {{ __('Log in') }}
             </a>
