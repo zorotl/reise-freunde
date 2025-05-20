@@ -19,21 +19,7 @@
             <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                 wire:navigate>
                 {{ __('Dashboard') }}
-            </flux:navbar.item>
-
-            {{-- New Dashboard --}}
-            <flux:navbar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')"
-                wire:navigate>
-                {{ __('Notifications') }}
-                @auth                    
-                @if ( auth()->user()->unreadNotifications()->count() > 0)
-                    {{-- Unread Notifications Count --}}
-                    <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                        {{ auth()->user()->unreadNotifications()->count() }}
-                    </span>                
-                @endif
-                @endauth
-            </flux:navbar.item>           
+            </flux:navbar.item>            
 
             {{-- "All Posts" --}}
             <flux:navbar.item icon="rectangle-stack" :href="route('post.show')"
@@ -64,8 +50,23 @@
 
         <flux:spacer />
 
-        {{-- User Menu Dropdown --}}
+        {{-- User Menu Right Side --}}
+        <x-language-switcher />
+
         @auth
+        {{-- Notifications --}}
+        <flux:navbar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')"
+            wire:navigate>
+            {{-- {{ __('Notifications') }} --}}
+            @if ( auth()->user()->unreadNotifications()->count() > 0)
+                {{-- Unread Notifications Count --}}
+                <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                    {{ auth()->user()->unreadNotifications()->count() }}
+                </span>                
+            @endif
+        </flux:navbar.item>           
+
+        {{-- User Menu Dropdown --}}
         <flux:dropdown position="top" align="end">
             {{-- ... rest of dropdown remains the same ... --}}
             <flux:profile class="cursor-pointer" avatar="{{ auth()->user()->profilePictureUrl() }}" />

@@ -4,26 +4,21 @@ namespace App\Livewire\Post;
 
 use Livewire\Component;
 use App\Models\Post;
-use App\Models\User; // Import User model
 use Illuminate\Support\Carbon;
-use Monarobase\CountryList\CountryListFacade as Countries;
 use Livewire\WithPagination;
-use Illuminate\Database\Eloquent\Builder; // Import Builder
-use Livewire\Attributes\Url; // Import Url attribute
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 
 #[Title('All Posts')]
 class PostList extends Component
 {
-    use WithPagination; // Use pagination
+    use WithPagination;
 
-    // Existing properties
-    //public $entries;
     public Carbon $now;
     public string $show = 'all';
 
-    // Keep existing filters (optional, can be adapted)
     #[Url(as: 'country', history: true, keep: true)]
     public ?string $filterDestinationCountry = null;
     #[Url(as: 'city', history: true, keep: true)]
@@ -32,99 +27,71 @@ class PostList extends Component
     public ?string $filterFromDate = null;
     #[Url(as: 'to', history: true, keep: true)]
     public ?string $filterToDate = null;
-
-    // New Filters
     #[Url(as: 'nation', history: true, keep: true)]
     public ?string $filterUserNationality = null;
     #[Url(as: 'min_age', history: true, keep: true)]
-    public ?int $filterMinAge = null;
+    public ?int $filterMinAge = null; // Type-hinted as ?int
     #[Url(as: 'max_age', history: true, keep: true)]
-    public ?int $filterMaxAge = null;
-
-    // Country list for dropdowns
-    public array $countryList = [];
+    public ?int $filterMaxAge = null; // Type-hinted as ?int
 
     public function mount()
     {
         $this->now = Carbon::now();
-        $this->countryList = Countries::getList('en', 'php');
     }
 
-    // Reset pagination when filters change
-    public function updating($property): void
+    #[On('filters-updated')]
+    public function updateFilters(array $filters): void
     {
-        if (
-            in_array($property, [
-                'filterDestinationCountry',
-                'filterDestinationCity',
-                'filterFromDate',
-                'filterToDate',
-                'filterUserNationality',
-                'filterMinAge',
-                'filterMaxAge'
-            ])
-        ) {
-            $this->resetPage();
-        }
-    }
+        $this->filterDestinationCountry = $filters['destinationCountry'] ?? null;
+        $this->filterDestinationCity = $filters['destinationCity'] ?? null;
+        $this->filterFromDate = $filters['fromDate'] ?? null;
+        $this->filterToDate = $filters['toDate'] ?? null;
+        $this->filterUserNationality = $filters['userNationality'] ?? null;
 
-    public function resetFilters(): void
-    {
-        $this->reset([
-            'filterDestinationCountry',
-            'filterDestinationCity',
-            'filterFromDate',
-            'filterToDate',
-            'filterUserNationality',
-            'filterMinAge',
-            'filterMaxAge'
-        ]);
+        // Corrected lines for filterMinAge and filterMaxAge:
+        // Convert empty strings to null, otherwise cast to int.
+        $this->filterMinAge = !empty($filters['minAge']) ? (int) $filters['minAge'] : null;
+        $this->filterMaxAge = !empty($filters['maxAge']) ? (int) $filters['maxAge'] : null;
+
         $this->resetPage();
-        $this->dispatch('reset-nationality-select');
     }
 
     public function render()
     {
-        // *** Using whereHas approach ***
         $query = Post::query()
-            ->with('user.additionalInfo') // Eager load needed data
+            ->with('user.additionalInfo')
             ->withCount('likes')
-            ->where('posts.is_active', true) // Qualify table name
+            ->where('posts.is_active', true)
             ->where(function ($query) {
-                $query->whereNull('posts.expiry_date') // Qualify table name
+                $query->whereNull('posts.expiry_date')
                     ->orWhere('posts.expiry_date', '>', $this->now);
             });
 
-        // Apply Destination Country Filter
         $query->when($this->filterDestinationCountry, function (Builder $q, $countryCode) {
             $q->where('posts.country', $countryCode);
         });
 
-        // Apply Destination City Filter
         $query->when($this->filterDestinationCity, function (Builder $q, $city) {
             $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
             $q->where('posts.city', $operator, '%' . $city . '%');
         });
 
-        // Apply From Date Filter
         $query->when($this->filterFromDate, function (Builder $q, $date) {
-            $q->whereDate('posts.from_date', '>=', $date);
+            $formattedDate = Carbon::parse($date)->format('Y-m-d');
+            $q->whereDate('posts.from_date', '>=', $formattedDate);
         });
 
-        // Apply To Date Filter
         $query->when($this->filterToDate, function (Builder $q, $date) {
-            $q->whereDate('posts.to_date', '<=', $date);
+            $formattedDate = Carbon::parse($date)->format('Y-m-d');
+            $q->whereDate('posts.to_date', '<=', $formattedDate);
         });
 
-        // Apply User Nationality Filter (using whereHas with whereRaw)
         $query->when($this->filterUserNationality, function (Builder $q, $nationality) {
             $q->whereHas('user.additionalInfo', function (Builder $subQuery) use ($nationality) {
-                // Using LOWER ensures case-insensitivity across DBs
                 $subQuery->whereRaw('LOWER(nationality) = ?', [strtolower($nationality)]);
             });
         });
 
-        // Apply Minimum Age Filter (using whereHas)
         if ($this->filterMinAge !== null && $this->filterMinAge >= 0) {
             $minAge = (int) $this->filterMinAge;
             $latestBirthday = now()->subYears($minAge)->endOfDay()->toDateString();
@@ -134,7 +101,6 @@ class PostList extends Component
             });
         }
 
-        // Apply Maximum Age Filter (using whereHas)
         if ($this->filterMaxAge !== null && $this->filterMaxAge >= 0) {
             $maxAge = (int) $this->filterMaxAge;
             $earliestBirthday = now()->subYears($maxAge + 1)->startOfDay()->toDateString();
@@ -143,8 +109,6 @@ class PostList extends Component
                     ->whereDate('birthday', '>', $earliestBirthday);
             });
         }
-
-        // *** END Query Logic ***
 
         $entries = $query->latest('posts.created_at')->paginate(15);
 

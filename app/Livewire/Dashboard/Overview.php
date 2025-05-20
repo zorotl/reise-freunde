@@ -47,7 +47,6 @@ class Overview extends Component
         $this->loadSuggestedUsers();
     }
 
-
     /**
      * Load follower and following counts.
      */
@@ -116,7 +115,6 @@ class Overview extends Component
 
         $currentUserHobbyIds = $currentUser->hobbies->pluck('id');
         $currentUserTravelStyleIds = $currentUser->travelStyles()->pluck('travel_styles.id');
-
 
         // Query for users who are not excluded and share at least one interest
         $this->suggestedUsers = User::query()
