@@ -1,92 +1,98 @@
 <?php
 
-// use App\Models\User;
-// use App\Models\Post;
-// use App\Models\UserAdditionalInfo;
-// use Livewire\Livewire;
-// use App\Livewire\Post\PostList;
-// use Illuminate\Support\Carbon;
-// use Illuminate\Support\Str;
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+namespace Tests\Feature;
 
-// use function Pest\Laravel\actingAs;
-// use function Pest\Laravel\assertDatabaseHas;
-// use function Pest\Laravel\assertDatabaseMissing; // Hinzugefügt für Negativtests
+use App\Livewire\Post\PostList;
+use App\Livewire\PostFilters;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\UserAdditionalInfo;
+use Carbon\Carbon;
+use Livewire\Livewire;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-// uses(RefreshDatabase::class);
+use function Pest\Laravel\get;
 
-// // Helper function (bleibt gleich)
-// function createUserWithDetailsForFilterTest(array $details = []): User
-// {
-//     $baseUsername = 'testuser_' . Str::random(5);
-//     $user = User::factory()->create(Arr::only($details, ['firstname', 'lastname']));
-//     UserAdditionalInfo::factory()->create(array_merge(
-//         [
-//             'user_id' => $user->id,
-//             'username' => $baseUsername . $user->id,
-//             'birthday' => now()->subYears(30)->toDateString(), // Factory gibt nur Datumsteil zurück
-//             'nationality' => 'CH',
-//         ],
-//         Arr::only($details, ['username', 'birthday', 'nationality'])
-//     ));
-//     return $user->load('additionalInfo');
-// }
+uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->user1 = User::factory()->create();
+    $this->user1->additionalInfo()->save(UserAdditionalInfo::factory()->make([
+        'nationality' => 'CH',
+        'birthday' => now()->subYears(25)->toDateString(),
+    ]));
 
-// test('can filter posts by user nationality', function () {
-//     // Arrange
-//     $user = User::factory()->create();
-//     $user->additionalInfo()->create(['username' => 'acting_user_nat_' . $user->id]);
-//     $userCH = createUserWithDetailsForFilterTest(['nationality' => 'CH', 'firstname' => 'Swiss']);
-//     $userDE = createUserWithDetailsForFilterTest(['nationality' => 'DE', 'firstname' => 'German']);
-//     $postCH = Post::factory()->create(['user_id' => $userCH->id, 'title' => 'Swiss Post', 'is_active' => true, 'expiry_date' => now()->addYear()]);
-//     $postDE = Post::factory()->create(['user_id' => $userDE->id, 'title' => 'German Post', 'is_active' => true, 'expiry_date' => now()->addYear()]);
+    $this->user2 = User::factory()->create();
+    $this->user2->additionalInfo()->save(UserAdditionalInfo::factory()->make([
+        'nationality' => 'DE',
+        'birthday' => now()->subYears(30)->toDateString(),
+    ]));
 
-//     // Assert DB state before Livewire interaction
-//     assertDatabaseHas('user_additional_infos', ['user_id' => $userDE->id, 'nationality' => 'DE']);
-//     assertDatabaseHas('posts', ['id' => $postDE->id, 'user_id' => $userDE->id]);
-//     assertDatabaseHas('user_additional_infos', ['user_id' => $userCH->id, 'nationality' => 'CH']);
-//     assertDatabaseHas('posts', ['id' => $postCH->id, 'user_id' => $userCH->id]);
+    $this->user3 = User::factory()->create();
+    $this->user3->additionalInfo()->save(UserAdditionalInfo::factory()->make([
+        'nationality' => 'FR',
+        'birthday' => now()->subYears(35)->toDateString(),
+    ]));
 
+    $this->post1 = Post::factory()->for($this->user1)->create([
+        'title' => 'Post One - US',
+        'country' => 'US',
+        'city' => 'New York',
+        'from_date' => now()->addDays(5)->toDateString(),
+        'to_date' => now()->addDays(10)->toDateString(),
+        'is_active' => true,
+        'expiry_date' => now()->addDays(30)->toDateString(),
+    ]);
 
-//     actingAs($user);
+    $this->post2 = Post::factory()->for($this->user2)->create([
+        'title' => 'Post Two - DE',
+        'country' => 'DE',
+        'city' => 'Berlin',
+        'from_date' => now()->addDays(15)->toDateString(),
+        'to_date' => now()->addDays(20)->toDateString(),
+        'is_active' => true,
+        'expiry_date' => now()->addDays(30)->toDateString(),
+    ]);
 
-//     // Test the Livewire component
-//     Livewire::test(PostList::class)
-//         ->set('filterUserNationality', 'DE') // Filter setzen
-//         ->assertSee('German Post') // Sollte deutschen Post sehen
-//         ->assertDontSee('Swiss Post'); // Sollte schweizer Post NICHT sehen
-// });
+    $this->post3 = Post::factory()->for($this->user3)->create([
+        'title' => 'Post Three - FR',
+        'country' => 'FR',
+        'city' => 'Paris',
+        'from_date' => now()->addDays(2)->toDateString(),
+        'to_date' => now()->addDays(7)->toDateString(),
+        'is_active' => true,
+        'expiry_date' => now()->addDays(30)->toDateString(),
+    ]);
 
+    $this->inactivePost = Post::factory()->for($this->user1)->create([
+        'title' => 'Inactive Post',
+        'country' => 'CH',
+        'city' => 'Bern',
+        'is_active' => false,
+        'expiry_date' => now()->addDays(30)->toDateString(),
+    ]);
 
-// test('can filter posts by user age range', function () {
-//     // Arrange
-//     $user = User::factory()->create();
-//     $user->additionalInfo()->create(['username' => 'acting_user_age_' . $user->id]);
+    $this->expiredPost = Post::factory()->for($this->user1)->create([
+        'title' => 'Expired Post',
+        'country' => 'CH',
+        'city' => 'Zurich',
+        'is_active' => true,
+        'expiry_date' => now()->subDay()->toDateString(),
+    ]);
+});
 
-//     $today = Carbon::parse('2025-05-03'); // Festes Datum für Konsistenz
-//     $birthday25 = $today->copy()->subYears(25)->toDateString(); // Ist 25
-//     $birthday35 = $today->copy()->subYears(35)->toDateString(); // Ist 35
+test('post list page contains livewire post filters component', function () {
+    get(route('post.show'))
+        ->assertOk()
+        ->assertSeeLivewire(PostList::class)
+        ->assertSeeLivewire(PostFilters::class);
+});
 
-//     $user25 = createUserWithDetailsForFilterTest(['birthday' => $birthday25, 'firstname' => 'TwentyFive']);
-//     $user35 = createUserWithDetailsForFilterTest(['birthday' => $birthday35, 'firstname' => 'ThirtyFive']);
-
-//     $post25 = Post::factory()->create(['user_id' => $user25->id, 'title' => 'Post by 25yo', 'is_active' => true, 'expiry_date' => now()->addYear()]);
-//     $post35 = Post::factory()->create(['user_id' => $user35->id, 'title' => 'Post by 35yo', 'is_active' => true, 'expiry_date' => now()->addYear()]);
-
-//     // Assert DB state before Livewire interaction
-//     assertDatabaseHas('user_additional_infos', ['user_id' => $user35->id, 'birthday' => $birthday35]); // Verwende den String 'YYYY-MM-DD'
-//     assertDatabaseHas('posts', ['id' => $post35->id, 'user_id' => $user35->id]);
-//     assertDatabaseHas('user_additional_infos', ['user_id' => $user25->id, 'birthday' => $birthday25]);
-//     assertDatabaseHas('posts', ['id' => $post25->id, 'user_id' => $user25->id]);
-
-
-//     actingAs($user);
-
-//     // Test the Livewire component
-//     Livewire::test(PostList::class)
-//         ->set('filterMinAge', 30) // Filter setzen
-//         ->set('filterMaxAge', 40)
-//         ->assertSee('Post by 35yo') // Sollte 35j sehen
-//         ->assertDontSee('Post by 25yo'); // Sollte 25j NICHT sehen
-// }); 
+test('post list initially displays active and non-expired posts', function () {
+    Livewire::test(PostList::class)
+        ->assertSee($this->post1->title)
+        ->assertSee($this->post2->title)
+        ->assertSee($this->post3->title)
+        ->assertDontSee($this->inactivePost->title)
+        ->assertDontSee($this->expiredPost->title);
+});
