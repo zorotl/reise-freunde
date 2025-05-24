@@ -1,9 +1,6 @@
 {{-- resources/views/livewire/post-filters.blade.php --}}
 <div class="mb-6 p-6 bg-white dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 rounded-2xl shadow-sm">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-300">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.223 8.045.676V6.75a4.5 4.5 0 0 1-4.72 4.225A3.75 3.75 0 0 0 12 11.25a3.75 3.75 0 0 0-3.325 1.801c-.792.203-1.58.375-2.368.525A4.5 4.5 0 0 1 3.75 16.5V21h12.388c-.694.269-1.39.467-2.093.593c-.04.008-.08.016-.12.024A9 9 0 0 0 12 21a9 9 0 0 0 8.045-4.981V16.5A4.502 4.502 0 0 0 18.75 12c.162-.058.324-.117.486-.178l.758-.29c1.642-.64 2.92-2.19 3.064-4.14A10.5 10.5 0 0 0 12 3Z" />
-        </svg>
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center">        
         {{ __('Filter Posts') }}
     </h2>
 
