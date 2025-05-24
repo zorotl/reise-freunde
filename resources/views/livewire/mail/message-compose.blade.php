@@ -48,12 +48,22 @@
                     class="absolute z-10 mt-1 w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
                     <ul>
                         @foreach ($searchResults as $user)
-                        <li class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer"
-                            wire:click="selectRecipient({{ $user['id'] }}, '{{ addslashes($user['display_name']) }}')"
-                            data-recipient-item> {{-- Added data-attribute for blur logic --}}
-                            {{ $user['display_name'] }}
-                        </li>
-                        @endforeach
+                            <li
+                                class="px-4 py-2 hover:bg-indigo-50 dark:hover:bg-neutral-700 cursor-pointer flex items-center gap-3"
+                                wire:click="selectRecipient({{ $user['id'] }}, '{{ addslashes($user['display_name']) }}')"
+                                data-recipient-item>
+                                
+                                {{-- Avatar --}}
+                                <img src="{{ $user['avatar_url'] ?? '/images/default-avatar.png' }}"
+                                    alt="{{ $user['display_name'] }}"
+                                    class="w-8 h-8 rounded-full object-cover" />
+
+                                {{-- Name + Username --}}
+                                <div class="text-sm">
+                                    <div class="font-medium text-gray-900 dark:text-gray-100">{{ $user['display_name'] }}</div>                                    
+                                </div>
+                            </li>
+                        @endforeach                    
                     </ul>
                 </div>
                  <div x-show="showResults && search.length >= 2 && $wire.searchResults.length === 0 && !$wire.receiver_id"
