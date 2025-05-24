@@ -2,32 +2,40 @@
 
 namespace App\Livewire\User;
 
+use App\Livewire\Traits\Followable;
 use App\Models\User;
 use Livewire\Component;
-use Livewire\WithPagination; // Use pagination
-use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
+use Livewire\WithPagination; // Add pagination
 
-#[Title('Followers')]
 class FollowersList extends Component
 {
-    use WithPagination;
+    use Followable, WithPagination; // Use trait and pagination
 
     public User $user;
 
-    public function mount(int $id)
+    public function mount(int $id): void
     {
-        $this->user = User::with('additionalInfo')->findOrFail($id);
+        $this->user = User::findOrFail($id);
+    }
+
+    /**
+     * Listen for the event and refresh the user data by reloading the relationship.
+     */
+    #[On('userFollowStateChanged')]
+    public function refreshFollowersData(int $userId): void
+    {
+        $this->user->load('followers'); // Re-fetch followers
+        // Reset pagination if needed, though usually re-render handles it.
+        $this->resetPage();
     }
 
     public function render()
     {
-        $followers = $this->user
-            ->followers() // Get the query builder
-            ->with('additionalInfo') // Eager load info for display
-            ->paginate(15); // Paginate results
+        $followers = $this->user->followers()->paginate(15); // Use pagination
 
         return view('livewire.user.followers-list', [
             'followers' => $followers,
-        ]);
+        ])->layout('components.layouts.app');
     }
 }

@@ -72,6 +72,18 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         );
     }
 
+    /**
+     * Get the user's first name from the 'name' attribute.
+     *
+     * @return string
+     */
+    public function getFirstNameAttribute(): string
+    {
+        // Split the name by space and return the first part.
+        // Fallback to the full name if splitting fails.
+        return explode(' ', $this->name)[0] ?? $this->name;
+    }
+
 
     // Added accessor to check if user has admin or moderator role
     public function isAdminOrModerator(): bool
@@ -257,6 +269,19 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
     }
 
     /**
+     * Cancel a follow request this user has sent to another user.
+     *
+     * @param User $recipient The user to whom the follow request was sent.
+     * @return void
+     */
+    public function cancelFollowRequest(User $recipient): void
+    {
+        // Detach from the pendingFollowingRequests relationship.
+        // This relationship lists users to whom THIS user has sent a request that is still pending.
+        $this->pendingFollowingRequests()->detach($recipient->id);
+    }
+
+    /**
      * Send a follow request or directly follow a user.
      */
     public function follow(User $userToFollow): void
@@ -335,11 +360,6 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
                 ->havingRaw('COUNT(*) >= ?', [$min]);
         });
     }
-
-
-
-
-
 
     /**
      * Relationships

@@ -2,53 +2,46 @@
 
 namespace App\Livewire\User;
 
+use App\Livewire\Traits\Followable;
 use App\Models\User;
 use Livewire\Component;
-use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
+use Livewire\WithPagination; // Add pagination
 
-#[Title('Following')]
 class FollowingList extends Component
 {
-    use WithPagination;
+    use Followable, WithPagination; // Use the trait and pagination
 
     public User $user;
-    public ?User $loggedInUser;
 
-    public function mount(int $id)
+    public function mount(int $id): void
     {
-        $this->user = User::with('additionalInfo')->findOrFail($id);
-        $this->loggedInUser = Auth::user(); // Needed for unfollow button
+        $this->user = User::findOrFail($id);
     }
 
-    public function unfollow(int $userIdToUnfollow)
+    /**
+     * Listen for the event and refresh the user data by reloading the relationship.
+     */
+    #[On('userFollowStateChanged')]
+    public function refreshFollowingData(int $userId): void
     {
-        if (!$this->loggedInUser || $this->loggedInUser->id !== $this->user->id) {
-            // Only allow unfollowing if viewing your own following list
-            session()->flash('error', 'You can only unfollow users from your own list.');
-            return;
-        }
-
-        $userToUnfollow = User::find($userIdToUnfollow);
-        if ($userToUnfollow) {
-            $this->loggedInUser->unfollow($userToUnfollow);
-            // Optionally force refresh the component data - pagination might reset
-            // $this->resetPage();
-            session()->flash('message', 'You have unfollowed ' . $userToUnfollow->name);
-        }
+        $this->user->load('following'); // Re-fetch following
+        // Since unfollowing removes a user, we must re-render and paginate
+        $this->resetPage();
     }
 
+    /**
+     * Remove the old 'unfollow' method if it exists.
+     * The trait now provides 'unfollowUser'.
+     */
+    // public function unfollow(User $userToUnfollow) { ... } // DELETE THIS
 
     public function render()
     {
-        $following = $this->user
-            ->following() // Get the query builder for accepted following
-            ->with('additionalInfo')
-            ->paginate(15);
+        $following = $this->user->following()->paginate(15); // Use pagination
 
         return view('livewire.user.following-list', [
             'following' => $following,
-        ]);
+        ])->layout('components.layouts.app');
     }
 }

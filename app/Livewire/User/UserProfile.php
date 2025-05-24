@@ -2,147 +2,108 @@
 
 namespace App\Livewire\User;
 
+use App\Livewire\Traits\Followable;
 use App\Models\User;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
-use Monarobase\CountryList\CountryListFacade as Countries;
-use Livewire\Attributes\Title;
 
-#[Title('User Profile')]
 class UserProfile extends Component
 {
-    public User $user;
-    public ?User $loggedInUser; // Nullable for guests
-    public array $countryList = [];
+    use Followable;
 
-    // Computed properties for cleaner view logic
+    public User $user;
+
+    public function mount(int $id): void
+    {
+        $this->user = User::withCount(['followers', 'following'])->findOrFail($id);
+    }
+
     #[Computed]
     public function isOwnProfile(): bool
     {
-        return $this->loggedInUser && $this->loggedInUser->id === $this->user->id;
+        return Auth::check() && $this->user->id === Auth::id();
     }
 
     #[Computed]
-    public function isFollowing(): bool
+    public function canViewSensitiveInfo(): bool
     {
-        return $this->loggedInUser && $this->loggedInUser->isFollowing($this->user);
-    }
-
-    #[Computed]
-    public function hasSentFollowRequest(): bool
-    {
-        return $this->loggedInUser && $this->loggedInUser->hasSentFollowRequestTo($this->user);
-    }
-
-    #[Computed]
-    public function hasPendingFollowRequestFrom(): bool
-    {
-        return $this->loggedInUser && $this->loggedInUser->hasPendingFollowRequestFrom($this->user);
+        if (!Auth::check()) {
+            return false;
+        }
+        $authUser = Auth::user();
+        if ($authUser->isAdminOrModerator()) {
+            return true;
+        }
+        if ($this->isOwnProfile()) {
+            return true;
+        }
+        if (!$this->user->isPrivate()) { // Using isPrivate() from User model
+            return true;
+        }
+        return $authUser->isFollowing($this->user);
     }
 
     #[Computed]
     public function canInteract(): bool
     {
-        return $this->loggedInUser && !$this->isOwnProfile;
+        if (!Auth::check() || $this->isOwnProfile()) {
+            return false;
+        }
+        $profileUserIsNotBanned = !$this->user->banHistory()->where('status', 'active')->exists();
+        $authUserIsNotBanned = !Auth::user()->banHistory()->where('status', 'active')->exists();
+        return $profileUserIsNotBanned && $authUserIsNotBanned;
+    }
+
+    #[Computed]
+    public function isFollowing(): bool
+    {
+        if (!Auth::check() || $this->isOwnProfile()) {
+            return false;
+        }
+        return Auth::user()->isFollowing($this->user);
+    }
+
+    #[Computed]
+    public function hasSentFollowRequest(): bool
+    {
+        if (!Auth::check() || $this->isOwnProfile()) {
+            return false;
+        }
+        return Auth::user()->hasSentFollowRequestTo($this->user);
     }
 
     /**
-     * Determine if the logged-in user can view sensitive info
-     * (e.g., counts on private profiles).
+     * Check if the profile user ($this->user) has a pending follow request
+     * FROM the currently authenticated user (Auth::user()).
+     * This is used, for example, on the profile page of user X,
+     * when Auth::user() is viewing it, to see if X has requested to follow Auth::user().
      */
-    #[Computed]
-    public function canViewSensitiveInfo(): bool
+    #[Computed] // <-- ADD THIS
+    public function hasPendingFollowRequestFrom(): bool
     {
-        // Can view if it's their own profile,
-        // or if the profile is not private,
-        // or if they are following the private profile.
-        return $this->isOwnProfile || !$this->user->isPrivate() || $this->isFollowing;
-    }
-
-    public function mount(int $id)
-    {
-        // Eager load relationships needed on the profile page + follow status checks
-        $this->user = User::with(['additionalInfo', 'followers', 'following'])
-            ->withCount(['followers', 'following']) // Get counts efficiently
-            ->findOrFail($id);
-        $this->loggedInUser = Auth::user();
-
-        // Eager load relationships for the logged-in user relevant for interaction checks
-        if ($this->loggedInUser) {
-            $this->loggedInUser->load(['following', 'pendingFollowingRequests']);
+        if (!Auth::check()) {
+            return false;
         }
-
-        // <-- Add this line to load the country list -->
-        $this->countryList = Countries::getList('en', 'php'); // Use 'php' format for key=>value
+        // Check if $this->user (the profile being viewed) has a pending request FROM Auth::user()
+        return $this->user->hasPendingFollowRequestFrom(Auth::user());
     }
 
-    // --- Actions ---
-
-    public function follow()
+    #[On('userFollowStateChanged')]
+    public function refreshProfileUser(int $userId): void
     {
-        if (!$this->canInteract)
-            return;
-
-        $this->loggedInUser->follow($this->user);
-        // Refresh data after action - consider more targeted refresh if needed
-        $this->refreshData();
-        // TODO: Potentially dispatch browser event for optimistic UI update with Alpine.js
-    }
-
-    public function unfollow()
-    {
-        if (!$this->canInteract)
-            return;
-
-        $this->loggedInUser->unfollow($this->user);
-        $this->refreshData();
-    }
-
-    public function cancelFollowRequest()
-    {
-        // Unfollowing handles cancelling requests as well
-        $this->unfollow();
-    }
-
-    public function acceptFollowRequest()
-    {
-        if (!$this->loggedInUser || !$this->isOwnProfile)
-            return; // Should not happen via UI but safety check
-
-        // We need the user who sent the request. The button context is tricky here.
-        // It's better to handle accept/decline on a dedicated requests list.
-        // If you MUST have it here, you'd need to know WHOSE request you're accepting,
-        // maybe passing the requesting user ID to this method.
-        // Let's assume this button won't exist directly on the profile view for now.
-        session()->flash('error', 'Accept/Decline should be handled on the requests page.');
-    }
-
-    public function declineFollowRequest()
-    {
-        if (!$this->loggedInUser || !$this->isOwnProfile)
-            return;
-        session()->flash('error', 'Accept/Decline should be handled on the requests page.');
-    }
-
-
-    // Helper to refresh user data and computed properties
-    private function refreshData()
-    {
-        $this->user->refresh()->loadCount(['followers', 'following']);
-        if ($this->loggedInUser) {
-            // Reload specific relationships that might have changed
-            $this->loggedInUser->load(['following', 'pendingFollowingRequests']);
-            // Reset computed properties by unsetting them (Livewire recomputes on next access)
+        if ($this->user->id === $userId || (Auth::check() && Auth::id() === $userId)) {
+            $this->user = $this->user->fresh()->loadCount(['followers', 'following']);
             unset($this->isFollowing);
             unset($this->hasSentFollowRequest);
-            unset($this->hasPendingFollowRequestFrom);
+            unset($this->hasPendingFollowRequestFrom); // <-- Unset this too
         }
     }
-
 
     public function render()
     {
-        return view('livewire.user.user-profile');
+        return view('livewire.user.user-profile')
+            ->layout('components.layouts.app');
     }
 }

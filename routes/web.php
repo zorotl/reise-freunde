@@ -16,7 +16,7 @@ Route::post('/set-locale', function () {
     return redirect()->back();
 })->name('set-locale');
 
-Volt::route('/users', 'user.search')->name('user.directory');
+Route::get('/users', App\Livewire\User\Search::class)->name('user.directory');
 
 Route::get('/user/profile/{id}', \App\Livewire\User\UserProfile::class)->name('user.profile');
 Route::get('/post/show', \App\Livewire\Post\PostList::class)->name('post.show');
@@ -100,22 +100,14 @@ require __DIR__ . '/auth.php';
 
 // ToDo for the whole project:
 
-// Für Projekt in Gemini:
-// - kurz und bündig bezüglich Erklärungen, ganz besonders bei bug-fixing...da erklärt er sich aktuell dumm und dämlich
-// - CLI Command statt konsole
-// - übersetzungsfiles
-// - unter 3 erstellt er den code, unter 4 die zusammenfassung der änderungen...irgendwie brauch ich das so nicht
-// - prüfen ob es sinnvoll ist, seeder und factorys fürs testing und für die dev version zu ergänzen oder ändern
-// - nach 1. verstehe meine anfrage, sollten rückfragen gestellt werden, erst dann mit 2 weitermachen
-// - kleinere Teilstücke, immer rückfragen, ob soweit alles funktioniert
-
 //     Fix the following issues:
 //         - [ ] message: if i response to an answer, the titel should be the same, maybe with a prefix, what you recommande and can you find the bug?
 //         - [ ] admin panel: earlyer i could report only post, if i accapt a report, the post was deleted, now it is not and the reason is, that i extendet reports to user an messages. 
 //         - [ ] Ban Sender from main page open modal, from message-view ban directly permanently...i will also the modal
+//         - [ ] Fix user-search: wenn ich "follow" klicke, dann ist das "spinning", also der ladekreis bei allen follow auf der seite zu sehen, nicht nur bei dem, den ich angeklickt habe.
 
 //     Messages:
-//         - [ ] Delete messages and Archive messages
+//         - [x] Delete messages and Archive messages
 
 //     Overall:
 //         - [ ] Implement the feature verify email (absolutely in the end of project)
