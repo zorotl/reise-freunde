@@ -82,15 +82,16 @@
                 @error('body') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            {{-- Action Buttons --}}
-            <div class="flex justify-end gap-2">
-                <button type="submit"
-                    class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    {{ __('Send Message') }}
-                </button>
+            {{-- Buttons --}}
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-neutral-700">
                 <button type="button" onclick="history.back()"
-                    class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600 border-gray-300 dark:border-neutral-600">
                     {{ __('Cancel') }}
+                </button>
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                    <flux:icon.paper-airplane class="w-4 h-4 mr-2" />
+                    {{ __('Send Message') }}
                 </button>
             </div>
         </form>
