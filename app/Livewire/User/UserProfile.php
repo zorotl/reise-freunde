@@ -8,7 +8,9 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 
+#[Title('Profile')]
 class UserProfile extends Component
 {
     use Followable;

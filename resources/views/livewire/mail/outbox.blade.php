@@ -20,7 +20,7 @@
             <a wire:navigate href="{{ route('mail.messages.view', ['message' => $message, 'fromWhere' => 'outbox']) }}" class="flex-grow truncate">
                 <div class="flex items-center space-x-3">
                     <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                       {{ __('To:') }} {{ $message->receiver->additionalInfo->username ?? $message->receiver->name }}
+                       {{ $message->receiver->additionalInfo->username ?? $message->receiver->name }}
                     </h3>
                     @if ($message->read_at)
                     <span
