@@ -2,7 +2,8 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg overflow-hidden">
-            <div class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 flex items-center justify-between flex-wrap gap-4">
+            {{-- <div class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 flex items-center justify-between flex-wrap gap-4"> --}}
+            <div class="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-4">
                     {{-- Profile Picture --}}
                     <div class="rounded-full overflow-hidden w-16 h-16 sm:w-24 sm:h-24 bg-gray-300 flex items-center justify-center flex-shrink-0">
@@ -44,8 +45,8 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex-shrink-0 flex items-center gap-2 flex-wrap">
-                    <div class="flex-shrink-0 flex items-center gap-2 flex-wrap">
+                {{-- <div class="flex-shrink-0 flex items-center gap-2 flex-wrap"> --}}
+                <div class="w-full md:w-auto flex items-center gap-2 flex-wrap justify-start md:justify-end">
                         @if ($this->isOwnProfile)
                             {{-- Edit Profile Button --}}
                             <a wire:navigate href="{{ route('settings.profile') }}"
@@ -146,8 +147,7 @@
                                     <livewire:profile.confirmation-request :target="$user" />
                                 </div>
                             </div>
-                        @endif
-                    </div>
+                        @endif                    
                 </div>
             </div>
 
