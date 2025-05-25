@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use App\Models\Post;
-// use App\Models\PostReport;
 use App\Models\Report;
 use App\Models\Message;
 use App\Models\Hobby;
@@ -22,7 +21,9 @@ class extends Component {
     public $messageCount;
     public $hobbyCount;
     public $travelStyleCount;
-    public $postReportCount;
+    public int $postReportCount;
+    public int $userReportCount;
+    public int $messageReportCount;
     public int $pendingCount = 0;
     public int $pendingVerifications = 0;
 
@@ -38,7 +39,10 @@ class extends Component {
         $this->messageCount = Message::count();
         $this->hobbyCount = Hobby::count();
         $this->travelStyleCount = TravelStyle::count();
-        $this->postReportCount = Report::count();
+        
+        $this->postReportCount = Report::where('reportable_type', Post::class)->where('status', 'pending')->count();
+        $this->userReportCount = Report::where('reportable_type', User::class)->where('status', 'pending')->count();
+        $this->messageReportCount = Report::where('reportable_type', Message::class)->where('status', 'pending')->count();
 
         // Fetch recent items
         $this->recentUsers = User::latest()->take(5)->get();
@@ -109,15 +113,33 @@ class extends Component {
             class="block bg-white dark:bg-zinc-800 rounded-lg shadow p-6 hover:shadow-lg transition">
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('Total Posts') }}</h2>
             <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $postCount }}</p>
-        </a>
+        </a>         
+    </div>
 
-        {{-- Total Report Posts Card (link) --}}
-        <a href="{{ route('admin.reports') }}" wire:navigate
+    <h2 class="text-xl font-semibold mb-6">{{ __('Reports') }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {{-- Post Reports --}}
+        <a href="{{ route('admin.reports', ['reportType' => 'post']) }}" wire:navigate
             class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
-            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Total Post-Reports') }}</h2>
+            <h2 class="text-lg font-medium text-orange-700 dark:text-orange-300">{{ __('Post Reports') }}</h2>
             <p class="mt-2 text-3xl font-bold text-orange-700 dark:text-orange-100">{{ $postReportCount }}</p>
         </a>
+
+        {{-- User Reports --}}
+        <a href="{{ route('admin.reports', ['reportType' => 'user']) }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 border border-red-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-red-50 dark:hover:bg-red-950 transition">
+            <h2 class="text-lg font-medium text-red-700 dark:text-red-300">{{ __('User Reports') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-red-700 dark:text-red-100">{{ $userReportCount }}</p>
+        </a>
+
+        {{-- Message Reports --}}
+        <a href="{{ route('admin.reports', ['reportType' => 'message']) }}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 border border-blue-300 rounded-lg shadow p-6 hover:shadow-lg hover:bg-blue-50 dark:hover:bg-blue-950 transition">
+            <h2 class="text-lg font-medium text-blue-700 dark:text-blue-300">{{ __('Message Reports') }}</h2>
+            <p class="mt-2 text-3xl font-bold text-blue-700 dark:text-blue-100">{{ $messageReportCount }}</p>
+        </a>
     </div>
+
 
     <h2 class="text-xl font-semibold mb-6">{{ __('Mails') }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"> 

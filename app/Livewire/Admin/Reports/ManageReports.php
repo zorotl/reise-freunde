@@ -23,6 +23,11 @@ class ManageReports extends Component
     public $perPage = 15;
     public string $reportType = 'post';
 
+    public function mount()
+    {
+        $this->reportType = request('reportType', 'post');
+    }
+
     protected $listeners = [
         'reportProcessed' => '$refresh', // Refresh list after processing
     ];
