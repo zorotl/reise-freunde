@@ -23,8 +23,8 @@
 // [x] Admin Panel: Previously, accepting a report deleted a post. This no longer happens because "reports" were extended to users and messages. Fix logic accordingly.
 // [x] Ban Function: On main page, a modal opens for banning. In message-view it bans directly (permanently). Unify this to always show the modal.
 // [x] User Search: When clicking "Follow", the spinner shows on all "Follow" buttons, not just the clicked one. Fix the frontend behavior.
-// [ ] Admin Dashboard Reports shown Post, but we have User and Message reports as well. Extend the admin dashboard to show all report types.
-// [ ] Admin Dashboard smaller cards: The cards on the admin dashboard are too large. Reduce their size for better visibility.
+// [x] Admin Dashboard Reports shown Post, but we have User and Message reports as well. Extend the admin dashboard to show all report types.
+// [x] Admin Dashboard smaller cards: The cards on the admin dashboard are too large. Reduce their size for better visibility.
 
 /**
  * --- Messages ---
@@ -38,6 +38,8 @@
 
 // [ ] Allow users to specify which languages they speak
 // [ ] Store the language of each post
+// [ ] Update user profile to include spoken languages
+// [ ] Update user and post seeder and factory to include spoken languages
 // [ ] Add user filter (age, nationality, spoken languages, etc.)
 // [ ] Add post filter (by post language and user language)
 
@@ -71,6 +73,8 @@
 
 // [ ] Add guest user features (to be defined)
 
+
+// ==================================================================================================================================
 
 
 // ==========================

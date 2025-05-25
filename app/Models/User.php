@@ -390,6 +390,12 @@ class User extends Authenticatable // Add MustVerifyEmail if you implement it la
         return $this->belongsToMany(Hobby::class);
     }
 
+    public function spokenLanguages()
+    {
+        return $this->belongsToMany(Language::class);
+    }
+
+
     /**
      * Get the messages sent by the user.
      */

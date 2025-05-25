@@ -29,6 +29,7 @@ class Post extends Model
         'to_date',
         'country',
         'city',
+        'language_code',
     ];
 
     protected $casts = [
@@ -80,4 +81,10 @@ class Post extends Model
         // Define the many-to-many relationship with User through the 'post_likes' table
         return $this->belongsToMany(User::class, 'post_likes', 'post_id', 'user_id')->withTimestamps();
     }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'language_code', 'code');
+    }
+
 }

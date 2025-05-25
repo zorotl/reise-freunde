@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Monarobase\CountryList\CountryListFacade as Countries;
 
@@ -47,6 +48,7 @@ class PostFactory extends Factory
             "to_date" => $toDate,
             "country" => $countryCode, // Use the generated code
             "city" => $countryCode ? $this->faker->optional(75)->city() : null, // Only add city if country exists
+            'language_code' => Language::inRandomOrder()->value('code') ?? 'en',
         ];
     }
 

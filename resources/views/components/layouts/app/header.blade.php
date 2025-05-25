@@ -216,6 +216,12 @@
 
     @fluxScripts    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-</body>
 
+    
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('formSync', { syncing: false })
+        })
+    </script>
+</body>
 </html>

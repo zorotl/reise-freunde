@@ -61,6 +61,8 @@
     </div>
 
 
+
+
     {{-- Save Button --}}
     <button wire:click="save" class="mt-6 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded">
         Save

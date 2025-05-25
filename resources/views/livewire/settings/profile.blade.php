@@ -35,6 +35,7 @@ class extends Component {
 
     // Property to hold the country list for the dropdown
     public array $countryList = [];
+    public array $spoken_languages = [];
 
     // Add property for file upload
     public $photo = null; // For temporary upload
@@ -67,6 +68,7 @@ class extends Component {
 
         // Load the country list from the package
         $this->countryList = Countries::getList('en');
+        $this->spoken_languages = Auth::user()?->spokenLanguages()->pluck('code')->toArray() ?? [];
     }
 
     /**
@@ -106,6 +108,9 @@ class extends Component {
         }
 
         $user->save();
+
+        logger('spoken_languages before sync', $this->spoken_languages);
+        $user->spokenLanguages()->sync($this->spoken_languages);
 
         // Prepare data for UserAdditionalInfo update/create
         $additionalInfoData = [
@@ -259,7 +264,15 @@ class extends Component {
 
         // Set initial value after TomSelect is initialized
         if (this.value) {
-            this.instance.setValue(this.value, true);
+            // Wait until Livewire binding has loaded
+            this.$watch('value', (newValue) => {
+                if (this.instance) {
+                    const current = this.instance.getValue();
+                    if (JSON.stringify(current) !== JSON.stringify(newValue)) {
+                        this.instance.setValue(newValue, true);
+                    }
+                }
+            });
         }
     }
 }" x-init="$nextTick(() => initSelect())">
@@ -277,7 +290,102 @@ class extends Component {
                 </select>
                 @error('nationality') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
-            {{-- --- MODIFICATION END --- --}}
+            
+{{-- Spoken Languages Select (REVISED FIX) --}}
+<div wire:ignore x-data="{
+    value: @entangle('spoken_languages').live, // <-- Use .live for better sync & debounce
+    instance: null,
+    isInitialized: false, // Flag to track if TomSelect has been set initially
+    initSelect() {
+        // Ensure TomSelect is available
+        if (typeof TomSelect === 'undefined') {
+            console.error('TomSelect not loaded');
+            return;
+        }
+
+        // Initialize TomSelect
+        this.instance = new TomSelect(this.$refs.languageSelect, {
+            plugins: ['remove_button'],
+            placeholder: '{{ __("Select languages...") }}',
+            onChange: (value) => {
+                const val = Array.isArray(value) ? value : [value];
+
+                clearTimeout(this.debounceTimeout);
+
+                this.debounceTimeout = setTimeout(() => {
+                    Alpine.store('formSync').syncing = true;
+                    @this.set('spoken_languages', val).then(() => {
+                        Alpine.store('formSync').syncing = false;
+                    });
+                }, 1000);
+            },
+        });
+
+        // Watch for Livewire changes (including the initial set)
+        this.$watch('value', (newValue) => {
+            // Only proceed if Livewire provided an array
+            if (Array.isArray(newValue)) {
+                const current = this.instance.getValue();
+                const currentArray = Array.isArray(current) ? current : [];
+
+                // Check if TomSelect's value differs from Livewire's value
+                if (JSON.stringify(currentArray) !== JSON.stringify(newValue)) {
+                    console.log('[TomSelect] $watch updating TomSelect:', newValue);
+                    this.instance.setValue(newValue, true); // Update TomSelect silently
+                    this.isInitialized = true; // Mark as initialized
+                }
+                // If values are the same BUT we haven't run this block yet, run it.
+                // This handles the very first load where value might be []
+                else if (!this.isInitialized) {
+                     console.log('[TomSelect] $watch initial set (even if same):', newValue);
+                     this.instance.setValue(newValue, true);
+                     this.isInitialized = true;
+                }
+            }
+        });
+
+        // Failsafe: If $watch doesn't fire quickly enough for some reason,
+        // try setting the value after a short delay, but only if not already done.
+        setTimeout(() => {
+            if (!this.isInitialized && Array.isArray(this.value)) {
+                console.log('[TomSelect] Failsafe timeout setting initial value:', this.value);
+                this.instance.setValue(this.value, true);
+                this.isInitialized = true;
+            }
+        }, 200); // Wait 200ms
+
+    }
+}" x-init="$nextTick(() => initSelect())"> {{-- Initialize when Alpine is ready --}}
+
+    {{-- Label for the dropdown --}}
+    <label for="spoken_languages" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        {{ __('Spoken Languages') }}
+    </label>
+
+    {{-- Get current locale for language names --}}
+    @php $locale = app()->getLocale(); @endphp
+
+    {{-- The actual <select> element TomSelect will enhance --}}
+    <select id="spoken_languages" name="spoken_languages[]" x-ref="languageSelect" multiple>
+        {{-- Populate options from the Language model --}}
+        @foreach(\App\Models\Language::all() as $language)
+            <option value="{{ $language->code }}">
+                {{-- Display language name in current locale, fallback to English --}}
+                {{ $language->{'name_' . $locale} ?? $language->name_en }}
+            </option>
+        @endforeach
+    </select>
+
+    {{-- Display validation errors --}}
+    @error('spoken_languages')
+        <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+    @enderror
+</div>
+{{-- End Spoken Languages Select --}}
+
+
+           
+
 
             {{-- About Me --}}
             <flux:textarea wire:model="about_me" :label="__('About Me')" rows="3"></flux:textarea>
@@ -330,7 +438,7 @@ class extends Component {
             {{-- Form Actions --}}
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full mt-3" x-bind:disabled="uploading">
+                    <flux:button variant="primary" type="submit" class="w-full mt-3" x-bind:disabled="uploading || $store.formSync.syncing">
                         <span x-show="!uploading">{{ __('Save') }}</span>
                         <span x-show="uploading">{{ __('Uploading…') }}</span>
                     </flux:button>

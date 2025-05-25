@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->timestamp('to_date');
             $table->char('country', 2)->nullable()->index();
             $table->string('city')->nullable();
+            $table->string('language_code', 5)->default('en');
+            $table->foreign('language_code')->references('code')->on('languages')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
             $table->softDeletes(); // Enable soft deletes
         });
