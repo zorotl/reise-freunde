@@ -45,7 +45,7 @@
                             </button>
                             <button type="button" wire:click="unfollowUser({{ $user->id }})" wire:loading.attr="disabled"
                                 class="w-full inline-flex justify-center items-center px-3 py-2 text-xs font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition">
-                                <span wire:loading wire:target="unfollowUser" class="mr-2">
+                                <span wire:loading wire:target="unfollowUser({{ $user->id }})" class="mr-2">
                                     <flux:icon.loading />
                                 </span>
                                 {{ __('Unfollow') }}
@@ -74,7 +74,7 @@
                             </button>
                             <button type="button" wire:click="cancelFollowRequest({{ $user->id }})" wire:loading.attr="disabled"
                                 class="w-full inline-flex justify-center items-center px-3 py-2 text-xs font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
-                                <span wire:loading wire:target="cancelFollowRequest" class="mr-2">
+                                <span wire:loading wire:target="cancelFollowRequest({{ $user->id }})" class="mr-2">
                                     <flux:icon.loading />
                                 </span>
                                 {{ __('Cancel Request') }}
@@ -89,12 +89,12 @@
                     class="w-full inline-flex justify-center items-center px-3 py-2 text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 disabled:opacity-25 transition ease-in-out duration-150">
                     
                     {{-- Default icon --}}
-                    <span class="mr-2" wire:loading.remove wire:target="followUser">
+                    <span class="mr-2" wire:loading.remove wire:target="followUser({{ $user->id }})">
                         <flux:icon.plus />
                     </span>
 
                     {{-- Loading icon --}}
-                    <span class="mr-2" wire:loading wire:target="followUser">
+                    <span class="mr-2" wire:loading wire:target="followUser({{ $user->id }})">
                         <flux:icon.loading />
                     </span>
 
