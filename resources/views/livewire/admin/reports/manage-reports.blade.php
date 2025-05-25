@@ -94,10 +94,10 @@
                             <a href="{{ route('admin.users', ['filterUserId' => $report->reportable->id]) }}" class="text-blue-600 hover:underline dark:text-blue-400">
                                 {{ $report->reportable->name }}
                             </a>
-                        @elseif ($report->reportable instanceof \App\Models\Message)
-                            <span title="{{ $report->reportable->body }}">
-                                "{{ Str::limit($report->reportable->body, 60) }}"
-                            </span>
+                        @elseif ($report->reportable instanceof \App\Models\Message)                            
+                            <a href="{{ route('admin.messages.show', $report->reportable->id) }}" class="text-blue-600 hover:underline dark:text-blue-400" wire:navigate>
+                            "{{ Str::limit($report->reportable->body, 40) }}""
+                        </a>
                         @else
                             <span class="italic text-gray-400">{{ __('Target Deleted') }}</span>
                         @endif
@@ -177,4 +177,6 @@
     <div class="mt-4">
         {{ $reports->links() }}
     </div>
+
+    @livewire('admin.users.edit-user-modal')
 </div>

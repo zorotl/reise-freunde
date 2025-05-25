@@ -54,26 +54,31 @@ class ManageReports extends Component
 
         $authorId = null;
 
-        if ($report->reportable && $report->reportable instanceof Post) {
+        if ($report->reportable instanceof \App\Models\Post) {
             $authorId = $report->reportable->user_id;
-            $report->reportable->delete(); // soft-delete
+            $report->reportable->delete(); // delete post
         }
 
-        $report->update([
-            'status' => 'accepted',
-            'processed_by' => auth()->id(),
-            'processed_at' => now(),
-        ]);
+        if ($report->reportable instanceof \App\Models\Message) {
+            $authorId = $report->reportable->sender_id;
+            $report->reportable->delete(); // delete message
+        }
 
-        $report->reporter->notify(new ReportResolved($report));
-        session()->flash('message', 'Report accepted and post soft deleted.');
+        if ($report->reportable instanceof \App\Models\User) {
+            $authorId = $report->reportable->id; // the user being reported
+            // no deletion, will be banned via modal
+        }
 
-        $this->dispatch('reportProcessed');
+        $report->status = 'accepted';
+        $report->save();
 
         if ($authorId) {
-            return $this->redirect(route('admin.users', ['filterUserId' => $authorId]), navigate: true);
+            $this->dispatch('openEditModal', $authorId); // opens user modal
         }
+
+        $this->dispatch('reportProcessed'); // refresh report list
     }
+
 
     // Action to Reject a Report
     public function rejectReport($id)
