@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified', 'check_banned', 'approved'])->group(funct
     Route::get('/mail/archive', \App\Livewire\Mail\ArchivedBox::class)->name('mail.archive');
     Route::get('/mail/trash', \App\Livewire\Mail\TrashBox::class)->name('mail.trash');
     Route::get('/mail/messages/{message}/{fromWhere?}', \App\Livewire\Mail\MessageView::class)->name('mail.messages.view');
-    Route::get('/mail/compose/{receiverId?}/{fixReceiver?}', \App\Livewire\Mail\MessageCompose::class)->name('mail.compose');
+    Route::get('/mail/compose/{receiverId?}/{fixReceiver?}/{replyToId?}', \App\Livewire\Mail\MessageCompose::class)->name('mail.compose');
 
     // Follower system
     Route::get('/user/follow-requests', \App\Livewire\User\FollowRequestsList::class)->name('user.follow-requests');
@@ -93,37 +93,3 @@ Route::prefix('admin')
 
 // Auth system
 require __DIR__ . '/auth.php';
-
-
-
-
-
-// ToDo for the whole project:
-
-//     Fix the following issues:
-//         - [ ] message: if i response to an answer, the titel should be the same, maybe with a prefix, what you recommande and can you find the bug?
-//         - [ ] admin panel: earlyer i could report only post, if i accapt a report, the post was deleted, now it is not and the reason is, that i extendet reports to user an messages. 
-//         - [ ] Ban Sender from main page open modal, from message-view ban directly permanently...i will also the modal
-//         - [ ] Fix user-search: wenn ich "follow" klicke, dann ist das "spinning", also der ladekreis bei allen follow auf der seite zu sehen, nicht nur bei dem, den ich angeklickt habe.
-
-//     Messages:
-//         - [x] Delete messages and Archive messages
-
-//     Overall:
-//         - [ ] Implement the feature verify email (absolutely in the end of project)
-
-
-//     Language:
-//         - [ ] Add FR and IT language, extend the language switcher
-//         - [ ] For save in more than one language, use an addon for laravel (e.g. spatie/laravel-translatable)
-//         - [ ] Install a translater tool for pre-translation (e.g. Google Translate, DeepL API, LibreTranslate) for dynamic content
-//         - [ ] Translate more and more content
-
-//     Security:
-//         - [ ] Test the security of the app
-
-//     Testing:
-//         - [ ] ...
-
-//     Frontend / not logged-in user:
-//         - [ ] ...

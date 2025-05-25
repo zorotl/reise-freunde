@@ -19,27 +19,43 @@ class MessageCompose extends Component
     public string $subject = '';
     #[Rule('required|string')]
     public string $body = '';
+    public ?int $replyToId = null;
 
     public string $search = '';
     public array $searchResults = [];
     public string $selectedRecipientName = '';
     public bool $showResults = false; // Added to control dropdown visibility explicitly
 
-    public function mount(?int $receiverId = null, ?bool $fixReceiver = false)
+    public function mount(?int $receiverId = null, ?bool $fixReceiver = false, ?int $replyToId = null)
     {
+        $this->replyToId = $replyToId;
+
         if ($receiverId) {
-            // Eager load additionalInfo when finding the recipient
-            $recipient = User::with('additionalInfo')->find($receiverId); // Added with('additionalInfo')
+            $recipient = User::with('additionalInfo')->find($receiverId);
             if ($recipient) {
                 $this->receiver_id = $recipient->id;
-                // Consistent display name logic: username or fallback to concatenated firstname and lastname
                 $this->selectedRecipientName = $recipient->additionalInfo?->username ?: ($recipient->firstname . ' ' . $recipient->lastname);
                 $this->fixReceiver = (bool) $fixReceiver;
             }
         }
-        // Ensure fixReceiver is boolean even if receiverId is not provided
+
+        if ($this->replyToId) {
+            $original = Message::with('sender')->find($this->replyToId);
+            if ($original) {
+                $this->subject = str_starts_with(strtolower($original->subject), 're:')
+                    ? $original->subject
+                    : 'Re: ' . $original->subject;
+
+                $senderName = $original->sender?->name ?? 'Unknown';
+                $date = $original->created_at->format('Y-m-d H:i');
+                $quoted = "> On {$date}, {$senderName} wrote:\n> " . str_replace("\n", "\n> ", $original->body);
+                $this->body = "\n\n" . $quoted;
+            }
+        }
+
         $this->fixReceiver = (bool) $fixReceiver;
     }
+
 
     public function updatedSearch(string $value): void
     {
@@ -102,7 +118,7 @@ class MessageCompose extends Component
         }
     }
 
-    public function sendMessage(): void
+    public function sendMessage()
     {
         $this->validate();
 
@@ -118,16 +134,7 @@ class MessageCompose extends Component
             'body' => $this->body,
         ]);
 
-        session()->flash('message', 'Message sent!');
-
-        if ($this->fixReceiver) {
-            // If receiver is fixed, only reset subject and body
-            $this->reset(['subject', 'body']);
-        } else {
-            // Otherwise, reset everything related to the recipient as well
-            $this->reset(['receiver_id', 'subject', 'body', 'selectedRecipientName', 'search', 'searchResults', 'showResults']);
-        }
-        // $this->dispatch('close-modal'); // Assuming you still use a modal for compose
+        return redirect()->route('mail.inbox')->with('message', 'Message sent!');
     }
 
     public function render()
