@@ -240,13 +240,25 @@ class extends Component {
                                         <a href="{{ route('admin.users', ['filterUserId' => $messageInstance->sender->id]) }}" class="text-indigo-600 hover:underline dark:text-indigo-400" wire:navigate>
                                             {{ $messageInstance->sender->additionalInfo->username ?? $messageInstance->sender->name }}
                                         </a>
-                                        (ID: {{ $messageInstance->sender->id }})
+                                        (ID: {{ $messageInstance->sender->id }})                                                                                    
+
                                         @if($messageInstance->sender->trashed()) <span class="text-xs text-red-500 dark:text-red-400 ml-1">({{__('User Account Deleted')}})</span> @endif
-                                        @if($messageInstance->sender->grant?->is_banned) <span class="text-xs text-orange-500 dark:text-orange-400 ml-1">({{__('User Banned')}})</span> @endif
+                                        
+                                        @if($messageInstance->sender->grant?->is_banned) 
+                                            <span class="text-xs text-orange-500 dark:text-orange-400 ml-1">({{__('User Banned')}})</span> 
+                                        @else                                            
+                                            <button
+                                                wire:click="$dispatch('openEditModal', { userId: {{ $messageInstance->sender_id }} })"
+                                                class="inline-flex items-center ml-2 px-2 py-1 text-sm font-bold text-red-500 border border-red-500 hover:bg-red-100 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-700/50 rounded-md transition"
+                                                title="Ban Sender">
+                                                <flux:icon.shield-exclamation class="w-4 h-4 mr-1" />
+                                                {{ __('Ban User') }}
+                                            </button>                                        
+                                        @endif
                                     @else
                                         <span class="italic">{{ __('User Not Found (System or Hard Deleted)') }}</span>
                                     @endif
-                                </dd>
+                                </dd>                                
                             </div>
                             {{-- Receiver Info --}}
                             <div class="py-3 sm:py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -329,4 +341,5 @@ class extends Component {
             @endif
         </div>
     </div>
+    @livewire('admin.users.edit-user-modal')
 </div>

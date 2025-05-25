@@ -102,8 +102,8 @@
                             @elseif(!$message->sender->isAdminOrModerator())
                             <button wire:click="banSender({{ $message->sender->id }})"
                                 class="ml-1 px-1 py-0.5 text-xs font-semibold text-red-500 border border-red-500 rounded hover:bg-red-100 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-700/50"
-                                title="Ban {{ $message->sender->name }}">
-                                Ban
+                                title="Ban {{ $message->sender->name }}">                                
+                                {{ __('Ban User') }}
                             </button>
                             @endif
                         @else
