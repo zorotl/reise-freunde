@@ -7,15 +7,20 @@
             {{ $unreadCount }}
         </span>
         @endif
-    </h1>
-
-    <x-mail-tab-switcher />
+    </h1>   
 
     @if (session()->has('status'))
         <div class="mb-4 p-3 rounded-lg bg-green-100 dark:bg-green-700 text-green-700 dark:text-green-200 border border-green-300 dark:border-green-600">
             {{ session('status') }}
         </div>
     @endif
+    @if (session('message'))
+        <div class="mb-4 p-4 rounded text-sm font-medium bg-green-100 text-green-800 border border-green-300">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    <x-mail-tab-switcher />
 
     @if ($this->messages->count() > 0)
     <div
