@@ -13,6 +13,8 @@
                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:border-indigo-600 dark:focus:ring-indigo-600 sm:text-sm">
         </div>
 
+        <livewire:user.user-filters />
+
         @if(strlen($search) >= 3 || $users->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @forelse ($users as $userToList) {{-- Renamed variable to avoid conflict if $user is outer-scoped --}}

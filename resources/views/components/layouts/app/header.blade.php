@@ -136,7 +136,7 @@
         @endauth
         @guest
         {{-- Show Login/Register if user is not authenticated --}}
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center ms-2 space-x-2">
             <a href="{{ route('login') }}"
                 class="inline-flex items-center justify-center px-3 py-1.5 border border-gray-400 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-400 dark:hover:bg-gray-700"
                 wire:navigate>
