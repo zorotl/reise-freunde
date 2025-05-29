@@ -19,7 +19,7 @@ class UserProfile extends Component
 
     public function mount(int $id): void
     {
-        $this->user = User::withCount(['followers', 'following'])->findOrFail($id);
+        $this->user = User::withCount(['followers', 'following', 'spokenLanguages'])->findOrFail($id);
     }
 
     #[Computed]

@@ -181,14 +181,14 @@
                     <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $user->email }}</p>
                     {{-- Email verification status --}}
                     @if (!$user->hasVerifiedEmail())
-                    <p class="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
+                    <span class="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
                         {{ __('Your email address is not verified.') }}
                         {{-- Add link to resend verification if needed --}}
-                    </p>
+                    </span>
                     @else
-                    <p class="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center">
+                    <span class="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center">
                         <flux:icon.check-circle class="size-4 mr-1" /> {{ __('Email Verified') }}
-                    </p>
+                    </span>
                     @endif
                 </div>
                 @endif
@@ -214,6 +214,23 @@
                         }}
                     </p>
                 </div>
+                @endif
+
+                {{-- Get current locale for language names --}}
+                @php $locale = app()->getLocale(); @endphp
+                @if ($user->spokenLanguages->isNotEmpty())
+                    <div>
+                        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                            {{ __('Spoken Languages') }}:
+                        </label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach ($user->spokenLanguages as $language)
+                                <span class="px-2 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded">
+                                    {{ $language->{'name_' . $locale} ?? $language->name_en }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
                 @endif
 
                 <div class="md:col-span-2">
