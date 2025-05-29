@@ -1,7 +1,17 @@
 {{-- This component displays a single post card within the feed. --}}
 {{-- It receives a single $post object as a property. --}}
-<div class="border border-gray-200 dark:border-neutral-700 rounded-lg p-4
+<div class="relative border border-gray-200 dark:border-neutral-700 rounded-lg p-4
     @if (!$post->is_active) bg-red-100 dark:bg-red-900/30 opacity-75 @endif">
+
+    @php $locale = app()->getLocale(); @endphp
+    @if ($post->language)
+        <div class="absolute top-2 right-2">
+            <span class="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-100 shadow-sm">
+                {{ $post->language->{'name_' . $locale} ?? $post->language->name_en }}
+            </span>
+        </div>
+    @endif
+
     {{-- Post Header: Author, Timestamp, Location --}}
     <div class="flex items-start space-x-3">
         {{-- Author Avatar Placeholder --}}

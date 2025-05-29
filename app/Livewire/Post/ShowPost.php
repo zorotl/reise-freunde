@@ -20,7 +20,7 @@ class ShowPost extends Component
     public function mount(Post $post)
     {
         $this->now = Carbon::now();
-        $this->post = $post->loadCount('likes')->load('user.additionalInfo');
+        $this->post = $post->loadCount('likes')->load('user.additionalInfo', 'language');
         $this->countryList = Countries::getList('en', 'php');
     }
 
