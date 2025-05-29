@@ -19,8 +19,8 @@
 
     {{-- Search and Filter Section --}}
     @unless ($show === 'my')
-    <livewire:search />    
-    <livewire:post-filters />
+    <livewire:post.search />    
+    <livewire:post.post-filters />
     @endunless
 
     {{-- Results Area --}}

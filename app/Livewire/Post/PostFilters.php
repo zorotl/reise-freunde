@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Post;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -80,6 +80,6 @@ class PostFilters extends Component
 
     public function render()
     {
-        return view('livewire.post-filters');
+        return view('livewire.post.post-filters');
     }
 }
