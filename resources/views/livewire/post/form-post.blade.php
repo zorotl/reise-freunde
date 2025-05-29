@@ -36,7 +36,16 @@
 
             <h2 class="text-lg font-semibold mt-10 mb-4 text-gray-700 dark:text-gray-200">
                 {{ __('Post Details') }}
-            </h2>            
+            </h2> 
+            
+            @php $locale = app()->getLocale(); @endphp
+            <flux:select x-model="language_code" label="{{ __('Post Language') }}">
+              @foreach(\App\Models\Language::all() as $language)
+                  <flux:select.option value="{{ $language->code }}">
+                      {{ $language->{'name_' . $locale} ?? $language->name_en }}
+                  </flux:select.option>
+              @endforeach
+            </flux:select>            
 
             <flux:input wire:model="fromDate" label="{{__('From Date')}}" type="date" autocomplete="fromDate" required />
 

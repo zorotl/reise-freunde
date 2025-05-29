@@ -23,6 +23,7 @@ class CreatePost extends Component
     public $action = 'save';
     public $buttonText = 'Create Post';
     public array $countryList = [];
+    public string $language_code = 'en';
 
     public function mount()
     {
@@ -43,6 +44,7 @@ class CreatePost extends Component
                 Rule::in(array_keys($this->countryList)) // Validate against fetched country codes
             ],
             'city' => 'nullable|string|max:255',
+            'language_code' => ['required', 'exists:languages,code'],
         ]);
 
         Post::create([
@@ -54,6 +56,7 @@ class CreatePost extends Component
             'to_date' => $this->toDate,
             'country' => $this->country,
             'city' => $this->city,
+            'language_code' => $this->language_code,
         ]);
 
         session()->flash('success', 'New post successfully created.');

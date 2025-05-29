@@ -24,6 +24,7 @@ class EditPost extends Component
     public $action = 'update';
     public $buttonText = 'Update Post';
     public array $countryList = [];
+    public string $language_code = 'en';
 
     public function mount(Post $id, $origin = null)
     {
@@ -40,6 +41,7 @@ class EditPost extends Component
         $this->country = $this->entry->country;
         $this->city = $this->entry->city;
         $this->countryList = Countries::getList('en', 'php');
+        $this->language_code = $this->entry->language_code ?? 'en';
     }
 
     public function redirectToCorrectPage()
@@ -77,6 +79,7 @@ class EditPost extends Component
                 Rule::in(array_keys($this->countryList)) // Validate against fetched country codes
             ],
             'city' => 'nullable|string|max:255',
+            'language_code' => ['required', 'exists:languages,code'],
         ]);
 
         $this->entry->update([
@@ -87,6 +90,7 @@ class EditPost extends Component
             'to_date' => $this->toDate,
             'country' => $this->country,
             'city' => $this->city,
+            'language_code' => $this->language_code,
         ]);
 
         session()->flash('success', 'Post successfully updated.');
