@@ -123,6 +123,65 @@
             </div>
         </div>
 
+
+
+
+@auth
+@php
+    $locale = app()->getLocale();
+    $languages = \App\Models\Language::orderBy('name_en')->get();
+@endphp
+
+<div class="col-span-1" wire:ignore x-data="{
+    tomSelectInstance: null,
+    selectedLanguage: @entangle('filterPostLanguage'),
+    initTomSelect() {
+        if (typeof TomSelect === 'undefined') {
+            console.error('TomSelect is not defined.');
+            return;
+        }
+
+        this.tomSelectInstance = new TomSelect(this.$refs.languageSelect, {
+            create: false,
+            placeholder: '{{ __("Filter by post language...") }}',
+            onChange: (value) => {
+                this.selectedLanguage = value;
+                $wire.set('filterPostLanguage', value);
+            }
+        });
+
+        this.$watch('selectedLanguage', (newValue) => {
+            if (this.tomSelectInstance.getValue() !== newValue) {
+                this.tomSelectInstance.setValue(newValue, true);
+            }
+        });
+
+        if (this.selectedLanguage) {
+            this.tomSelectInstance.setValue(this.selectedLanguage, true);
+        }
+
+        Livewire.on('reset-language-select', () => this.tomSelectInstance?.clear());
+    }
+}" x-init="initTomSelect">
+    <label for="language-select-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        {{ __('Post Language') }}
+    </label>
+    <select id="language-select-filter" x-ref="languageSelect"
+        class="tom-select-custom w-full rounded-md border-gray-300 dark:border-neutral-600 shadow-sm dark:bg-neutral-800 dark:text-gray-300 focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        <option value="">{{ __('All Languages') }}</option>
+        @foreach ($languages as $lang)
+            <option value="{{ $lang->code }}">
+                {{ $lang->{'name_' . $locale} ?? $lang->name_en }}
+            </option>
+        @endforeach
+    </select>
+</div>
+@endauth
+
+
+
+
+
         {{-- User Nationality Filter (TomSelect) --}}
         <div>
             <div class="col-span-1" wire:ignore x-data="{

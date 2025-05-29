@@ -33,6 +33,8 @@ class PostList extends Component
     public ?int $filterMinAge = null; // Type-hinted as ?int
     #[Url(as: 'max_age', history: true, keep: true)]
     public ?int $filterMaxAge = null; // Type-hinted as ?int
+    #[Url(as: 'lang', history: true, keep: true)]
+    public ?string $filterPostLanguage = null;
 
     public function mount()
     {
@@ -47,6 +49,7 @@ class PostList extends Component
         $this->filterFromDate = $filters['fromDate'] ?? null;
         $this->filterToDate = $filters['toDate'] ?? null;
         $this->filterUserNationality = $filters['userNationality'] ?? null;
+        $this->filterPostLanguage = $filters['postLanguage'] ?? null;
 
         // Corrected lines for filterMinAge and filterMaxAge:
         // Convert empty strings to null, otherwise cast to int.
@@ -91,6 +94,11 @@ class PostList extends Component
                 $subQuery->whereRaw('LOWER(nationality) = ?', [strtolower($nationality)]);
             });
         });
+
+        $query->when($this->filterPostLanguage, function (Builder $q, $langCode) {
+            $q->where('language_code', $langCode);
+        });
+
 
         if ($this->filterMinAge !== null && $this->filterMinAge >= 0) {
             $minAge = (int) $this->filterMinAge;

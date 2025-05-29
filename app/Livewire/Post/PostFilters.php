@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Post;
 
+use App\Models\Language;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Monarobase\CountryList\CountryListFacade as CountryList;
@@ -16,6 +17,7 @@ class PostFilters extends Component
     public $filterUserNationality = '';
     public $filterMinAge = '';
     public $filterMaxAge = '';
+    public ?string $filterPostLanguage = null;
 
     // Country list for TomSelect
     public $countryList;
@@ -24,6 +26,8 @@ class PostFilters extends Component
     {
         // Initialize country list
         $this->countryList = CountryList::getList(app()->getLocale());
+        // Optional: preload selected language from query string
+        $this->language = request()->query('language', 'all');
     }
 
     // This method will be called when any of the filter properties change
@@ -40,6 +44,7 @@ class PostFilters extends Component
                 'filterUserNationality',
                 'filterMinAge',
                 'filterMaxAge',
+                'filterPostLanguage',
             ])
         ) {
             $this->applyFilters();
@@ -56,6 +61,7 @@ class PostFilters extends Component
             'userNationality' => $this->filterUserNationality,
             'minAge' => $this->filterMinAge,
             'maxAge' => $this->filterMaxAge,
+            'postLanguage' => $this->filterPostLanguage,
         ]);
     }
 
@@ -69,6 +75,7 @@ class PostFilters extends Component
             'filterUserNationality',
             'filterMinAge',
             'filterMaxAge',
+            'filterPostLanguage',
         ]);
 
         // Emit events to clear TomSelect instances
