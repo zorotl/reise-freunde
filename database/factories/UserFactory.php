@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Language;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,6 +30,11 @@ class UserFactory extends Factory
             'firstname' => fake()->firstName(),
             'lastname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
+            'gender' => Arr::random([
+                ...array_fill(0, 47, 'female'),
+                ...array_fill(0, 48, 'male'),
+                ...array_fill(0, 5, 'diverse'),
+            ]),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

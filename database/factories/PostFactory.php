@@ -51,34 +51,4 @@ class PostFactory extends Factory
             'language_code' => Language::inRandomOrder()->value('code') ?? 'en',
         ];
     }
-
-    /**
-     * Indicate that the post is inactive.
-     */
-    // public function inactive(): static
-    // {
-    //     return $this->state(fn(array $attributes) => [
-    //         'is_active' => false,
-    //     ]);
-    // }
-
-    /**
-     * Indicate that the post has expired.
-     */
-    // public function expired(): static
-    // {
-    //     return $this->state(fn(array $attributes) => [
-    //         'expiry_date' => $this->faker->dateTimeBetween('-2 weeks', '-1 day'),
-    //     ]);
-    // }
-
-    /**
-     * Indicate that the post is from a specific user ID.
-     */
-    // public function fromUser(int $userId): static
-    // {
-    //     return $this->state(fn(array $attributes) => [
-    //         'user_id' => $userId,
-    //     ]);
-    // }
 }

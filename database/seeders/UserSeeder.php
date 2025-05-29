@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             'firstname' => 'Martin',
             'lastname' => 'Striednig',
             'email' => 'info@stws.ch',
+            'gender' => 'male',
             'password' => Hash::make('test1234'),
             'status' => 'approved',
         ]);
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
             'firstname' => 'Zorotl',
             'lastname' => 'Von Zorot',
             'email' => 'zorotl@stws.ch',
+            'gender' => 'female',
             'password' => Hash::make('test1234'),
             'status' => 'approved',
         ]);

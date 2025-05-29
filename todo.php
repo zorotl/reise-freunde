@@ -36,12 +36,14 @@
  * --- User Features ---
  */
 
-// [ ] Allow users to specify which languages they speak
-// [ ] Store the language of each post
-// [ ] Update user profile to include spoken languages
-// [ ] Update user and post seeder and factory to include spoken languages
+// [x] Allow users to specify which languages they speak
+// [x] Store the language of each post
+// [x] Update user profile to include spoken languages
+// [x] Update user and post seeder and factory to include spoken languages
+// [ ] Add gender to User tabel, seeder, and factory
+// [ ] Add gender to user profile
 // [ ] Add user filter (age, nationality, spoken languages, etc.)
-// [ ] Add post filter (by post language and user language)
+// [x] Add post filter (by post language and user language)
 
 /**
  * --- Email & Verification ---
