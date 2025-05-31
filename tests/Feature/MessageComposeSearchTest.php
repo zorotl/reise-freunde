@@ -10,21 +10,25 @@ use Livewire\Livewire;
 // Helper function to create a user with additional info and grant consistently
 function createUserWithMessageData(array $userData = [], array $additionalInfoData = [], array $grantData = []): User
 {
-    $user = User::factory()->create($userData);
+    $user = User::factory()->create(array_merge([
+        'status' => 'approved',            // ✅ ensure approved
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ], $userData));
 
-    // Ensure additionalInfo is created with the provided username or a default
-    UserAdditionalInfo::factory()->create(array_merge(
-        ['user_id' => $user->id, 'username' => 'defaultuser' . $user->id], // Default
-        $additionalInfoData // Overrides default if 'username' is provided
-    ));
+    UserAdditionalInfo::factory()->create(array_merge([
+        'user_id' => $user->id,
+        'username' => 'defaultuser' . $user->id,
+        'birthday' => now()->subYears(25), // Optional: ensure age filters
+        'nationality' => 'CH',             // Optional default
+    ], $additionalInfoData));
 
-    // Ensure grant is created with provided data or defaults
-    UserGrant::factory()->create(array_merge(
-        ['user_id' => $user->id], // Default: not admin, not moderator, not banned
-        $grantData
-    ));
+    UserGrant::factory()->create(array_merge([
+        'user_id' => $user->id,
+        'is_banned' => false,
+    ], $grantData));
 
-    return $user->load(['additionalInfo', 'grant']); // Eager load for consistency
+    return $user->load(['additionalInfo', 'grant']);
 }
 
 test('can search for users by username', function () {

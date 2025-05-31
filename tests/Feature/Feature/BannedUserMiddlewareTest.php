@@ -11,25 +11,26 @@ use function Pest\Laravel\post; // <-- Add post for logout test
 // Helper function to create a user with a specific ban status
 function createTestUserWithBan(bool $isBanned, ?string $bannedUntil = null, ?string $reason = null): User
 {
-    $user = User::factory()->create();
-    // Use updateOrCreate and store the result
-    $grant = UserGrant::updateOrCreate(
+    $user = User::factory()->create([
+        'status' => 'approved',            // ✅ Required
+        'email_verified_at' => now(),     // Often required for auth
+        'approved_at' => now(),
+    ]);
+
+    UserGrant::updateOrCreate(
         ['user_id' => $user->id],
         [
             'is_banned' => $isBanned,
             'is_banned_until' => $bannedUntil ? Carbon::parse($bannedUntil) : null,
-            'banned_reason' => $reason, // Save the reason
+            'banned_reason' => $reason,
             'is_admin' => false,
             'is_moderator' => false,
         ]
     );
 
-    // Force refresh the user model and explicitly load the grant relationship
-    // This ensures the test gets the latest data including the grant changes.
-    $user->refresh()->load('grant');
-
-    return $user;
+    return $user->refresh()->load('grant');
 }
+
 
 test('non-banned user can access dashboard', function () {
     $user = createTestUserWithBan(false); // Not banned
@@ -111,7 +112,11 @@ test('guest user cannot access banned page', function () {
 
 test('banned user middleware automatically unbans if ban expired', function () {
     // Arrange: Create a user banned until yesterday
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ]);
     $grant = UserGrant::factory()->create([
         'user_id' => $user->id,
         'is_banned' => true,

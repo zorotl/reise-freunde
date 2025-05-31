@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Livewire\Post\PostList;
-use App\Livewire\PostFilters;
+use App\Livewire\Post\PostFilters;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\UserAdditionalInfo;
@@ -16,19 +16,31 @@ use function Pest\Laravel\get;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->user1 = User::factory()->create();
+    $this->user1 = User::factory()->create([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ]);
     $this->user1->additionalInfo()->save(UserAdditionalInfo::factory()->make([
         'nationality' => 'CH',
         'birthday' => now()->subYears(25)->toDateString(),
     ]));
 
-    $this->user2 = User::factory()->create();
+    $this->user2 = User::factory()->create([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ]);
     $this->user2->additionalInfo()->save(UserAdditionalInfo::factory()->make([
         'nationality' => 'DE',
         'birthday' => now()->subYears(30)->toDateString(),
     ]));
 
-    $this->user3 = User::factory()->create();
+    $this->user3 = User::factory()->create([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ]);
     $this->user3->additionalInfo()->save(UserAdditionalInfo::factory()->make([
         'nationality' => 'FR',
         'birthday' => now()->subYears(35)->toDateString(),

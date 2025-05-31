@@ -16,7 +16,11 @@ test('dashboard requires authentication', function () {
 });
 
 test('authenticated users can view the dashboard', function () {
-    $user = User::factory()->create(); // Assumes email is verified by factory or verification is disabled
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
 
     actingAs($user)
         ->get(route('dashboard'))
@@ -25,7 +29,12 @@ test('authenticated users can view the dashboard', function () {
 });
 
 test('dashboard displays welcome message', function () {
-    $user = User::factory()->create(['firstname' => 'Test']);
+    $user = User::factory()->create([
+        'firstname' => 'Test',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
 
     actingAs($user)
         ->get(route('dashboard'))
@@ -33,9 +42,21 @@ test('dashboard displays welcome message', function () {
 });
 
 test('dashboard displays feed posts from self and followed users', function () {
-    $user = User::factory()->create();
-    $followedUser = User::factory()->create();
-    $unfollowedUser = User::factory()->create();
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $followedUser = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $unfollowedUser = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
 
     // User follows $followedUser
     $user->following()->attach($followedUser->id, ['accepted_at' => now()]);
@@ -77,9 +98,21 @@ test('dashboard displays feed posts from self and followed users', function () {
 });
 
 test('dashboard displays follower and following counts', function () {
-    $user = User::factory()->create();
-    $follower = User::factory()->create();
-    $following = User::factory()->create();
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $follower = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $following = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
 
     // $follower follows $user
     $follower->following()->attach($user->id, ['accepted_at' => now()]);
@@ -98,7 +131,11 @@ test('dashboard displays follower and following counts', function () {
 });
 
 test('dashboard displays pending follow requests notification', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
     // Ensure the requester name matches exactly what the failing test output shows
     $requester = User::factory()->create([
         'firstname' => 'Dr. Robert',
@@ -123,9 +160,21 @@ test('dashboard displays pending follow requests notification', function () {
 });
 
 test('dashboard displays suggested users based on shared interests', function () {
-    $user = User::factory()->create();
-    $suggestedUser = User::factory()->create();
-    $otherUser = User::factory()->create(); // No shared interests
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $suggestedUser = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
+    $otherUser = User::factory()->create([
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+        'status' => 'approved', // if this exists in your model
+    ]);
 
     $hobby1 = Hobby::factory()->create();
     $hobby2 = Hobby::factory()->create();

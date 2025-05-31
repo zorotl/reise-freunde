@@ -8,7 +8,7 @@
                      src="{{ $user->avatar_url ?? asset('images/default-avatar.png') }}"
                      alt="{{ $user->additionalInfo?->username ?? $user->first_name ?? 'profile_picture' }}" />
             </span>
-            <h3 class="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">{{ $user->additionalInfo?->username ?? $user->first_name }}</h3>
+            <h3 class="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">{{ $user->additionalInfo->username }}</h3>
         </a>
         <div class="flex justify-around text-center text-xs text-gray-500 dark:text-gray-400">
             <div>

@@ -14,7 +14,7 @@ use function Pest\Laravel\get; // get() is used for direct route testing
 if (!function_exists('Tests\Feature\Mail\createUserWithDetails')) {
     function createUserWithDetails(array $details = []): User
     {
-        $userData = Arr::only($details, ['firstname', 'lastname', 'email', 'password', 'email_verified_at', 'approved_at']); // Add approved_at
+        $userData = Arr::only($details, ['firstname', 'lastname', 'email', 'password', 'email_verified_at', 'approved_at', 'status']);
         if (empty($userData['email'])) {
             $userData['email'] = \Illuminate\Support\Str::random(10) . '@example.com';
         }
@@ -23,6 +23,9 @@ if (!function_exists('Tests\Feature\Mail\createUserWithDetails')) {
         }
         if (empty($userData['approved_at'])) { // Ensure approved
             $userData['approved_at'] = now();
+        }
+        if (empty($userData['status'])) {
+            $userData['status'] = 'approved';
         }
 
         $user = User::factory()->create($userData);

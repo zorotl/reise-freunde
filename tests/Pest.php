@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -41,7 +43,11 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function createApprovedUser(array $attributes = []): User
 {
-    // ..
+    return User::factory()->create(array_merge([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ], $attributes));
 }

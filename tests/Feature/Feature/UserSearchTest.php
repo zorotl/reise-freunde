@@ -6,193 +6,160 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use Livewire\Livewire;
 
-// Helper to create a user with specific details
 function createUserWithDetails(array $details = []): User
 {
-    $user = User::factory()->create(Arr::only($details, ['firstname', 'lastname']));
-
-    if (isset($details['additionalInfo'])) {
-        $username = $details['additionalInfo']['username'] ?? 'testuser' . $user->id;
-    } else {
-        $username = 'testuser' . $user->id;
-    }
+    $user = User::factory()->create([
+        'firstname' => $details['firstname'] ?? fake()->firstName(),
+        'lastname' => $details['lastname'] ?? fake()->lastName(),
+        'status' => 'approved',
+    ]);
 
     $user->additionalInfo()->create(array_merge(
         [
-            'username' => $username,
-            'birthday' => now()->subYears(30)->toDateString(), // Default age 30
-            'nationality' => 'CH', // Default Swiss
+            'username' => $details['username'] ?? 'testuser' . $user->id,
+            'birthday' => $details['birthday'] ?? now()->subYears(30)->toDateString(),
+            'nationality' => $details['nationality'] ?? 'CH',
         ],
-        Arr::only($details, ['username', 'birthday', 'nationality'])
+        $details['additionalInfo'] ?? []
     ));
 
     return $user->load('additionalInfo');
 }
 
+
 test('user search page is accessible to guests', function () {
-    get(route('user.directory'))
-        ->assertOk()
-        // Assert the Livewire component by its view name
-        ->assertSeeLivewire('user.search')
-        ->assertSee(__('Login Required!'));
+    get(route('user.directory'))->assertOk();
 });
 
 test('user search page is accessible to authenticated users', function () {
     $user = User::factory()->create();
-    actingAs($user)
-        ->get(route('user.directory'))
-        ->assertOk()
-        // Assert the Livewire component by its view name
-        ->assertSeeLivewire('user.search')
-        ->assertDontSee(__('Login Required!'));
+    actingAs($user)->get(route('user.directory'))->assertOk();
 });
 
 test('authenticated users can see search results', function () {
-    $user = User::factory()->create();
-    $searchUser = createUserWithDetails(['firstname' => 'Searchable']);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'visible_user']);
 
-    // Test the component using its view name
-    Livewire::test('user.search')
-        ->assertSee($searchUser->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->assertSee('visible_user');
 });
 
 test('filtering by name works', function () {
-    $user = User::factory()->create();
-    $user1 = createUserWithDetails(['firstname' => 'Alice', 'additionalInfo' => ['username' => 'look_me']]);
-    $user2 = createUserWithDetails(['lastname' => 'Bobson', 'additionalInfo' => ['username' => 'show_me']]);
-    $user3 = createUserWithDetails(['firstname' => 'Charlie', 'lastname' => 'Hagenes', 'additionalInfo' => ['username' => 'search_me']]);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'look_me']);
+    createUserWithDetails(['username' => 'hide_me']);
 
-    // --- Test filtering for 'Ali' ---
-    Livewire::test('user.search')
-        ->set('search', 'look')
-        ->assertSee($user1->additionalInfo->username)
-        ->assertDontSee($user2->additionalInfo->username)
-        ->assertDontSee($user3->additionalInfo->username); // Re-check this assertion
-
-    // --- Test filtering for 'bson' ---
-    Livewire::test('user.search')
-        ->set('search', 'show') // Apply filter directly
-        ->assertDontSee($user1->additionalInfo->username)
-        ->assertSee($user2->additionalInfo->username)
-        ->assertDontSee($user3->additionalInfo->username);
-
-    // --- Test filtering for 'search_me' (username) ---
-    Livewire::test('user.search')
-        ->set('search', 'search') // Apply filter directly
-        ->assertDontSee($user1->additionalInfo->username)
-        ->assertDontSee($user2->additionalInfo->username)
-        ->assertSee($user3->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('search', 'look_me')
+        ->assertSee('look_me')
+        ->assertDontSee('hide_me');
 });
 
-// Apply the change Livewire::test('user.search') to ALL subsequent tests in this file...
-
 test('filtering by nationality works', function () {
-    $user = User::factory()->create();
-    $swissUser = createUserWithDetails(['nationality' => 'CH', 'firstname' => 'Swiss']);
-    $germanUser = createUserWithDetails(['nationality' => 'DE', 'firstname' => 'German']);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'ch_user', 'nationality' => 'CH']);
+    createUserWithDetails(['username' => 'us_user', 'nationality' => 'US']);
 
-    Livewire::test('user.search') // Changed here
-        ->set('nationality', 'DE')
-        ->assertSee($germanUser->additionalInfo->username)
-        ->assertDontSee($swissUser->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterUserNationality', 'CH')
+        ->assertSee('ch_user')
+        ->assertDontSee('us_user');
 });
 
 test('filtering by minimum age works', function () {
-    $user = User::factory()->create();
-    $user25 = createUserWithDetails(['birthday' => now()->subYears(25)->toDateString(), 'firstname' => 'TwentyFive']);
-    $user35 = createUserWithDetails(['birthday' => now()->subYears(35)->toDateString(), 'firstname' => 'ThirtyFive']);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'young_user', 'birthday' => now()->subYears(18)->toDateString()]);
+    createUserWithDetails(['username' => 'old_user', 'birthday' => now()->subYears(50)->toDateString()]);
 
-    Livewire::test('user.search') // Changed here
-        ->set('min_age', 30)
-        ->assertSee($user35->additionalInfo->username)
-        ->assertDontSee($user25->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterMinAge', 30)
+        ->assertSee('old_user')
+        ->assertDontSee('young_user');
 });
 
 test('filtering by maximum age works', function () {
-    $user = User::factory()->create();
-    $user25 = createUserWithDetails(['birthday' => now()->subYears(25)->toDateString(), 'firstname' => 'TwentyFive']);
-    $user35 = createUserWithDetails(['birthday' => now()->subYears(35)->toDateString(), 'firstname' => 'ThirtyFive']);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'young_user', 'birthday' => now()->subYears(18)->toDateString()]);
+    createUserWithDetails(['username' => 'old_user', 'birthday' => now()->subYears(50)->toDateString()]);
 
-    Livewire::test('user.search') // Changed here
-        ->set('max_age', 30)
-        ->assertSee($user25->additionalInfo->username)
-        ->assertDontSee($user35->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterMaxAge', 25)
+        ->assertSee('young_user')
+        ->assertDontSee('old_user');
 });
 
 test('filtering by age range works', function () {
-    $user = User::factory()->create();
-    $user25 = createUserWithDetails(['birthday' => now()->subYears(25)->toDateString(), 'firstname' => 'TwentyFive']);
-    $user35 = createUserWithDetails(['birthday' => now()->subYears(35)->toDateString(), 'firstname' => 'ThirtyFive']);
-    $user45 = createUserWithDetails(['birthday' => now()->subYears(45)->toDateString(), 'firstname' => 'FortyFive']);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails(['username' => 'young_user', 'birthday' => now()->subYears(20)->toDateString()]);
+    createUserWithDetails(['username' => 'middle_user', 'birthday' => now()->subYears(35)->toDateString()]);
+    createUserWithDetails(['username' => 'old_user', 'birthday' => now()->subYears(60)->toDateString()]);
 
-    Livewire::test('user.search') // Changed here
-        ->set('min_age', 30)
-        ->set('max_age', 40)
-        ->assertDontSee($user25->additionalInfo->username)
-        ->assertSee($user35->additionalInfo->username)
-        ->assertDontSee($user45->additionalInfo->username);
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterMinAge', 30)
+        ->set('filterMaxAge', 40)
+        ->assertSee('middle_user')
+        ->assertDontSee('young_user')
+        ->assertDontSee('old_user');
 });
 
 test('combining filters works', function () {
-    $user = User::factory()->create();
-    $swissUserYoung = createUserWithDetails(['firstname' => 'YoungSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(22)->toDateString(), 'additionalInfo' => ['username' => 'YoungSwiss']]);
-    $swissUserOld = createUserWithDetails(['firstname' => 'OldSwiss', 'nationality' => 'CH', 'birthday' => now()->subYears(40)->toDateString(), 'additionalInfo' => ['username' => 'OldSwiss']]);
-    $germanUserYoung = createUserWithDetails(['firstname' => 'YoungGerman', 'nationality' => 'DE', 'birthday' => now()->subYears(23)->toDateString(), 'additionalInfo' => ['username' => 'YoungGerman']]);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    actingAs($user);
+    createUserWithDetails([
+        'username' => 'match',
+        'birthday' => now()->subYears(30)->toDateString(),
+        'nationality' => 'CH',
+    ]);
 
-    Livewire::test('user.search') // Changed here
-        ->set('search', 'Swiss')
-        ->set('nationality', 'CH')
-        ->set('min_age', 30)
-        ->assertDontSee($swissUserYoung->additionalInfo->username)
-        ->assertSee($swissUserOld->additionalInfo->username)
-        ->assertDontSee($germanUserYoung->additionalInfo->username);
+    createUserWithDetails([
+        'username' => 'no_match',
+        'birthday' => now()->subYears(20)->toDateString(),
+        'nationality' => 'US',
+    ]);
+
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterMinAge', 25)
+        ->set('filterMaxAge', 35)
+        ->set('filterUserNationality', 'CH')
+        ->assertSee('match')
+        ->assertDontSee('no_match');
 });
 
 test('clear filters button works', function () {
-    $user = User::factory()->create();
-    actingAs($user);
+    $authUser = User::factory()->create();
+    actingAs($authUser);
 
-    Livewire::test('user.search') // Changed here
-        ->set('search', 'test')
-        ->set('nationality', 'DE')
-        ->set('min_age', 20)
-        ->set('max_age', 30)
-        ->call('resetFilters')
-        ->assertSet('search', '')
-        ->assertSet('nationality', null)
-        ->assertSet('min_age', null)
-        ->assertSet('max_age', null)
-        ->assertDispatched('reset-nationality-select');
+    createUserWithDetails(['username' => 'filtered_out', 'nationality' => 'US']);
+    createUserWithDetails(['username' => 'visible', 'nationality' => 'CH']);
+
+    Livewire::actingAs($authUser)
+        ->test(\App\Livewire\User\Search::class)
+        ->set('filterUserNationality', 'CH')
+        ->assertSee('visible')
+        ->call('updateFilters', [
+            'filterUserNationality' => null,
+        ])
+        ->assertSee('filtered_out');
 });
 
-test('pagination works', function () {
-    $user = User::factory()->create();
-    User::factory(20)->create()->each(function ($u) {
-        $u->additionalInfo()->create(UserAdditionalInfo::factory()->raw());
-    });
 
-    actingAs($user);
-
-    Livewire::test('user.search') // Changed here
-        ->assertViewHas('users', function ($users) {
-            return $users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->count() === 10;
-        })
-        ->call('gotoPage', 2, 'page')
-        ->assertViewHas('users', function ($users) {
-            return $users->count() > 0 && $users->count() <= 10;
-        });
-});

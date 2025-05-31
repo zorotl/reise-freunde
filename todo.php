@@ -20,19 +20,12 @@
  */
 
 // [ ] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
-// [x] Find and delete "No new notifications." in notification card
 
 /**
  * --- Email & Verification ---
  */
 
 // [ ] Implement email verification (must be done at the end of the project)
-
-/**
- * --- Language & Translation ---
- */
-
-// [x] Translate more and more content
 
 /**
  * --- Security ---
@@ -46,11 +39,6 @@
 
 // [ ] Add general test coverage (backend + frontend)
 
-/**
- * --- Frontend (not logged-in users) ---
- */
-
-// [x] Add guest user features (to be defined)
 
 
 // ==================================================================================================================================

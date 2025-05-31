@@ -85,12 +85,12 @@ class Search extends Component
         });
 
         $query->when($this->filterMaxAge !== null, function ($q) {
-            $earliestBirthday = now()->subYears($this->filterMaxAge + 1)->startOfDay()->toDateString();
+            $earliestBirthday = now()->subYears($this->filterMaxAge)->startOfDay()->toDateString();
             $q->whereHas(
                 'additionalInfo',
                 fn($sub) =>
                 $sub->whereNotNull('birthday')
-                    ->whereDate('birthday', '>', $earliestBirthday)
+                    ->whereDate('birthday', '>=', $earliestBirthday)
             );
         });
 

@@ -36,10 +36,10 @@ class PostFactory extends Factory
         // Zufälliges Ablaufdatum, kann vor oder nach 'to_date' liegen
         $expiryDate = $this->faker->dateTimeBetween('-1 month', $fromDate);
         // Get a random existing user ID
-        $existingUser = User::inRandomOrder()->first();
+        // $existingUser = User::inRandomOrder()->first();
 
         return [
-            "user_id" => $existingUser ? $existingUser->id : User::factory()->create()->id,
+            'user_id' => User::factory(),
             "title" => $this->faker->sentence(),
             "content" => $this->faker->paragraph(),
             "expiry_date" => $expiryDate,
@@ -48,7 +48,7 @@ class PostFactory extends Factory
             "to_date" => $toDate,
             "country" => $countryCode, // Use the generated code
             "city" => $countryCode ? $this->faker->optional(75)->city() : null, // Only add city if country exists
-            'language_code' => Language::inRandomOrder()->value('code') ?? 'en',
+            'language_code' => Language::factory()->create()->code ?? 'en',
         ];
     }
 }

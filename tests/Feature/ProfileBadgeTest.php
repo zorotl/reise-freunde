@@ -16,7 +16,7 @@ it('shows correct badges for a fully verified user', function () {
     ]);
 
     Livewire::test(\App\Livewire\Profile\Badges::class, ['user' => $user])
-        ->assertSee('Verified by Admin')
+        ->assertSee('Account Approved')
         ->assertSee('ID Verified')
         ->assertSee('Social Linked');
 });

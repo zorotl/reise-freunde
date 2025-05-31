@@ -1,79 +1,128 @@
 <?php
 
 use App\Models\User;
-use App\Models\Language;
+use App\Models\UserGrant;
 use App\Models\Hobby;
+use App\Models\Language;
 use App\Models\TravelStyle;
+use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-// Helper to create a user with required fields and relations
+// Create user with interests + approved/granted state
 function createUserWithFilters(array $attrs = [], array $relations = []): User
 {
-    $user = User::factory()->create($attrs);
+    $user = User::factory()->create(array_merge([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ], $attrs));
 
-    // Important: attach() expects pivot keys matching the pivot table
+    UserGrant::factory()->create([
+        'user_id' => $user->id,
+        'is_banned' => false,
+    ]);
+
+    // Create username via additionalInfo
+    $user->additionalInfo()->create([
+        'username' => strtolower($user->firstname),
+        'birthday' => now()->subYears(25),
+        'nationality' => 'CH',
+    ]);
+
     if (isset($relations['languages'])) {
-        // Since language_user expects language_code, pass the codes
-        $user->spokenLanguages()->attach($relations['languages']);
+        $user->spokenLanguages()->syncWithoutDetaching($relations['languages']);
     }
 
     if (isset($relations['hobbies'])) {
-        $user->hobbies()->attach($relations['hobbies']);
+        $user->hobbies()->syncWithoutDetaching($relations['hobbies']);
     }
 
     if (isset($relations['travelStyles'])) {
-        $user->travelStyles()->attach($relations['travelStyles']);
+        $user->travelStyles()->syncWithoutDetaching($relations['travelStyles']);
     }
 
-    return $user;
+    return $user->fresh(['grant', 'additionalInfo']);
+}
+
+// Viewer = neutral test user not meant to appear in filters
+function createViewerUser(): User
+{
+    $viewer = User::factory()->create([
+        'status' => 'approved',
+        'email_verified_at' => now(),
+        'approved_at' => now(),
+    ]);
+
+    UserGrant::factory()->create([
+        'user_id' => $viewer->id,
+        'is_banned' => false,
+    ]);
+
+    $viewer->additionalInfo()->create([
+        'username' => 'viewer',
+        'birthday' => now()->subYears(30),
+        'nationality' => 'DE',
+    ]);
+
+    return $viewer;
 }
 
 it('can filter users by spoken language', function () {
     $language = Language::factory()->create(['code' => 'en']);
-    $user = createUserWithFilters([], [
+
+    $filteredUser = createUserWithFilters(['firstname' => 'Margarett'], [
         'languages' => ['en']
     ]);
 
-    Livewire\Livewire::test(\App\Livewire\User\Search::class)
+    $viewer = createViewerUser();
+
+    Livewire::actingAs($viewer)
+        ->test(\App\Livewire\User\Search::class)
         ->set('filterLanguages', ['en'])
-        ->assertSee($user->firstname); // or full name if available
+        ->assertSee($filteredUser->additionalInfo->username);
 });
 
 it('can filter users by hobby', function () {
     $hobby = Hobby::factory()->create(['name' => 'Fishing']);
-    $user = createUserWithFilters([], ['hobbies' => [$hobby->id]]);
 
-    Livewire\Livewire::test(\App\Livewire\User\Search::class)
+    $filteredUser = createUserWithFilters(['firstname' => 'Cyril'], [
+        'hobbies' => [$hobby->id]
+    ]);
+
+    $viewer = createViewerUser();
+
+    Livewire::actingAs($viewer)
+        ->test(\App\Livewire\User\Search::class)
         ->set('filterHobbies', [$hobby->id])
-        ->assertSee($user->firstname);
+        ->assertSee($filteredUser->additionalInfo->username);
 });
 
 it('can filter users by travel style', function () {
     $style = TravelStyle::factory()->create(['name' => 'Backpacking']);
-    $user = createUserWithFilters([], ['travelStyles' => [$style->id]]);
 
-    Livewire\Livewire::test(\App\Livewire\User\Search::class)
+    $filteredUser = createUserWithFilters(['firstname' => 'Rogers'], [
+        'travelStyles' => [$style->id]
+    ]);
+
+    $viewer = createViewerUser();
+
+    Livewire::actingAs($viewer)
+        ->test(\App\Livewire\User\Search::class)
         ->set('filterTravelStyles', [$style->id])
-        ->assertSee($user->firstname);
+        ->assertSee($filteredUser->additionalInfo->username);
 });
 
 it('can filter users by gender and age', function () {
-    $user = User::factory()->create([
-        'firstname' => 'Paula',
-        'lastname' => 'Stroman',
-        'gender' => 'female',
-        'status' => 'approved',
-    ]);
+    $filteredUser = createUserWithFilters(['firstname' => 'Paula', 'gender' => 'female']);
 
-    $user->additionalInfo()->create([
-        'birthday' => now()->subYears(25)->toDateString(),
-    ]);
+    $viewer = createViewerUser();
 
-    Livewire\Livewire::test(\App\Livewire\User\Search::class)
+    Livewire::actingAs($viewer)
+        ->test(\App\Livewire\User\Search::class)
         ->set('filterGender', 'female')
         ->set('filterMinAge', 18)
         ->set('filterMaxAge', 30)
-        ->assertSee('Paula');
+        ->assertSee($filteredUser->additionalInfo->username);
 });
