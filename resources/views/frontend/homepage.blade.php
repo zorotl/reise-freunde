@@ -205,7 +205,7 @@
                 {{-- Search Component Wrapper --}}
                 <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12"> {{-- Added wrapper --}}
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">{{ __('Quick Post Search') }}</h3>
-                    <livewire:search />
+                    <livewire:user.search />
                 </section>
 
                 {{-- Section 3: Why Join? --}}

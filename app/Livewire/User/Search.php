@@ -38,7 +38,7 @@ class Search extends Component
         $this->filterGender = $filters['gender'] ?? null;
         $this->filterMinAge = !empty($filters['minAge']) ? (int) $filters['minAge'] : null;
         $this->filterMaxAge = !empty($filters['maxAge']) ? (int) $filters['maxAge'] : null;
-        $this->filterLanguages = $filters['languages'] ?? [];
+        $this->filterLanguages = $filters['spokenLanguages'] ?? [];
         $this->filterHobbies = $filters['hobbies'] ?? [];
         $this->filterTravelStyles = $filters['travelStyles'] ?? [];
 
@@ -95,7 +95,7 @@ class Search extends Component
             $this->filterLanguages,
             fn($q, $langs) =>
             $q->whereHas(
-                'languages',
+                'spokenLanguages',
                 fn($sub) =>
                 $sub->whereIn('languages.code', $langs)
             )

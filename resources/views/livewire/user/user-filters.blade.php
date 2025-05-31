@@ -112,41 +112,43 @@
             </div>             
         </div>
 
+        {{-- Spoken Languages  --}}
+        <x-multi-select
+            id="spoken-language-select"
+            label="{{ __('Spoken Languages') }}"
+            ref="LanguagesSelect"
+            :entangle="'filterLanguages'"
+            :options="$allLanguages->map(fn($l) => ['value' => $l->code, 'label' => $l->name_en])->toArray()"
+        />
+<pre class="text-sm text-gray-500">
+    @json($filterLanguages)
+</pre>
+
+
+        {{-- Travel Styles --}}
+        <x-multi-select
+            id="travel-style-select"
+            label="{{ __('Travel Styles') }}"
+            ref="travelStylesSelect"
+            :entangle="'filterTravelStyles'"
+            :options="$allTravelStyles->map(fn($s) => ['value' => $s->id, 'label' => $s->name])->toArray()"
+        />
+
+        {{-- Hobbies --}}
+        <x-multi-select
+            id="hobby-select"
+            label="{{ __('Hobbies') }}"
+            ref="hobbySelect"
+            :entangle="'filterHobbies'"
+            :options="$allHobbies->map(fn($h) => ['value' => $h->id, 'label' => $h->name])->toArray()"
+        /> 
+
         {{-- Clear Filters --}}
         <div class="col-span-full flex justify-end">
             <button wire:click="resetFilters" type="button"
                 class="px-4 py-2 border border-gray-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-500 focus:ring-indigo-500">
                 {{ __('Clear Filters') }}
             </button>
-        </div>
-
-        {{-- Spoken Languages --}}
-        {{-- <x-multi-select
-            id="spoken-language-select"
-            label="{{ __('Spoken Languages') }}"
-            ref="spokenLanguagesSelect"
-            :entangle="'filterLanguages'"
-            :options="$allLanguages->map(fn($l) => ['value' => $l->code, 'label' => $l->name_en])->toArray()"
-        /> --}}
-
-        {{-- Travel Styles --}}
-        {{-- <x-multi-select
-            id="travel-style-select"
-            label="{{ __('Travel Styles') }}"
-            ref="travelStylesSelect"
-            :entangle="'filterTravelStyles'"
-            :options="$allTravelStyles->map(fn($s) => ['value' => $s->id, 'label' => $s->name])->toArray()"
-        /> --}}
-
-        {{-- Hobbies --}}
-        {{-- <x-multi-select
-            id="hobby-select"
-            label="{{ __('Hobbies') }}"
-            ref="hobbySelect"
-            :entangle="'filterHobbies'"
-            :options="$allHobbies->map(fn($h) => ['value' => $h->id, 'label' => $h->name])->toArray()"
-        />  --}}
-
-       
+        </div>       
     </div>
 </div>
