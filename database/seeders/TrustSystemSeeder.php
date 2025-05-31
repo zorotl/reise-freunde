@@ -13,7 +13,7 @@ class TrustSystemSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create 30 users with all info
+        // Create users with all info
         User::factory()
             ->count(2)
             ->hasVerification()->state(['status' => 'approved'])

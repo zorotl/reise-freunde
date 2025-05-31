@@ -120,10 +120,6 @@
             :entangle="'filterLanguages'"
             :options="$allLanguages->map(fn($l) => ['value' => $l->code, 'label' => $l->name_en])->toArray()"
         />
-<pre class="text-sm text-gray-500">
-    @json($filterLanguages)
-</pre>
-
 
         {{-- Travel Styles --}}
         <x-multi-select
