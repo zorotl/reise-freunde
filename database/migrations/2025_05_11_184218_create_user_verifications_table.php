@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('id_document_path')->nullable();
             $table->json('social_links')->nullable();
             $table->text('note')->nullable();
-            $table->enum('status', ['pending', 'reviewed', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->foreignId('reviewed_by')->nullable()->constrained('users');
             $table->timestamps();
         });

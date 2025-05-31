@@ -18,6 +18,8 @@ class UserFilters extends Component
     public array $filterLanguages = [];
     public array $filterHobbies = [];
     public array $filterTravelStyles = [];
+    public bool $filterVerified = false;
+    public bool $filterTrusted = false;
 
     public $countryList;
     public $allLanguages;
@@ -59,6 +61,8 @@ class UserFilters extends Component
             'spokenLanguages' => $this->filterLanguages,
             'hobbies' => $this->filterHobbies,
             'travelStyles' => $this->filterTravelStyles,
+            'verified' => $this->filterVerified,
+            'trusted' => $this->filterTrusted,
         ]);
     }
 
@@ -72,6 +76,8 @@ class UserFilters extends Component
             'filterLanguages',
             'filterHobbies',
             'filterTravelStyles',
+            'filterVerified',
+            'filterTrusted',
         ]);
 
         $this->dispatch('reset-user-filter-selects');
@@ -84,16 +90,13 @@ class UserFilters extends Component
             'spokenLanguages' => $this->filterLanguages,
             'hobbies' => $this->filterHobbies,
             'travelStyles' => $this->filterTravelStyles,
+            'verified' => $this->filterVerified,
+            'trusted' => $this->filterTrusted,
         ]);
     }
 
     public function render()
     {
-        // dd(
-        //     $this->allLanguages->map(fn($l) => ['value' => $l->code, 'label' => $l->name_en])->toArray()
-        // );
-
-
         return view('livewire.user.user-filters');
     }
 }

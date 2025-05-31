@@ -27,7 +27,7 @@ class TrustSystemSeeder extends Seeder
 
         UserVerification::factory()->create([
             'user_id' => $verified->id,
-            'status' => 'reviewed',
+            'status' => 'accepted',
         ]);
 
         // Create 5 Bürgschaften (RealWorldConfirmations)

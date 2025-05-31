@@ -21,6 +21,8 @@ class Search extends Component
     public array $filterLanguages = [];
     public array $filterHobbies = [];
     public array $filterTravelStyles = [];
+    public bool $filterVerified = false;
+    public bool $filterTrusted = false;
 
     #[Url(except: '')]
     public string $search = '';
@@ -41,6 +43,8 @@ class Search extends Component
         $this->filterLanguages = $filters['spokenLanguages'] ?? [];
         $this->filterHobbies = $filters['hobbies'] ?? [];
         $this->filterTravelStyles = $filters['travelStyles'] ?? [];
+        $this->filterVerified = $filters['verified'] ?? false;
+        $this->filterTrusted = $filters['trusted'] ?? false;
 
         $this->resetPage();
     }
@@ -50,9 +54,8 @@ class Search extends Component
         $query = User::query()
             ->where('id', '!=', auth()->id())
             ->where('status', 'approved')
-            ->where(function ($query) {
-                $query->where('username', 'like', '%' . $this->search . '%')
-                    ->orWhere('name', 'like', '%' . $this->search . '%');
+            ->whereHas('additionalInfo', function ($query) {
+                $query->where('username', 'like', '%' . $this->search . '%');
             });
 
         $query->when(
@@ -120,6 +123,25 @@ class Search extends Component
                 $sub->whereIn('travel_styles.id', $styles)
             )
         );
+
+        // Verified filter
+        $query->when($this->filterVerified, function ($q) {
+            $q->whereHas('verification', function ($sub) {
+                $sub->where('status', 'accepted');
+            });
+        });
+
+        // Trusted filter (at least 3 confirmations)
+        $query->when($this->filterTrusted, function ($q) {
+            $q->whereIn('id', function ($sub) {
+                $sub->selectRaw('user_id')->from(function ($inner) {
+                    $inner->selectRaw('requester_id as user_id')->from('user_confirmations')->where('status', 'accepted')
+                        ->unionAll(
+                            \DB::table('user_confirmations')->selectRaw('confirmer_id as user_id')->where('status', 'accepted')
+                        );
+                }, 'merged')->groupBy('user_id')->havingRaw('COUNT(*) >= 1');
+            });
+        });
 
         return view('livewire.user.search', [
             'users' => $query->paginate(15),

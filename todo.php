@@ -19,31 +19,8 @@
  * --- General Issues ---
  */
 
-// [x] Message Title: If replying to a message, the title should match the original, maybe with a prefix. Suggest a strategy and debug the current behavior.
-// [x] Admin Panel: Previously, accepting a report deleted a post. This no longer happens because "reports" were extended to users and messages. Fix logic accordingly.
-// [x] Ban Function: On main page, a modal opens for banning. In message-view it bans directly (permanently). Unify this to always show the modal.
-// [x] User Search: When clicking "Follow", the spinner shows on all "Follow" buttons, not just the clicked one. Fix the frontend behavior.
-// [x] Admin Dashboard Reports shown Post, but we have User and Message reports as well. Extend the admin dashboard to show all report types.
-// [x] Admin Dashboard smaller cards: The cards on the admin dashboard are too large. Reduce their size for better visibility.
-
-/**
- * --- Messages ---
- */
-
-// [x] Delete and archive messages
-
-/**
- * --- User Features ---
- */
-
-// [x] Allow users to specify which languages they speak
-// [x] Store the language of each post
-// [x] Update user profile to include spoken languages
-// [x] Update user and post seeder and factory to include spoken languages
-// [ ] Add gender to User tabel, seeder, and factory
-// [ ] Add gender to user profile
-// [ ] Add user filter (age, nationality, spoken languages, etc.)
-// [x] Add post filter (by post language and user language)
+// [ ] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
+// [ ] Find and delete "No new notifications." in notification card
 
 /**
  * --- Email & Verification ---

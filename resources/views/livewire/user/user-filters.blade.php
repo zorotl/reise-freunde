@@ -139,6 +139,24 @@
             :options="$allHobbies->map(fn($h) => ['value' => $h->id, 'label' => $h->name])->toArray()"
         /> 
 
+        {{-- Verified Users (by social media or id) --}}
+        <div>
+            <label for="filter_verified" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {{ __('Show users with verified identity') }}
+            </label>
+            <input type="checkbox" id="filter_verified" wire:model.live="filterVerified"
+                class="rounded border-gray-300 dark:border-neutral-600 text-indigo-600 focus:ring-indigo-500" />
+        </div>
+
+        {{-- Trusted Users (real world confirmation) --}}
+        <div>
+            <label for="filter_trusted" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {{ __('Show users trusted by others') }}
+            </label>
+            <input type="checkbox" id="filter_trusted" wire:model.live="filterTrusted"
+                class="rounded border-gray-300 dark:border-neutral-600 text-indigo-600 focus:ring-indigo-500" />
+        </div>
+
         {{-- Clear Filters --}}
         <div class="col-span-full flex justify-end">
             <button wire:click="resetFilters" type="button"
