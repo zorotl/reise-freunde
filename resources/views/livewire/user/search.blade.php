@@ -49,8 +49,8 @@
                 role="alert">
                 <strong class="font-bold">{{ __('Login Required!') }}</strong>
                 <span class="block sm:inline"> {{ __('Please') }} <a href="{{ route('login') }}"
-                        class="font-semibold underline hover:text-blue-800 dark:hover:text-blue-100" wire:navigate>{{ __('log
-                        in') }}</a> {{ __('or') }} <a href="{{ route('register') }}"
+                        class="font-semibold underline hover:text-blue-800 dark:hover:text-blue-100" wire:navigate>
+                        {{ __('log in') }}</a> {{ __('or') }} <a href="{{ route('register') }}"
                         class="font-semibold underline hover:text-blue-800 dark:hover:text-blue-100" wire:navigate>{{
                         __('register') }}</a> {{ __('to see the search results.') }}</span>
             </div>           

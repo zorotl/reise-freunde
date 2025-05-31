@@ -25,21 +25,33 @@
 
                 <x-language-switcher />
 
-                <nav class="space-x-4">
-                    <a href="{{ route('post.show') }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{ __('Travel Posts') }}</a>
-                    <a href="{{ route('user.directory') }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{ __('Find Users') }}</a>
+                <nav class="space-x-2 flex items-center justify-end">
+                    {{-- <a href="{{ route('post.show') }}"
+                    class="px-3 py-1.5 rounded-md bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm">
+                    {{ __('Travel Posts') }}
+                    </a> --}}
+
+                    {{-- <a href="{{ route('user.directory') }}"
+                    class="px-3 py-1.5 rounded-md bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm">
+                    {{ __('Find Users') }}
+                    </a> --}}
+
                     @auth
                         <a href="{{ route('dashboard') }}"
-                           class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{ __('Dashboard') }}</a>
+                        class="px-4 py-2 rounded-md bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm">
+                        {{ __('Dashboard') }}
+                        </a>
                     @else
                         <a href="{{ route('login') }}"
-                           class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{ __('Log
-                                                                                                                                                                                          in') }}</a>
+                        class="px-4 py-2 rounded-md bg-sky-600 text-white hover:bg-sky-800 transition text-sm">
+                        {{ __('Log in') }}
+                        </a>
+
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}"
-                               class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{ __('Register') }}</a>
+                            class="px-4 py-2 rounded-md bg-indigo-500 text-white hover:bg-indigo-700 transition text-sm">
+                            {{ __('Register') }}
+                            </a>
                         @endif
                     @endauth
                 </nav>
@@ -65,41 +77,15 @@
         </section>
 
         <main>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">                
 
-                {{-- "Ready to Connect?" Section (Increased bottom margin) --}}
-                <section class="mb-12 text-center"> {{-- Increased margin --}}
-                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                        {{ __('Ready to Connect?') }}
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        {{ __('Browse the latest travel posts or create your own to find the perfect travel partner.') }}
-                    </p>
-                    <div class="mt-6 space-x-4">
-                        <a href="{{ route('post.show') }}"
-                           class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
-                            {{ __('See All Posts') }}
-                        </a>
-                        <a href="{{ route('user.directory') }}"
-                           class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
-                            {{ __('Find Users') }}
-                        </a>
-                        @guest
-                            <a href="{{ route('register') }}"
-                               class="inline-flex items-center px-4 py-2 bg-indigo-500 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('Register Now') }}
-                            </a>
-                        @endguest
-                    </div>
-                </section>
-
-                {{-- Recent Posts Component --}}
-                <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">
-                        {{ __('Latest Travel Posts') }}
-                    </h3>
-                    <livewire:post.recent-posts />
-                </section>
+            {{-- Recent Posts Component --}}
+            <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">
+                    {{ __('Latest Travel Posts') }}
+                </h3>
+                <livewire:post.recent-posts />
+            </section>
 
             {{-- New Section: Enhanced Trust and Safety --}}
             <section class="py-16 bg-gray-100 dark:bg-neutral-800 rounded-lg my-12">
@@ -116,7 +102,7 @@
                                 {{ __('Verified Profiles') }}
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400">
-                                {{ __('To ensure a genuine community, all new profiles undergo a review process. This helps us prevent fake accounts and build a safer environment for everyone. You\'ll have read-only access while your profile is being verified (typically within 36 hours).') }}
+                                {{ __('To ensure a genuine community, all new profiles undergo a review process. This helps us prevent fake accounts and build a safer environment for everyone. You\'ll have read-only access while your profile is being verified (typically within 2 days).') }}
                             </p>
                         </div>
 
@@ -145,6 +131,32 @@
                 </div>
             </section>
 
+            {{-- "Ready to Connect?" Section (Increased bottom margin) --}}
+            <section class="mb-12 text-center"> {{-- Increased margin --}}
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                    {{ __('Ready to Connect?') }}
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    {{ __('Browse the latest travel posts or create your own to find the perfect travel partner.') }}
+                </p>
+                <div class="mt-6 space-x-4">
+                    <a href="{{ route('post.show') }}"
+                        class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
+                        {{ __('See All Posts') }}
+                    </a>
+                    <a href="{{ route('user.directory') }}"
+                        class="inline-flex items-center px-4 py-2 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-md font-semibold text-sm text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 transition ease-in-out duration-150">
+                        {{ __('Find Users') }}
+                    </a>
+                    @guest
+                        <a href="{{ route('register') }}"
+                            class="inline-flex items-center px-4 py-2 bg-indigo-500 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            {{ __('Register Now') }}
+                        </a>
+                    @endguest
+                </div>
+            </section>
+
             <section class="bg-white py-16">
                 <div class="max-w-5xl mx-auto px-6 text-gray-800">
                     <h2 class="text-3xl font-bold mb-6 text-center">{{ __('Trust, Safety, and Real People') }}</h2>
@@ -155,7 +167,7 @@
 
                     <ul class="space-y-4 text-lg text-center">
                         <li>🔒 <strong>{{ __('Manual Profile Checks') }}</strong>: {{ __('Every profile is reviewed by a human before it goes live.') }}</li>
-                        <li>⏱️ <strong>{{ __('Automatic Approval') }}</strong>: {{ __('If no one can review within 36 hours, your account goes live automatically.') }}</li>
+                        {{-- <li>⏱️ <strong>{{ __('Automatic Approval') }}</strong>: {{ __('If no one can review within 36 hours, your account goes live automatically.') }}</li> --}}
                         <li>🪪 <strong>{{ __('Optional Identity Verification') }}</strong>: {{ __('Upload an ID or link your social accounts to earn trust badges.') }}</li>
                         <li>👥 <strong>{{ __('Real-World Confirmations') }}</strong>: {{ __('Members can vouch for each other after real meetings.') }}</li>
                         <li>👁️ <strong>{{ __('Read-Only Access at First') }}</strong>: {{ __("Until you're approved, you can browse — but not post.") }}</li>

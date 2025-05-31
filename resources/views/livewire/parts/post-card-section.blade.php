@@ -118,12 +118,13 @@
         {{-- Report --}}
         @auth
             @if (auth()->id() !== $post->user_id)
+            <flux:tooltip content="Report this post">
                 <button type="button"
-                    wire:click="$dispatch('openReportModal', { postId: {{ $post->id }}, postTitle: '{{ addslashes($post->title) }}' })"
+                    wire:click="$dispatch('openReportModal', { postId: {{ $post->id }}, postTitle: '{{ addslashes($post->title) }}' })"                    
                     class="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-700 text-xs font-medium rounded-md text-red-700 dark:text-red-300 bg-white dark:bg-neutral-700 hover:bg-red-50 dark:hover:bg-red-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    <flux:icon.flag class="h-4 w-4 mr-1" />
-                    {{ __('Report') }}
+                    <flux:icon.flag class="h-4 w-4" />
                 </button>
+            </flux:tooltip>
             @endif
         @endauth
     </div>

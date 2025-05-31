@@ -32,7 +32,7 @@
  * --- Language & Translation ---
  */
 
-// [ ] Translate more and more content
+// [x] Translate more and more content
 
 /**
  * --- Security ---
@@ -50,7 +50,7 @@
  * --- Frontend (not logged-in users) ---
  */
 
-// [ ] Add guest user features (to be defined)
+// [x] Add guest user features (to be defined)
 
 
 // ==================================================================================================================================
