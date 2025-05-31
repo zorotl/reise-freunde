@@ -20,7 +20,7 @@
  */
 
 // [ ] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
-// [ ] Find and delete "No new notifications." in notification card
+// [x] Find and delete "No new notifications." in notification card
 
 /**
  * --- Email & Verification ---
