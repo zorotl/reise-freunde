@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Middleware\AdminOrModeratorMiddleware;
 use Livewire\Volt\Volt;
 

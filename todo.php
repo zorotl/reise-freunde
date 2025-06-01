@@ -17,25 +17,19 @@
  * --- General Issues ---
  */
 
-// [x] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
+// [ ] 
 
 /**
  * --- Email & Verification ---
  */
 
-// [ ] Implement email verification (must be done at the end of the project)
+// [x] Implement email verification (must be done at the end of the project)
 
 /**
  * --- Security ---
  */
 
 // [ ] Perform a full pentest on the application
-
-/**
- * --- Testing ---
- */
-
-// [x] Add general test coverage (backend + frontend)
 
 
 
