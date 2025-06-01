@@ -28,10 +28,13 @@
                 placeholder: '{{ __("Select...") }}',
                 create: false,
                 options: this.optionsData,
+                valueField: 'value',
+                labelField: 'label',
                 searchField: 'label',
                 onChange: (value) => {
-                    this.selectedValues = value;   
-                    $wire.set('{{ $entangle }}', value);                
+                    this.selectedValues = value;
+                    // Use $wire.set with defer to prevent unnecessary requests
+                    $wire.set('{{ $entangle }}', value, true);
                 },
                 render: {
                     item: (data, escape) => {
@@ -43,18 +46,21 @@
                 },
             });
 
-            this.tomSelectInstance.setValue(this.selectedValues || []);
+            // Initialize with current values
+            this.$nextTick(() => {
+                this.tomSelectInstance.setValue(this.selectedValues || []);
+            });
 
+            // Watch for external changes
             this.$watch('selectedValues', (value) => {
-                if (this.tomSelectInstance) {
+                if (JSON.stringify(this.tomSelectInstance.getValue()) !== JSON.stringify(value || [])) {
                     this.tomSelectInstance.setValue(value || []);
                 }
             });
 
             Livewire.on('reset-user-filter-selects', () => {
-                if (this.tomSelectInstance) {
-                    this.tomSelectInstance.clear();
-                }
+                this.tomSelectInstance.clear();
+                this.selectedValues = [];
             });
         }
     }"
@@ -65,7 +71,7 @@
 
     <select
         x-ref="select"
-        id=$id
+        id="{{ $id }}"
         multiple
         class="tom-select-custom w-full rounded-md border-gray-300 dark:border-neutral-600 shadow-sm dark:bg-neutral-800 dark:text-gray-300"
     ></select>

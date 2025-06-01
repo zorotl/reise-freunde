@@ -6,9 +6,7 @@
  * ==========================
  *
  * Organized into phases for better project planning.
- * Tasks are grouped by functional area.
  *
- * You can use this file as an internal project roadmap.
  */
 
 // ==========================
@@ -19,7 +17,7 @@
  * --- General Issues ---
  */
 
-// [ ] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
+// [x] Fix user filter (spoken languages, hobby, travelStyle). This 3 first selection does not work properly.
 
 /**
  * --- Email & Verification ---
@@ -37,7 +35,7 @@
  * --- Testing ---
  */
 
-// [ ] Add general test coverage (backend + frontend)
+// [x] Add general test coverage (backend + frontend)
 
 
 
