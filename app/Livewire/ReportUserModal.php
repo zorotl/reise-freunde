@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Report;
+use Livewire\Component;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 
 class ReportUserModal extends Component
 {
@@ -17,12 +17,14 @@ class ReportUserModal extends Component
     public string $comment = '';
 
     public array $availableReasons = [
-        'spam',
-        'harassment',
-        'hate_speech',
-        'impersonation',
-        'inappropriate_behavior',
-        'other',
+        'report_reason.spam',
+        'report_reason.scam_or_fraud',
+        'report_reason.inappropriate_content',
+        'report_reason.inappropriate_behavior',
+        'report_reason.harassment',
+        'report_reason.hate_speech',
+        'report_reason.misinformation',
+        'report_reason.other',
     ];
 
     #[On('openReportUserModal')]
@@ -50,7 +52,10 @@ class ReportUserModal extends Component
         }
 
         $this->validate([
-            'reason' => 'required|string|in:' . implode(',', $this->availableReasons),
+            'reason' => 'required|string|in:' . implode(',', array_map(
+                fn($r) => Str::after($r, 'report_reason.'),
+                $this->availableReasons
+            )),
             'comment' => 'nullable|string|max:1000',
         ]);
 

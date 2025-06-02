@@ -53,7 +53,9 @@
                             class="mt-1 block w-full rounded-md border-gray-300 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             <option value="">{{ __('Select reason') }}</option>
                             @foreach ($availableReasons as $value)
-                                <option value="{{ $value }}">{{ __(ucwords(str_replace('_', ' ', $value))) }}</option>
+                                <option value="{{ Str::after($value, 'report_reason.') }}">
+                                    {{ __( $value) }}
+                                </option>
                             @endforeach
                         </select>
                         @error('reason') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror

@@ -5,6 +5,7 @@ namespace App\Livewire;
 //use App\Models\PostReport;
 use App\Models\Report;
 use App\Models\Post;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -19,12 +20,14 @@ class ReportPostModal extends Component
 
     // Define valid reasons (can be moved to config later)
     public array $availableReasons = [
-        'spam',
-        'harassment',
-        'hate_speech',
-        'nudity',
-        'misinformation',
-        'other',
+        'report_reason.spam',
+        'report_reason.scam_or_fraud',
+        'report_reason.inappropriate_content',
+        'report_reason.inappropriate_behavior',
+        'report_reason.harassment',
+        'report_reason.hate_speech',
+        'report_reason.misinformation',
+        'report_reason.other',
     ];
 
     #[On('openReportModal')]
@@ -54,7 +57,10 @@ class ReportPostModal extends Component
         }
 
         $this->validate([
-            'reason' => 'required|string|in:' . implode(',', $this->availableReasons),
+            'reason' => 'required|string|in:' . implode(',', array_map(
+                fn($r) => Str::after($r, 'report_reason.'),
+                $this->availableReasons
+            )),
             'comment' => 'nullable|string|max:1000',
         ]);
 

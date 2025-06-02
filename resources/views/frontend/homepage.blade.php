@@ -132,7 +132,7 @@
             </section>
 
             {{-- "Ready to Connect?" Section (Increased bottom margin) --}}
-            <section class="mb-12 text-center"> {{-- Increased margin --}}
+            <section class="mb-12 p-5 text-center bg-sky-200"> {{-- Increased margin --}}
                 <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     {{ __('Ready to Connect?') }}
                 </h2>

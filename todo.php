@@ -17,13 +17,7 @@
  * --- General Issues ---
  */
 
-// [ ] 
-
-/**
- * --- Email & Verification ---
- */
-
-// [x] Implement email verification (must be done at the end of the project)
+// [ ] Bei Usereröffnung wird kein Eintrag in Grants erstellt
 
 /**
  * --- Security ---
