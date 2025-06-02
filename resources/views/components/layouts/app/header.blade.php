@@ -6,7 +6,7 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">        
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         <a href="{{ route('home') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0"
@@ -153,6 +153,22 @@
         @endguest
     </flux:header>
 
+         @if (session('error'))
+    <div class="mx-auto mt-3 max-w-7xl px-3 lg:px-4">
+        <div class="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500 dark:bg-red-900 dark:text-red-100">
+            {{ session('error') }}
+        </div>
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="mx-auto mt-3 max-w-7xl px-3 lg:px-4">
+        <div class="rounded-lg border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-500 dark:bg-green-900 dark:text-green-100">
+            {{ session('success') }}
+        </div>
+    </div>
+@endif
+
     {{-- ... (Mobile Menu and rest of the layout) ... --}}
     <flux:sidebar stashable sticky
         class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
@@ -164,49 +180,29 @@
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')">
-                {{-- Mobile: New Dashboard Link --}}
-                <flux:navlist.item icon="layout-grid" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')" wire:navigate>
+                <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
-                {{-- Mobile: Renamed "All Posts" Link --}}
-                <flux:navlist.item icon="rectangle-stack" :href="route('post.show')"
-                    :current="request()->routeIs('post.show')" wire:navigate>
+
+                <flux:navlist.item icon="rectangle-stack" :href="route('post.show')" :current="request()->routeIs('post.show')" wire:navigate>
                     {{ __("All Posts") }}
                 </flux:navlist.item>
+
+                <flux:navlist.item icon="users" :href="route('user.directory')" :current="request()->routeIs('user.directory')" wire:navigate>
+                    {{ __("Find User") }}
+                </flux:navlist.item>
+            
                 @auth
-                <flux:navlist.item icon="user-circle" :href="route('post.myown')"
-                    :current="request()->routeIs('post.myown')" wire:navigate>{{ __("My Posts") }}
-                </flux:navlist.item>
-                <flux:navlist.item icon="envelope" :href="route('mail.inbox')"
-                    :current="request()->routeIs('mail.inbox')" wire:navigate>
-                    {{ __("Inbox") }}
-                    <livewire:post.unread-messages-count />
-                </flux:navlist.item>
-                <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])"
-                    :current="request()->routeIs('user.following')" wire:navigate>{{ __("Following") }}
-                </flux:navlist.item>
-                {{-- Mobile: Admin Area Link --}}
-                @if(auth()->user()->isAdminOrModerator())
-                <flux:navlist.item icon="shield-check" :href="route('admin.dashboard')" wire:navigate>
-                    {{ __('Admin Area') }}
-                </flux:navlist.item>
-                @endif
+                    <flux:navlist.item icon="users" :href="route('user.following', ['id' => auth()->user()->id])" :current="request()->routeIs('user.following')" wire:navigate>
+                        {{ __("Friends") }}
+                    </flux:navlist.item>            
                 @endauth
+                
+                <flux:navlist.item icon="envelope" :href="route('mail.inbox')" :current="request()->routeIs('mail.inbox')" wire:navigate>
+                    {{ __("Messages") }}
+                    <livewire:post.unread-messages-count />
+                </flux:navlist.item>                
             </flux:navlist.group>
-        </flux:navlist>
-
-        <flux:spacer />
-
-        <flux:navlist variant="outline">
-            <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
-                target="_blank">
-                {{ __('Repository') }}
-            </flux:navlist.item>
-
-            <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
-                {{ __('Documentation') }}
-            </flux:navlist.item>
         </flux:navlist>
     </flux:sidebar>
 

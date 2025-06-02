@@ -1,7 +1,7 @@
-<div>
-    <x-slot:title>
-        {{ __(':name is Following', ['name' => $user->username]) }}
-    </x-slot>
+<div class="py-8">
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
+        {{ __('You are following') }}
+    </h1>
 
     <x-user-tab-switcher :user="$user" /> {{-- Assuming this is your own component or standard HTML/Tailwind --}}
 
