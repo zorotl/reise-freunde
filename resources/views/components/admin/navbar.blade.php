@@ -57,6 +57,7 @@
         </flux:navbar.item>
         <flux:navmenu>
             <flux:navmenu.item :href="route('admin.reports')">{{ __('Reports') }}</flux:navmenu.item>
+            <flux:navmenu.item :href="route('admin.bug-reports')">{{ __('Bug Reports') }}</flux:navmenu.item>
         </flux:navmenu>
     </flux:dropdown>
 

@@ -17,5 +17,8 @@
                 {{__('Cookies')}}
             </a>
         </nav>
+        <div class="w-full sm:w-auto">
+            <livewire:bug-report-form />
+        </div>
     </div>
 </footer>
