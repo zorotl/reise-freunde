@@ -8,6 +8,10 @@ use Livewire\Volt\Volt;
 
 // 📌 Public routes
 Route::get('/', fn() => view('frontend.homepage'))->name('home');
+Route::view('/imprint', 'frontend.imprint')->name('imprint');
+Route::view('/privacy', 'frontend.privacy')->name('privacy');
+Route::view('/terms', 'frontend.terms')->name('terms');
+Route::view('/cookies', 'frontend.cookies')->name('cookies');
 
 Route::post('/set-locale', function () {
     $locale = request('locale');
