@@ -12,6 +12,7 @@ Route::view('/imprint', 'frontend.imprint')->name('imprint');
 Route::view('/privacy', 'frontend.privacy')->name('privacy');
 Route::view('/terms', 'frontend.terms')->name('terms');
 Route::view('/cookies', 'frontend.cookies')->name('cookies');
+Volt::route('/bug-report', 'pages.bug-report')->name('bug-report');
 
 Route::post('/set-locale', function () {
     $locale = request('locale');
