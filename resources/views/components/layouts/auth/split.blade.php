@@ -40,6 +40,8 @@
         </div>
         <x-footer />
 
+        <x-cookie-banner />
+
         @fluxScripts
     </body>
 </html>

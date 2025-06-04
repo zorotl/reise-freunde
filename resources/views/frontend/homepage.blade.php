@@ -391,6 +391,7 @@
 
         {{-- Optional Footer --}}
         <x-footer />
+        <x-cookie-banner />
 
     </div> {{-- End min-h-screen --}}
 </body>
