@@ -390,12 +390,7 @@
         </main>
 
         {{-- Optional Footer --}}
-        <footer class="bg-white dark:bg-neutral-800 border-t border-gray-200 dark:border-neutral-700 mt-12">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Travel Together') }}. {{ __('All rights reserved.') }}
-                {{-- Add other footer links if needed: Privacy Policy, Terms, etc. --}}
-            </div>
-        </footer>
+        <x-footer />
 
     </div> {{-- End min-h-screen --}}
 </body>

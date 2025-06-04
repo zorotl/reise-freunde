@@ -210,7 +210,9 @@
         {{ $slot }}
     </div>
 
-    @fluxScripts    
+    <x-footer />
+
+    @fluxScripts
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     
