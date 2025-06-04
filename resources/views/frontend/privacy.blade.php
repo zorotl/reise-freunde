@@ -19,5 +19,6 @@
         </div>
     </main>
     <x-footer />
+    <x-cookie-banner />
 </body>
 </html>

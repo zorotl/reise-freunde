@@ -26,6 +26,8 @@
                 </div>
             </div>
         </main>
+        <x-footer />
+        <x-cookie-banner />
     </div>
 </body>
 

@@ -178,6 +178,8 @@
 
     <x-footer />
 
+    <x-cookie-banner />
+
     @fluxScripts
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
