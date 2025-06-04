@@ -17,5 +17,10 @@
                 {{__('Cookies')}}
             </a>
         </nav>
+        <div class="w-full sm:w-auto">
+            <a href="{{ route('bug-report') }}" class="hover:underline">
+                {{ __('Report a bug') }}
+            </a>
+        </div>
     </div>
 </footer>
