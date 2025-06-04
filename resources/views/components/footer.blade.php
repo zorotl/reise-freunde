@@ -18,7 +18,9 @@
             </a>
         </nav>
         <div class="w-full sm:w-auto">
-            <livewire:bug-report-form />
+            <a href="{{ route('bug-report') }}" class="hover:underline">
+                {{ __('Report a bug') }}
+            </a>
         </div>
     </div>
 </footer>
