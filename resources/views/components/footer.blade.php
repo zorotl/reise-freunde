@@ -4,10 +4,10 @@
             &copy; {{ date('Y') }} {{ config('app.name', 'Travel Together') }}. {{ __('All rights reserved.') }}
         </div>
         <nav class="space-x-4">
-            <a href="{{ route('imprint') }}" class="hover:underline">Imprint</a>
-            <a href="{{ route('privacy') }}" class="hover:underline">Privacy Policy</a>
-            <a href="{{ route('terms') }}" class="hover:underline">Terms &amp; Conditions</a>
-            <a href="{{ route('cookies') }}" class="hover:underline">Cookies</a>
+            <a href="{{ route('imprint') }}" class="hover:underline">{{__('Imprint')}}</a>
+            <a href="{{ route('privacy') }}" class="hover:underline">{{__('Privacy Policy')}}</a>
+            <a href="{{ route('terms') }}" class="hover:underline">{{__('Terms & Conditions')}}</a>
+            <a href="{{ route('cookies') }}" class="hover:underline">{{__('Cookies')}}</a>
         </nav>
     </div>
 </footer>
