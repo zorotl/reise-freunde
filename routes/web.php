@@ -82,7 +82,15 @@ Route::prefix('admin')
         Volt::route('/', 'pages.admin.dashboard')->name('dashboard');
 
         // Admin panels
-        foreach (['users' => 'users.index', 'posts' => 'posts.index', 'messages' => 'messages.index', 'hobbies' => 'hobbies.index', 'travel-styles' => 'travel-styles.index', 'reports' => 'reports.index',] as $path => $view) {
+        foreach ([
+            'users' => 'users.index',
+            'posts' => 'posts.index',
+            'messages' => 'messages.index',
+            'hobbies' => 'hobbies.index',
+            'travel-styles' => 'travel-styles.index',
+            'reports' => 'reports.index',
+            'bug-reports' => 'bug-reports.index',
+        ] as $path => $view) {
             Volt::route("/$path", "pages.admin.$view")->name($path);
         }
 
