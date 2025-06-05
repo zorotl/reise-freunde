@@ -7,7 +7,7 @@
 
 {{-- Apply different classes for visual distinction --}}
 
-<body class="min-h-screen bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
+<body class="min-h-screen flex flex-col bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
     {{-- Changed header color --}}
     <flux:header container
         class="border-b border-black bg-amber-400 text-black dark:border-amber-900 dark:bg-amber-800  dark:text-white">
@@ -171,7 +171,7 @@
 
 
     {{-- Main content area - The $slot prop will render the page content here --}}
-    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4 py-8">
+    <div class="mx-auto w-full h-full max-w-7xl flex-1 px-3 lg:px-4 py-8">
         {{ $slot }}
     </div>
 
