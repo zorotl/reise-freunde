@@ -8,7 +8,6 @@ new
 class extends Component {};
 ?>
 
-<div class="max-w-xl mx-auto py-10 px-4">
-    <h1 class="text-2xl font-semibold mb-6">{{ __('Report a bug') }}</h1>
+<div class="max-w-xl mx-auto py-10 px-4">    
     <livewire:bug-report-form />
 </div>

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('email')->nullable();
             $table->text('message');
-            $table->string('url')->nullable();
+            $table->string('url');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending')->index();
             $table->timestamps();
         });

@@ -16,7 +16,6 @@ class BugReportForm extends Component
         if (auth()->check()) {
             $this->email = auth()->user()->email;
         }
-        $this->url = request()->fullUrl();
     }
 
     public function submit()
@@ -24,7 +23,7 @@ class BugReportForm extends Component
         $this->validate([
             'email' => 'nullable|email',
             'message' => 'required|string|max:1000',
-            'url' => 'nullable|string|max:255',
+            'url' => 'required|string|max:255',
         ]);
 
         BugReport::create([
@@ -35,8 +34,9 @@ class BugReportForm extends Component
             'status' => 'pending',
         ]);
 
-        $this->reset('message');
+        $this->reset('message', 'url');
         session()->flash('success', __('Thanks for your feedback!'));
+        $this->redirect('/dashboard', navigate: true);
     }
 
     public function render()

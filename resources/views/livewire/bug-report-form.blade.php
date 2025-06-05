@@ -1,24 +1,57 @@
-<div class="mt-6">
-    <form wire:submit.prevent="submit" class="space-y-2 text-left">
-        <div>
-            <label for="bug_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" id="bug_email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300" />
-        </div>
-        <div>
-            <label for="bug_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
-            <textarea id="bug_message" rows="3" wire:model="message" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300"></textarea>
-            @error('message') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </div>
-        <div>
-            <label for="bug_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('URL or Sitename') }}</label>
-            <input type="text" id="bug_url" wire:model="url" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300" />
-            @error('url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </div>
-        <div class="text-right">
-            <flux:button type="submit" variant="primary" wire:loading.attr="disabled">
-                <span wire:loading wire:target="submit" class="mr-1"><flux:icon.loading /></span>
+<div>
+  <h1 class="text-2xl font-bold mb-5 flex items-center gap-2">
+    {{ __('Bug Report') }}
+  </h1>
+  <section class="w-full">
+    <div class="flex items-start max-md:flex-col">
+      <div class="flex-1 self-stretch max-md:pt-6">
+        <div class="mt-5 w-full max-w-lg">
+          <form wire:submit.prevent="submit" class="w-full space-y-5" novalidate>
+            @csrf
+
+            <flux:input
+              wire:model="email"
+              label="{{ __('Email') }}"
+              type="email"
+              id="bug_email"
+              autocomplete="email"
+              required
+            />
+
+            <div class="space-y-1">
+              <flux:textarea
+                wire:model="message"
+                label="{{ __('Message') }}"
+                id="bug_message"
+                rows="3"
+                required
+              />            
+            </div>
+
+            <flux:input
+              wire:model="url"
+              label="{{ __('On which page does the error occur (URL or name)?') }}"
+              type="text"
+              id="bug_url"
+              autocomplete="url"
+            />       
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6">
+              <button type="button" onclick="window.history.back()"
+                class="inline-flex items-center justify-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600 border-gray-300 dark:border-neutral-600">
+                {{ __('Cancel') }}
+              </button>
+
+              <flux:button type="submit" variant="primary" wire:loading.attr="disabled" class="w-full sm:w-auto">
+                <span wire:loading wire:target="submit" class="mr-1">
+                  <flux:icon.loading />
+                </span>
                 {{ __('Send') }}
-            </flux:button>
+              </flux:button>
+            </div>
+          </form>
         </div>
-    </form>
+      </div>
+    </div>
+  </section>
 </div>

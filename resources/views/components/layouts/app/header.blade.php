@@ -5,7 +5,7 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+<body class="min-h-screen flex flex-col bg-white dark:bg-zinc-800">
     <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">        
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
@@ -206,18 +206,15 @@
         </flux:navlist>
     </flux:sidebar>
 
-    <div class="mx-auto w-full h-full max-w-7xl px-3 lg:px-4"> {{-- Removed flex items-center --}}
+    <div class="mx-auto w-full h-full max-w-7xl flex-1 px-3 lg:px-4"> {{-- Removed flex items-center --}}
         {{ $slot }}
     </div>
 
     <x-footer />
-
     <x-cookie-banner />
 
     @fluxScripts
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>   
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('formSync', { syncing: false })
