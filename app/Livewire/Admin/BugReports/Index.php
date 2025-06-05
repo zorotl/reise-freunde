@@ -2,47 +2,31 @@
 
 namespace App\Livewire\Admin\BugReports;
 
-use Livewire\Component;
 use App\Models\BugReport;
 use App\Notifications\BugReportReviewed;
-use Livewire\Attributes\{layout, middleware, title};
 use Illuminate\Support\Facades\Notification;
+use Livewire\Attributes\{Layout, Middleware, Title};
+use Livewire\Component;
 
 #[Layout('components.layouts.admin.header')]
 #[Title('Admin - Bug Reports')]
 #[Middleware(['auth', 'admin_or_moderator'])]
 class Index extends Component
 {
-    public $reports;
-
-    public function mount()
-    {
-        $this->loadReports();
-    }
-
-    public function loadReports()
-    {
-        $this->reports = BugReport::where('status', 'pending')->latest()->get();
-    }
-
     public function accept($id)
     {
         $report = BugReport::findOrFail($id);
-        $report->status = 'accepted';
-        $report->save();
-
+        $report->update(['status' => 'accepted']);
         $this->notifyReporter($report);
-        $this->loadReports();
+        session()->flash('message', __('Bug report accepted.'));
     }
 
     public function reject($id)
     {
         $report = BugReport::findOrFail($id);
-        $report->status = 'rejected';
-        $report->save();
-
+        $report->update(['status' => 'rejected']);
         $this->notifyReporter($report);
-        $this->loadReports();
+        session()->flash('message', __('Bug report rejected.'));
     }
 
     protected function notifyReporter(BugReport $report): void
@@ -56,6 +40,8 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.admin.bug-reports.index');
+        return view('livewire.admin.bug-reports.index', [
+            'reports' => BugReport::with('user')->where('status', 'pending')->latest()->paginate(15),
+        ]);
     }
 }

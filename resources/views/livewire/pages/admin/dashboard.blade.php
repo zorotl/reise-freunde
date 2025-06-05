@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Report;
+use App\Models\BugReport;
 use App\Models\Message;
 use App\Models\Hobby;
 use App\Models\TravelStyle;
@@ -24,6 +25,7 @@ class extends Component {
     public int $postReportCount;
     public int $userReportCount;
     public int $messageReportCount;
+    public int $bugReportCount;
     public int $pendingCount = 0;
     public int $pendingVerifications = 0;
 
@@ -43,6 +45,7 @@ class extends Component {
         $this->postReportCount = Report::where('reportable_type', Post::class)->where('status', 'pending')->count();
         $this->userReportCount = Report::where('reportable_type', User::class)->where('status', 'pending')->count();
         $this->messageReportCount = Report::where('reportable_type', Message::class)->where('status', 'pending')->count();
+        $this->bugReportCount = BugReport::where('status', 'pending')->count();
 
         // Fetch recent items
         $this->recentUsers = User::latest()->take(5)->get();
@@ -99,6 +102,12 @@ class extends Component {
             class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow-md p-3 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
             <h2 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ __('Message Reports') }}</h2>
             <p class="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">{{ $messageReportCount }}</p>
+        </a>
+
+        <a href="{{ route('admin.bug-reports')}}" wire:navigate
+            class="block bg-white dark:bg-zinc-800 border border-orange-300 rounded-lg shadow-md p-3 hover:shadow-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition">
+            <h2 class="text-base font-medium text-gray-700 dark:text-gray-300">{{ __('Bug Reports') }}</h2>
+            <p class="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">{{ $bugReportCount }}</p>
         </a>
     </div>
 
