@@ -18,12 +18,16 @@
  */
 
 // [ ] Bei Usereröffnung wird kein Eintrag in Grants erstellt
+// [ ] Länderkürzel statt Ländername
+// [ ] Name festlegen, URL sichern, Namen überprüfen
+// [ ] AGB und so anpassen
 
 /**
  * --- Security ---
  */
 
-// [ ] Perform a full pentest on the application
+// [x] Perform a full pentest on the application
+// [ ] Implement the pentest findings  
 
 
 
