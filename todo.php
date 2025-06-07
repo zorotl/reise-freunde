@@ -19,8 +19,9 @@
 
 // [ ] Bei Usereröffnung wird kein Eintrag in Grants erstellt
 // [ ] Länderkürzel statt Ländername
-// [ ] Name festlegen, URL sichern, Namen überprüfen
-// [ ] AGB und so anpassen
+// [x] Name festlegen
+// [x] AGB und so anpassen
+// [ ] URL sichern, Namen überprüfen
 
 /**
  * --- Security ---

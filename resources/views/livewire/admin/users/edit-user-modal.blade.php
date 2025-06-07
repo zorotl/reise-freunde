@@ -25,7 +25,7 @@
                                 d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                </div>
+                </div>        
 
                 {{-- Edit User Form --}}
                 <form wire:submit.prevent="saveUser" class="mt-4">
@@ -100,28 +100,43 @@
 
                         {{-- Banned Until Date Picker - only visible if is_banned is true --}}
                         @if ($is_banned)
-                        <div class="mb-4">
-                            <label for="banned_until"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Banned Until')
-                                }}</label>
-                            <input type="date" wire:model="banned_until" id="banned_until"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            @error('banned_until') <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
+                            <div class="mb-4">
+                                <label for="banned_until"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Banned Until')
+                                    }}</label>
+                                <input type="date" wire:model="banned_until" id="banned_until"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                @error('banned_until') <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                        {{-- Banned Reason Textarea - only visible if is_banned is true --}}
-                        <div class="mb-4">
-                            <label for="banned_reason"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Ban Reason')
-                                }}</label>
-                            <textarea wire:model="banned_reason" id="banned_reason" rows="3"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
-                            @error('banned_reason') <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
+                            {{-- Banned Reason Textarea - only visible if is_banned is true --}}
+                            <div class="mb-4">
+                                <label for="banned_reason"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Ban Reason')
+                                    }}</label>
+                                <textarea wire:model="banned_reason" id="banned_reason" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-neutral-700 dark:border-neutral-600 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                                @error('banned_reason') <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Strike System Notice --}}
+                            <div class="mt-4 mb-6 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-neutral-700 rounded p-4 border border-gray-200 dark:border-neutral-600">
+                                <h4 class="font-semibold text-md mb-2">{{ __('moderation.strike_title') }}</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>{{ __('moderation.spam') }}:</strong> {{ __('moderation.levels.spam') }}</li>
+                                    <li><strong>{{ __('moderation.misinformation') }}:</strong> {{ __('moderation.levels.misinformation') }}</li>
+                                    <li><strong>{{ __('moderation.inappropriate_content') }}:</strong> {{ __('moderation.levels.inappropriate_content') }}</li>
+                                    <li><strong>{{ __('moderation.scam') }}:</strong> {{ __('moderation.levels.scam') }}</li>
+                                    <li><strong>{{ __('moderation.harassment') }}:</strong> {{ __('moderation.levels.harassment') }}</li>
+                                    <li><strong>{{ __('moderation.hate_speech') }}:</strong> {{ __('moderation.levels.hate_speech') }}</li>
+                                </ul>
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                    {{ __('moderation.notice') }}
+                                </p>
+                            </div>
                         @endif
-                    </div>
 
                     {{-- Section: Ban History --}}
                     @if($banHistory && $banHistory->count() > 0)
