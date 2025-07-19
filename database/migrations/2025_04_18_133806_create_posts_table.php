@@ -15,10 +15,10 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title'); // New title field
             $table->text('content');
-            $table->timestamp('expiry_date'); // New expiry date field
+            $table->timestamp('expiry_date')->nullable(); // New expiry date field
             $table->boolean('is_active')->default(true); // New active status, defaults to true
-            $table->timestamp('from_date');
-            $table->timestamp('to_date');
+            $table->timestamp('from_date')->nullable();
+            $table->timestamp('to_date')->nullable();
             $table->char('country', 2)->nullable()->index();
             $table->string('city')->nullable();
             $table->string('language_code', 5)->default('en');
