@@ -157,6 +157,64 @@
                 </div>
             </section>
 
+                            {{-- Section 3: Why Join? --}}
+                <section class="py-16 bg-gray-50 dark:bg-neutral-850 rounded-lg my-12">
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 class="text-3xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-10">
+                            {{ __('Why Travel Together?') }}
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <!-- Share Costs -->
+                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
+                                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full w-fit mx-auto mb-3">
+                                    <flux:icon.currency-dollar class="h-8 w-8 text-green-500" />
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    {{ __('Share Costs') }}</h4>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                    {{ __('Reduce costs for accommodation, transport, and activities.') }}
+                                </p>
+                            </div>
+
+                            <!-- Safety in Numbers -->
+                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
+                                <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit mx-auto mb-3">
+                                    <flux:icon.shield-check class="h-8 w-8 text-blue-500" />
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    {{ __('Safety in Numbers') }}</h4>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                    {{ __('Explore new places more comfortably with a buddy.') }}
+                                </p>
+                            </div>
+
+                            <!-- Shared Experiences -->
+                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
+                                <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full w-fit mx-auto mb-3">
+                                    <flux:icon.camera class="h-8 w-8 text-purple-500" />
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    {{ __('Shared Experiences') }}</h4>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                    {{ __('Create lasting memories and share unforgettable moments.') }}
+                                </p>
+                            </div>
+
+                            <!-- New Friendships -->
+                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
+                                <div class="bg-pink-100 dark:bg-pink-900 p-3 rounded-full w-fit mx-auto mb-3">
+                                    <flux:icon.users class="h-8 w-8 text-pink-500" />
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    {{ __('New Friendships') }}</h4>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                    {{ __('Meet people worldwide and forge friendships based on travel.') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             <section class="bg-white py-16">
                 <div class="max-w-5xl mx-auto px-6 text-gray-800">
                     <h2 class="text-3xl font-bold mb-6 text-center">{{ __('Trust, Safety, and Real People') }}</h2>
@@ -218,64 +276,6 @@
                 <section class="bg-white dark:bg-neutral-800 shadow sm:rounded-lg p-6 mb-12"> {{-- Added wrapper --}}
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-stone-400 mb-4">{{ __('Quick Post Search') }}</h3>
                     <livewire:user.search />
-                </section>
-
-                {{-- Section 3: Why Join? --}}
-                <section class="py-16 bg-gray-50 dark:bg-neutral-850 rounded-lg my-12">
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 class="text-3xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-10">
-                            {{ __('Why Travel Together?') }}
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            <!-- Share Costs -->
-                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
-                                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full w-fit mx-auto mb-3">
-                                    <flux:icon.currency-dollar class="h-8 w-8 text-green-500" />
-                                </div>
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                    {{ __('Share Costs') }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                    {{ __('Reduce costs for accommodation, transport, and activities.') }}
-                                </p>
-                            </div>
-
-                            <!-- Safety in Numbers -->
-                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
-                                <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit mx-auto mb-3">
-                                    <flux:icon.shield-check class="h-8 w-8 text-blue-500" />
-                                </div>
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                    {{ __('Safety in Numbers') }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                    {{ __('Explore new places more comfortably with a buddy.') }}
-                                </p>
-                            </div>
-
-                            <!-- Shared Experiences -->
-                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
-                                <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full w-fit mx-auto mb-3">
-                                    <flux:icon.camera class="h-8 w-8 text-purple-500" />
-                                </div>
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                    {{ __('Shared Experiences') }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                    {{ __('Create lasting memories and share unforgettable moments.') }}
-                                </p>
-                            </div>
-
-                            <!-- New Friendships -->
-                            <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow hover:shadow-md transition text-center">
-                                <div class="bg-pink-100 dark:bg-pink-900 p-3 rounded-full w-fit mx-auto mb-3">
-                                    <flux:icon.users class="h-8 w-8 text-pink-500" />
-                                </div>
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                    {{ __('New Friendships') }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                    {{ __('Meet people worldwide and forge friendships based on travel.') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 {{-- Section 2: Feature Spotlight --}}
