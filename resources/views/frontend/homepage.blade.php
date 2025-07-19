@@ -335,18 +335,15 @@
                 </section>
 
                 {{-- Section 4: Community Focus (Placeholder Testimonials) --}}
-                <section class="py-16 bg-gray-50 dark:bg-neutral-850"">
+                {{-- <section class="py-16 bg-gray-50 dark:bg-neutral-850"">
                     <div class=" container mx-auto px-4 sm:px-6 lg:px-8">
                         <h2 class="text-3xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-10">{{ __('Join Our Growing Community') }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                            {{-- Image Placeholder --}}
-                            <div>
-                                {{-- You can replace this with an actual image later --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">                            
+                            <div>                            
                                 <div class="aspect-video bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center">
                                     <flux:icon.map-pin class="h-20 w-20 text-indigo-400 dark:text-indigo-600" />
                                 </div>
-                            </div>
-                            {{-- Text Content --}}
+                            </div>                            
                             <div class="space-y-4">
                                 <p class="text-lg text-gray-700 dark:text-gray-300">
                                     {{ __('Connect with thousands of adventurers planning trips just like you. From weekend city breaks to long-term backpacking journeys, find your tribe here.') }}
@@ -364,7 +361,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> --}}
 
                 {{-- Section 5: Final Call to Action --}}
                 <section class="text-center py-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg my-12">
