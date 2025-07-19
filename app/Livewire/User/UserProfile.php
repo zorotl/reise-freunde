@@ -9,6 +9,7 @@ use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
+use Monarobase\CountryList\CountryList;
 
 #[Title('Profile')]
 class UserProfile extends Component
@@ -16,10 +17,13 @@ class UserProfile extends Component
     use Followable;
 
     public User $user;
+    public array $countryList = [];
 
     public function mount(int $id): void
     {
         $this->user = User::withCount(['followers', 'following', 'spokenLanguages'])->findOrFail($id);
+        $countryList = new CountryList();
+        $this->countryList = $countryList->getList(app()->getLocale());
     }
 
     #[Computed]

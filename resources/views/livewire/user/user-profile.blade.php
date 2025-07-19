@@ -210,8 +210,7 @@
                         }}</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
                         {{-- Access the component property directly using $this --}}
-                        {{ $this->countryList[$user->additionalInfo->nationality] ?? $user->additionalInfo->nationality
-                        }}
+                        {{ $this->countryList[$user->additionalInfo->nationality] ?? $user->additionalInfo->nationality }}
                     </p>
                 </div>
                 @endif

@@ -17,18 +17,8 @@
  * --- General Issues ---
  */
 
-// [x] Bei Usereröffnung wird kein Eintrag in Grants erstellt
-// [ ] Länderkürzel statt Ländername
-// [x] Name festlegen
-// [x] AGB und so anpassen
-// [ ] URL sichern, Namen überprüfen
-
-/**
- * --- Security ---
- */
-
-// [x] Perform a full pentest on the application
-// [ ] Implement the pentest findings  
+// [x] Länderkürzel statt Ländername
+// [x] URL sichern, Namen überprüfen
 
 
 
