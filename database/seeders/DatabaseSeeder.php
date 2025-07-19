@@ -23,5 +23,15 @@ class DatabaseSeeder extends Seeder
         $this->call(UserFollowerSeeder::class);
         $this->call(PostLikeSeeder::class);
         $this->call(BanHistorySeeder::class);
+
+        // Ensure every user has a UserGrant and UserAdditionalInfo
+        \App\Models\User::all()->each(function ($user) {
+            if (!$user->grant) {
+                \App\Models\UserGrant::factory()->create(['user_id' => $user->id]);
+            }
+            if (!$user->additionalInfo) {
+                \App\Models\UserAdditionalInfo::factory()->create(['user_id' => $user->id]);
+            }
+        });
     }
 }
