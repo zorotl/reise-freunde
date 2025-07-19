@@ -66,4 +66,18 @@ class UserGrantFactory extends Factory
             'is_banned_until' => $this->faker->dateTimeBetween('now', $until),
         ]);
     }
+
+    /**
+     * Indicate that the user grant is for a normal user (no admin/mod/banned).
+     */
+    public function normal(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'is_admin' => false,
+            'is_moderator' => false,
+            'is_banned' => false,
+            'is_banned_until' => null,
+            'banned_reason' => null,
+        ]);
+    }
 }

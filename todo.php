@@ -17,7 +17,7 @@
  * --- General Issues ---
  */
 
-// [ ] Bei Usereröffnung wird kein Eintrag in Grants erstellt
+// [x] Bei Usereröffnung wird kein Eintrag in Grants erstellt
 // [ ] Länderkürzel statt Ländername
 // [x] Name festlegen
 // [x] AGB und so anpassen

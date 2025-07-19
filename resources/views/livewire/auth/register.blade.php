@@ -50,6 +50,15 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'birthday' => $validated['birthday'], 
         ]);
 
+        // Create the related userGrant with default values
+        $user->grant()->create([
+            'is_admin' => false,
+            'is_moderator' => false,
+            'is_banned' => false,
+            'is_banned_until' => null,
+            'banned_reason' => null,
+        ]);
+
         event(new Registered($user));
         Auth::login($user);
 
