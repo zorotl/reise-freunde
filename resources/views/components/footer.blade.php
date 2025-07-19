@@ -18,6 +18,9 @@
             </a>
         </nav>
         <div class="w-full sm:w-auto">
+            <a href="mailto:info@travel-friends.ch" class="hover:underline mr-3">
+                {{ __('Contact us') }}
+            </a>
             <a href="{{ route('bug-report') }}" class="hover:underline">
                 {{ __('Report a bug') }}
             </a>

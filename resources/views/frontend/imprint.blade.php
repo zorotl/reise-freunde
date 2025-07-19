@@ -7,7 +7,7 @@
     <h2 class="text-md font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2">Verantwortlich / <em>Site operator</em></h2>
     <p class="text-gray-600 dark:text-gray-400">
         Martin Striednig<br>
-        <a href="mailto:martin@stws.ch" class="underline">martin@stws.ch</a>
+        <a href="mailto:info@travel-friends.ch" class="underline">info@travel-friends.ch</a>
     </p>
 
     <h2 class="text-md font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2">Rechtsform & Sitz / <em>Legal form & jurisdiction</em></h2>
