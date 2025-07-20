@@ -15,6 +15,10 @@
 
 // Bugs
 // [ ] Fix "Other Hobby and TravelStyle" issue
+// [ ] Fix Post-Language not being set correctly, always "en"
+// [ ] Fix profile image showing error
+// [ ] Set Post-Language to "en" or user language for new posts
+
 
 // [ ] Collect live-user feedback
 // [ ] Patch newly reported bugs

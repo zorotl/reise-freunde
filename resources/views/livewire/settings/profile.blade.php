@@ -391,7 +391,7 @@ class extends Component {
             <flux:textarea wire:model="about_me" :label="__('About Me')" rows="3"></flux:textarea>
 
             {{-- Profile Photo Upload --}}
-            <div class="col-span-6 sm:col-span-4" x-data="{ photoName: null, photoPreview: null }">
+            {{-- <div class="col-span-6 sm:col-span-4" x-data="{ photoName: null, photoPreview: null }">
                 <input type="file" id="photo" class="hidden" wire:model="photo" x-ref="photo" x-on:change="
                     photoName = $refs.photo.files[0].name;
                     const reader = new FileReader();
@@ -424,15 +424,15 @@ class extends Component {
                     class="mt-2 inline-flex items-center px-3 py-2 border border-red-300 dark:border-red-600 rounded-md shadow-sm text-sm font-medium text-red-600 bg-white dark:bg-neutral-800 hover:bg-red-50 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     wire:click="removeProfilePhoto" x-show="!photoPreview">
                     {{ __('Remove Photo') }}
-                </button>
+                </button> --}}
 
                 {{-- Add button to remove photo later if needed --}}
 
-                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                {{-- <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     {{ __('Maximum size: 5MB. Allowed types: jpg, png, gif.') }}
                 </p>
                 @error('photo') <span class="mt-2 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
+            </div> --}}
             {{-- End Profile Photo Upload --}}
 
             {{-- Form Actions --}}
