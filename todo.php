@@ -13,6 +13,9 @@
 // Phase 2 – Bugfixing After GoLive
 // ==========================
 
+// Bugs
+// [ ] Fix "Other Hobby and TravelStyle" issue
+
 // [ ] Collect live-user feedback
 // [ ] Patch newly reported bugs
 // [ ] Monitor performance and log errors

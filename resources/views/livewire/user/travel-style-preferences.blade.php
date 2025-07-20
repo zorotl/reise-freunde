@@ -12,7 +12,7 @@
     </div>
 
     {{-- Custom Travel Styles --}}
-    <div x-data="customTagInput(@js($customTravelStyle), '{{ $this->getId() }}')" x-init="init()" class="mt-4">
+    {{-- <div x-data="customTagInput(@js($customTravelStyle), '{{ $this->getId() }}')" x-init="init()" class="mt-4">
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Travel Styles</label>
 
         <div class="flex flex-wrap gap-2 mb-2">
@@ -27,7 +27,7 @@
 
         <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
             class="p-2 border rounded w-full">
-    </div>
+    </div> --}}
 
 
     {{-- Predefined Hobbies --}}
@@ -43,7 +43,7 @@
     </div>
 
     {{-- Custom Hobbies --}}
-    <div x-data="customTagInput(@js($customHobby), '{{ $this->getId() }}', 'customHobby')" x-init="init()" class="mt-6">
+    {{-- <div x-data="customTagInput(@js($customHobby), '{{ $this->getId() }}', 'customHobby')" x-init="init()" class="mt-6">
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Other Hobbies, Sports & Fun</label>
 
         <div class="flex flex-wrap gap-2 mb-2">
@@ -58,7 +58,7 @@
 
         <input type="text" x-model="input" @keydown.enter.prevent="addTag()" placeholder="Type and press Enter"
             class="p-2 border rounded w-full">
-    </div>
+    </div> --}}
 
 
 
@@ -73,7 +73,7 @@
     @endif
 </div>
 
-<script>
+{{-- <script>
     function customTagInput(initialTags, componentId, wireModel) {
         return {
             input: '',
@@ -107,4 +107,4 @@
             }
         }
     }
-</script>
+</script> --}}

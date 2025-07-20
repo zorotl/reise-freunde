@@ -12,8 +12,8 @@ class TravelStylePreferences extends Component
 {
     public array $selectedTravelStyles = [];
     public array $selectedHobbies = [];
-    public array $customTravelStyle = [];
-    public array $customHobby = [];
+    // public array $customTravelStyle = [];
+    // public array $customHobby = [];
 
     public function mount()
     {
@@ -23,9 +23,9 @@ class TravelStylePreferences extends Component
         $this->selectedTravelStyles = $user->travelStyles->pluck('id')->toArray();
         $this->selectedHobbies = $user->hobbies->pluck('id')->toArray();
 
-        // Load custom preferences from user_additional_infos
-        $this->customTravelStyle = $user->additionalInfo->custom_travel_styles ?? [];
-        $this->customHobby = $user->additionalInfo->custom_hobbies ?? [];
+        // Custom preferences vorläufig entfernt
+        // $this->customTravelStyle = $user->additionalInfo->custom_travel_styles ?? [];
+        // $this->customHobby = $user->additionalInfo->custom_hobbies ?? [];
     }
 
     public function toggleTravelStyle($id)
@@ -48,10 +48,10 @@ class TravelStylePreferences extends Component
 
     public function save()
     {
-        $this->validate([
-            'customTravelStyle' => 'array|max:5',
-            'customHobby' => 'array|max:5',
-        ]);
+        // $this->validate([
+        //     'customTravelStyle' => 'array|max:5',
+        //     'customHobby' => 'array|max:5',
+        // ]);
 
         $user = Auth::user();
 
@@ -59,20 +59,20 @@ class TravelStylePreferences extends Component
         $user->travelStyles()->sync($this->selectedTravelStyles);
         $user->hobbies()->sync($this->selectedHobbies);
 
-        // Ensure the additionalInfo model exists and is correctly linked
-        $userInfo = $user->additionalInfo;
-        if (!$userInfo) {
-            $userInfo = new UserAdditionalInfo([
-                'custom_travel_styles' => [],
-                'custom_hobbies' => [],
-            ]);
-            $user->additionalInfo()->save($userInfo); // This sets the user_id properly
-        }
+        // Custom preferences vorläufig entfernt
+        // $userInfo = $user->additionalInfo;
+        // if (!$userInfo) {
+        //     $userInfo = new UserAdditionalInfo([
+        //         'custom_travel_styles' => [],
+        //         'custom_hobbies' => [],
+        //     ]);
+        //     $user->additionalInfo()->save($userInfo); // This sets the user_id properly
+        // }
 
         // Save custom free-text preferences
-        $userInfo->custom_travel_styles = array_filter($this->customTravelStyle);
-        $userInfo->custom_hobbies = array_filter($this->customHobby);
-        $userInfo->save();
+        // $userInfo->custom_travel_styles = array_filter($this->customTravelStyle);
+        // $userInfo->custom_hobbies = array_filter($this->customHobby);
+        // $userInfo->save();
 
         session()->flash('success', 'Preferences saved successfully!');
     }
