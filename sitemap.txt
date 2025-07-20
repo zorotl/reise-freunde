@@ -1,0 +1,41 @@
+# Sitemap
+
+-   Home: `/`
+-   Dashboard: `/dashboard`
+-   All Posts: `/post/show`
+    -   My Posts: `/post/myown`
+    -   Create Post: `/post/create`
+    -   Edit Post: `/post/edit/{id}`
+-   User Directory: `/user/directory`
+    -   User Profile: `/user/profile/{id}`
+    -   Following List: `/user/following/{id}`
+    -   Followers List: `/user/followers/{id}`
+-   Messages
+    -   Inbox: `/mail/inbox`
+    -   Outbox: `/mail/outbox`
+    -   Archive: `/mail/archive`
+-   Settings
+    -   Profile: `/settings/profile`
+    -   Privacy: `/settings/privacy-settings`
+    -   Account Deletion: `/settings/account-deletion`
+-   Admin Area: `/admin/dashboard`
+    -   Manage Users: `/admin/users`
+    -   Manage Posts: `/admin/posts`
+    -   Manage Hobbies: `/admin/hobbies`
+    -   Manage Travel Styles: `/admin/travel-styles`
+    -   Reports: `/admin/reports`
+    -   Bug Reports: `/admin/bug-reports`
+    -   Messages: `/admin/messages`
+    -   Confirmation Logs: `/admin/confirmation-logs`
+-   Register: `/register`
+-   Login: `/login`
+-   Bug Report: `/bug-report`
+-   Language Switcher (component, not a route)
+
+**Notes:**
+
+-   Some routes use Livewire components, e.g. `/post/myown`, `/user/directory`.
+-   Admin routes are protected and only visible to authorized users.
+-   The sitemap covers main navigation and feature pages.
+
+For details, see [routes/web.php](routes/web.php).
