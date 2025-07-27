@@ -1,12 +1,9 @@
 https://travel-friends.ch/
 https://travel-friends.ch/dashboard
 https://travel-friends.ch/post/show
-https://travel-friends.ch/post/myown
 https://travel-friends.ch/post/create
 https://travel-friends.ch/user/directory
 https://travel-friends.ch/mail/inbox
-https://travel-friends.ch/settings/profile
-https://travel-friends.ch/admin/dashboard
 https://travel-friends.ch/register
 https://travel-friends.ch/login
 https://travel-friends.ch/bug-report

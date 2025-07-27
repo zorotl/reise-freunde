@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /api/
+Disallow: /storage/app/
+Disallow: /mail/
+Disallow: /settings/
+Disallow: /login
+Disallow: /register
+Disallow: /post/create
+Disallow: /post/myown
+Disallow: /password/
+Disallow: /livewire/
+
+Sitemap: https://travel-friends.ch/sitemap.txt
